@@ -1,1 +1,1 @@
-module github.com/oliverbestmann/box2d
+module github.com/oliverbestmann/box2d-go
