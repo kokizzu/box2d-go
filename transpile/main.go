@@ -221,6 +221,7 @@ func exportVars(decls *[]ast.Decl, api map[string]bool) Visitor {
 
 						case strings.HasSuffix(name, "Joint"):
 							ty = ast.NewIdent("JointType")
+							name = "JointType" + strings.TrimSuffix(name, "Joint")
 
 						case strings.HasSuffix(name, "Body"):
 							ty = ast.NewIdent("BodyType")
@@ -256,24 +257,31 @@ func exportVars(decls *[]ast.Decl, api map[string]bool) Visitor {
 
 func createClassTypes(decls *[]ast.Decl) {
 	for _, ty := range classTypes {
+		var fields ast.FieldList
+
+		if ty.Extends == "" {
+			fields.List = append(fields.List, &ast.Field{
+				Names: []*ast.Ident{ast.NewIdent("Id")},
+				Type:  ast.NewIdent(ty.IdType),
+			})
+
+			fields.List = append(fields.List, &ast.Field{
+				Names: []*ast.Ident{ast.NewIdent("tls")},
+				Type:  &ast.StarExpr{X: ast.NewIdent("TLS")},
+			})
+		} else {
+			fields.List = append(fields.List, &ast.Field{
+				Type: ast.NewIdent(ty.Extends),
+			})
+		}
+
 		*decls = append(*decls, &ast.GenDecl{
 			Tok: token.TYPE,
 			Specs: []ast.Spec{
 				&ast.TypeSpec{
 					Name: ast.NewIdent(ty.Name),
 					Type: &ast.StructType{
-						Fields: &ast.FieldList{
-							List: []*ast.Field{
-								{
-									Names: []*ast.Ident{ast.NewIdent("Id")},
-									Type:  ast.NewIdent(ty.IdType),
-								},
-								{
-									Names: []*ast.Ident{ast.NewIdent("tls")},
-									Type:  &ast.StarExpr{X: ast.NewIdent("TLS")},
-								},
-							},
-						},
+						Fields: &fields,
 					},
 				},
 			},
@@ -296,15 +304,15 @@ func createWrappers(decls *[]ast.Decl, api API) Visitor {
 
 		for idx := range classTypes {
 			ty := &classTypes[idx]
-			if strings.HasPrefix(decl.Name.Name, ty.FnPrefix) {
-				if decl.Type.Params != nil && len(decl.Type.Params.List) >= 2 {
-					arg0, ok := decl.Type.Params.List[1].Type.(*ast.Ident)
-					if ok && arg0.Name == ty.IdType {
-						classType = ty
-						break
-					}
+			//if strings.HasPrefix(decl.Name.Name, ty.FnPrefix) {
+			if decl.Type.Params != nil && len(decl.Type.Params.List) >= 2 {
+				arg0, ok := decl.Type.Params.List[1].Type.(*ast.Ident)
+				if ok && arg0.Name == ty.IdType {
+					classType = ty
+					break
 				}
 			}
+			//}
 		}
 
 		var args []ast.Expr
@@ -434,6 +442,11 @@ func createWrappers(decls *[]ast.Decl, api API) Visitor {
 					ty = ast.NewIdent(wrapTy.Name)
 				}
 
+				if identOf(ty) == "Joint" && strings.HasPrefix(decl.Name.Name, "b2Create") {
+					jointType := strings.TrimPrefix(decl.Name.Name, "b2Create")
+					ty = ast.NewIdent(jointType)
+				}
+
 				for _, name := range param.Names {
 					returnTypes = append(returnTypes, &ast.Field{
 						Type:  ty,
@@ -501,8 +514,11 @@ func createWrappers(decls *[]ast.Decl, api API) Visitor {
 				Sel: ast.NewIdent("Id"),
 			}
 
+			name := strings.TrimPrefix(decl.Name.Name, classType.FnPrefix)
+			name = strings.TrimPrefix(name, "b2")
+
 			fdecl = &ast.FuncDecl{
-				Name: ast.NewIdent(strings.TrimPrefix(decl.Name.Name, classType.FnPrefix)),
+				Name: ast.NewIdent(name),
 				Recv: &ast.FieldList{
 					List: []*ast.Field{
 						{
@@ -519,6 +535,8 @@ func createWrappers(decls *[]ast.Decl, api API) Visitor {
 				Body: &ast.BlockStmt{List: body},
 			}
 		} else {
+			slog.Info("Wrap normal method", slog.String("method", decl.Name.Name))
+
 			// normal method
 			fdecl = &ast.FuncDecl{
 				Name: ast.NewIdent(strings.ReplaceAll(decl.Name.Name[2:], "_", "")),
@@ -526,7 +544,7 @@ func createWrappers(decls *[]ast.Decl, api API) Visitor {
 					List: []*ast.Field{
 						{
 							Names: []*ast.Ident{ast.NewIdent("b")},
-							Type:  &ast.StarExpr{X: ast.NewIdent("Box2D")},
+							Type:  ast.NewIdent("Box2D"),
 						},
 					},
 				},
@@ -788,6 +806,7 @@ type ClassTypes struct {
 	Name     string
 	IdType   string
 	FnPrefix string
+	Extends  string
 }
 
 var classTypes = []ClassTypes{
@@ -815,6 +834,54 @@ var classTypes = []ClassTypes{
 		Name:     "Chain",
 		IdType:   "ChainId",
 		FnPrefix: "b2Chain_",
+	},
+	{
+		Name:     "PrismaticJoint",
+		Extends:  "Joint",
+		IdType:   "JointId",
+		FnPrefix: "b2PrismaticJoint_",
+	},
+	{
+		Name:     "MotorJoint",
+		Extends:  "Joint",
+		IdType:   "JointId",
+		FnPrefix: "b2MotorJoint_",
+	},
+	{
+		Name:     "RevoluteJoint",
+		Extends:  "Joint",
+		IdType:   "JointId",
+		FnPrefix: "b2RevoluteJoint_",
+	},
+	{
+		Name:     "DistanceJoint",
+		Extends:  "Joint",
+		IdType:   "JointId",
+		FnPrefix: "b2DistanceJoint_",
+	},
+	{
+		Name:     "WheelJoint",
+		Extends:  "Joint",
+		IdType:   "JointId",
+		FnPrefix: "b2WheelJoint_",
+	},
+	{
+		Name:     "WeldJoint",
+		Extends:  "Joint",
+		IdType:   "JointId",
+		FnPrefix: "b2WeldJoint_",
+	},
+	{
+		Name:     "MouseJoint",
+		Extends:  "Joint",
+		IdType:   "JointId",
+		FnPrefix: "b2MouseJoint_",
+	},
+	{
+		Name:     "FilterJoint",
+		Extends:  "Joint",
+		IdType:   "JointId",
+		FnPrefix: "b2FilterJoint_",
 	},
 }
 

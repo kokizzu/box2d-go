@@ -223,3 +223,28 @@ func b2DefaultAssertFcnGo(tls *TLS, condition uintptr, fileName uintptr, lineNum
 	err := fmt.Errorf("%s:%d: %s", toString(fileName), lineNumber, toString(condition))
 	panic(err)
 }
+
+func (b Joint) AsPrismaticJoint() PrismaticJoint {
+	return PrismaticJoint{b}
+}
+func (b Joint) AsMotorJoint() MotorJoint {
+	return MotorJoint{b}
+}
+func (b Joint) AsRevoluteJoint() RevoluteJoint {
+	return RevoluteJoint{b}
+}
+func (b Joint) AsDistanceJoint() DistanceJoint {
+	return DistanceJoint{b}
+}
+func (b Joint) AsWheelJoint() WheelJoint {
+	return WheelJoint{b}
+}
+func (b Joint) AsMouseJoint() MouseJoint {
+	return MouseJoint{b}
+}
+func (b Joint) AsWeldJoint() WeldJoint {
+	return WeldJoint{b}
+}
+func (b Joint) AsFilterJoint() FilterJoint {
+	return FilterJoint{b}
+}

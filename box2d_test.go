@@ -19,18 +19,18 @@ func TestBounce(t *testing.T) {
 	ballDef.Type1 = DynamicBody
 	ballDef.Position.Y = 5
 
-	var ball Body = b.CreateBody(w, ballDef)
+	var ball Body = w.CreateBody(ballDef)
 
 	ballShape := b.DefaultShapeDef()
 	ballShape.Material.Restitution = 0.2
 	ballShape.EnableContactEvents = 1
 	ballShape.EnableHitEvents = 1
-	b.CreateCircleShape(ball, ballShape, Circle{Radius: 1})
+	ball.CreateCircleShape(ballShape, Circle{Radius: 1})
 
 	groundDef := b.DefaultBodyDef()
 	groundDef.Type1 = StaticBody
 
-	var ground Body = b.CreateBody(w, groundDef)
+	var ground Body = w.CreateBody(groundDef)
 
 	groundSegment := b2Segment{
 		Point1: b2Vec2{-20.0, 0.0},
@@ -38,7 +38,7 @@ func TestBounce(t *testing.T) {
 	}
 
 	groundShape := b.DefaultShapeDef()
-	b.CreateSegmentShape(ground, groundShape, groundSegment)
+	ground.CreateSegmentShape(groundShape, groundSegment)
 
 	for idx := range 100 {
 		w.Step(1.0/60.0, 1)
