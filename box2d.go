@@ -1,6 +1,7 @@
 package box2d
 
 import (
+	"fmt"
 	"runtime"
 	"slices"
 	"unsafe"
@@ -179,4 +180,9 @@ func copySlice[T any](data uintptr, n int32) []T {
 	event := (*T)(unsafe.Pointer(data))
 	bodyMoveEvents := unsafe.Slice(event, n)
 	return slices.Clone(bodyMoveEvents)
+}
+
+func b2DefaultAssertFcnGo(tls *TLS, condition uintptr, fileName uintptr, lineNumber int32) (r int32) {
+	err := fmt.Errorf("%s:%d: %s", toString(fileName), lineNumber, toString(condition))
+	panic(err)
 }

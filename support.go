@@ -5,6 +5,7 @@ import (
 	"math"
 	"math/bits"
 	"runtime"
+	"sort"
 	"strings"
 	"sync/atomic"
 	"time"
@@ -51,10 +52,28 @@ func __builtin_clz(t *TLS, n uint32) int32 {
 func __builtin_ctzll(_ *TLS, value uint64) int32 {
 	return int32(bits.TrailingZeros64(value))
 }
+
+func __builtin_aligned_alloc(tls *TLS, align, size uint64) uintptr {
+	buf := unsafe.Pointer(unsafe.SliceData(make([]byte, size+align)))
+	addr := uintptr(buf)
+
+	if addr%uintptr(align) != 0 {
+		addr += uintptr(align) - addr%uintptr(align)
+	}
+
+	// address is now aligned
+	if addr%uintptr(align) != 0 {
+		panic("not aligned")
+	}
+
+	tls.heap[addr] = buf
+	return addr
+}
+
 func memset(_ *TLS, dest uintptr, c int32, n size_t) (r uintptr) {
 	slice := sliceOf(dest, n)
 
-	if c == 0 || false {
+	if c == 0 {
 		clear(slice)
 	} else {
 		for idx := range slice {
@@ -72,42 +91,67 @@ func memcpy(_ *TLS, a uintptr, b uintptr, n size_t) uintptr {
 	return a
 }
 
-var heap = map[uintptr]unsafe.Pointer{}
-
-func malloc(_ *TLS, size size_t) uintptr {
-	buf := unsafe.Pointer(unsafe.SliceData(make([]byte, size+32)))
-
-	// always return a value aligned to 32 byte
-	if uintptr(buf)%32 != 0 {
-		buf = unsafe.Add(buf, 32-uintptr(buf)%32)
+func free(tls *TLS, ptr uintptr) {
+	if _, ok := tls.heap[ptr]; !ok {
+		err := fmt.Errorf("free(%#x): unknown address", ptr)
+		panic(err)
 	}
 
-	heap[uintptr(buf)] = buf
-
-	fmt.Printf("Alloc %d bytes at %#x\n", size, uintptr(buf))
-
-	return uintptr(buf)
-}
-
-func free(_ *TLS, ptr uintptr) {
-	delete(heap, ptr)
+	delete(tls.heap, ptr)
 }
 
 func sqrtf(_ *TLS, f float32) float32 {
 	return float32(math.Sqrt(float64(f)))
 }
 
-func printf(tls *TLS, fmt uintptr, va uintptr) (r int32) {
-	panic("todo")
+type _qsort struct {
+	tls      *TLS
+	memory   []byte
+	compare  func(_ *TLS, a, b uintptr) int32
+	itemSize int
+	len      int
 }
 
-func qsort(tls *TLS, base uintptr, nel size_t, width size_t, cmp uintptr) {
-	panic("todo")
+func (q _qsort) sliceOf(idx int) []byte {
+	start := idx * q.itemSize
+	return q.memory[start:][:q.itemSize]
 }
 
-func sched_yield(tls *TLS) int32 {
-	runtime.Gosched()
-	return 0
+func (q _qsort) Len() int {
+	return q.len
+}
+
+func (q _qsort) Less(i, j int) bool {
+	lhs := q.sliceOf(i)
+	rhs := q.sliceOf(j)
+
+	rc := q.compare(
+		q.tls,
+		uintptr(unsafe.Pointer(unsafe.SliceData(lhs))),
+		uintptr(unsafe.Pointer(unsafe.SliceData(rhs))),
+	)
+
+	return rc < 0
+}
+
+func (q _qsort) Swap(i, j int) {
+	lhs := q.sliceOf(i)
+	rhs := q.sliceOf(j)
+
+	for idx := range len(lhs) {
+		// swap the bytes
+		lhs[idx], rhs[idx] = rhs[idx], lhs[idx]
+	}
+}
+
+func qsort(tls *TLS, base uintptr, nel size_t, width size_t, compare func(_ *TLS, a, b uintptr) int32) {
+	sort.Sort(_qsort{
+		tls:      tls,
+		memory:   sliceOf(base, nel*width),
+		compare:  compare,
+		itemSize: int(width),
+		len:      int(nel),
+	})
 }
 
 func clock_gettime(tls *TLS, clk clockid_t, ts uintptr) (r int32) {
@@ -119,24 +163,33 @@ func clock_gettime(tls *TLS, clk clockid_t, ts uintptr) (r int32) {
 	return 0
 }
 
-func __builtin_snprintf(t *TLS, str uintptr, size size_t, format, args uintptr) int32 {
-	panic("todo")
+func sched_yield(tls *TLS) int32 {
+	runtime.Gosched()
+	return 0
 }
 
 func __builtin_Gosched(tls *TLS) {
 	runtime.Gosched()
 }
 
+func printf(tls *TLS, fmt uintptr, va uintptr) (r int32) {
+	panic("printf: not implemented")
+}
+
+func __builtin_snprintf(t *TLS, str uintptr, size size_t, format, args uintptr) int32 {
+	panic("snprintf: not implemented")
+}
+
 func fprintf(tls *TLS, f uintptr, fmt uintptr, va uintptr) (r int32) {
-	panic("todo")
+	panic("fprintf: not implemented")
 }
 
 func fopen(tls *TLS, filename uintptr, mode uintptr) (r uintptr) {
-	panic("todo")
+	panic("fopen: not implemented")
 }
 
 func fclose(tls *TLS, f uintptr) (r1 int32) {
-	panic("todo")
+	panic("fclose: not implemented")
 }
 
 // Dummy annotation marking that the value x escapes,
@@ -169,9 +222,4 @@ func toString(base uintptr) string {
 
 		str.WriteByte(ch)
 	}
-}
-
-func b2DefaultAssertFcnGo(tls *TLS, condition uintptr, fileName uintptr, lineNumber int32) (r int32) {
-	err := fmt.Errorf("%s:%d: %s", toString(fileName), lineNumber, toString(condition))
-	panic(err)
 }

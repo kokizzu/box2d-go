@@ -1,4 +1,4 @@
-package main
+package box2d
 
 import (
 	"unsafe"

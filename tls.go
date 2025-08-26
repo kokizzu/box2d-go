@@ -9,12 +9,15 @@ type TLS struct {
 	Stack  []byte
 	allocs []int
 	pos    int
+
+	heap map[uintptr]unsafe.Pointer
 }
 
 //go:noinline
 func NewTLS(stackSize int) *TLS {
 	return &TLS{
 		Stack: make([]byte, stackSize),
+		heap:  make(map[uintptr]unsafe.Pointer, 4096),
 	}
 }
 

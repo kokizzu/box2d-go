@@ -1,11 +1,11 @@
 package main
 
 import (
-	"fmt"
 	"go/ast"
 	"go/format"
 	"go/parser"
 	"go/token"
+	"log/slog"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -28,7 +28,8 @@ bool __builtin___atomic_compare_exchange_n(int32_t *ptr, int32_t *expected, int3
 
 var PREDEF_ALLOC = `
 #include <stddef.h>
-extern void* aligned_alloc(size_t align, size_t size);
+#define aligned_alloc __builtin_aligned_alloc
+extern void* __builtin_aligned_alloc(size_t align, size_t size);
 `
 
 func main() {
@@ -36,9 +37,7 @@ func main() {
 	goarch := runtime.GOARCH
 
 	files, err := filepath.Glob("../box2d-c/src/*.c")
-	if err != nil {
-		panic(err)
-	}
+	must(err)
 
 	args := []string{
 		"ccgo",
@@ -55,22 +54,21 @@ func main() {
 	args = append(args, files...)
 
 	if true {
-		fmt.Println("Transpile c to go")
-		err = ccgo.NewTask(goos, goarch, args, os.Stdout, os.Stderr, nil).Main()
-		if err != nil {
-			panic(err)
-		}
+		slog.Info("Transpile c to go")
+		err := ccgo.NewTask(goos, goarch, args, os.Stdout, os.Stderr, nil).Main()
+		must(err)
 	}
 
+	slog.Info("Read public API from header files")
 	api := readAPI()
 
+	slog.Info("Read generated go file")
 	bytesSrc, err := os.ReadFile("../box2d_c.go")
-	if err != nil {
-		panic(err)
-	}
+	must(err)
 
 	source := string(bytesSrc)
 
+	slog.Info("Perform code cleanup via regexp")
 	source = regexp.MustCompile("//go:build .*").ReplaceAllLiteralString(source, "")
 
 	source = regexp.MustCompile(PrefixField+"([a-z])([A-Za-z0-9_]*)").ReplaceAllStringFunc(source, func(s string) string {
@@ -79,15 +77,16 @@ func main() {
 		return name
 	})
 
+	slog.Info("Parse generated go source")
 	fset := token.NewFileSet()
 	var root ast.Node
 	root, err = parser.ParseFile(fset, "box2d_c.go", source, parser.ParseComments|parser.SkipObjectResolution)
-	if err != nil {
-		panic(err)
-	}
+	must(err)
 
+	slog.Info("Apply code migrations")
 	root = astutil.Apply(root, nil, removeModernC())
 	root = astutil.Apply(root, nil, hideSupportFuncs())
+	root = astutil.Apply(root, nil, fixQSortInvocation())
 	root = astutil.Apply(root, nil, useApiTypes(api.Exposed))
 
 	writeSource("../box2d_c.go", root)
@@ -112,17 +111,20 @@ func main() {
 		},
 	})
 
+	slog.Info("Generate go source for box2d api")
 	ast.Inspect(root, exportTypes(&decls, api.Exposed))
 	ast.Inspect(root, createWrappers(&decls, api))
 	ast.Inspect(root, exportVars(&decls, api.Exposed))
 
 	writeSource("../box2d_api.go", &ast.File{
-		Name:  ast.NewIdent("main"),
+		Name:  ast.NewIdent("box2d"),
 		Decls: decls,
 	})
 }
 
 func writeSource(target string, src ast.Node) {
+	slog.Info("Write " + target)
+
 	fp, err := os.Create(target)
 	must(err)
 	defer fp.Close()
@@ -441,6 +443,26 @@ func hideSupportFuncs() astutil.ApplyFunc {
 					}
 
 					cursor.Replace(node.Sel)
+				}
+			}
+		}
+
+		return true
+	}
+}
+
+func fixQSortInvocation() astutil.ApplyFunc {
+	return func(cursor *astutil.Cursor) bool {
+		if call, ok := cursor.Node().(*ast.CallExpr); ok {
+			if name, ok := call.Fun.(*ast.Ident); ok {
+				if name.Name == "qsort" {
+					ccgoCall := call.Args[4].(*ast.CallExpr)
+
+					if ccgoCall.Fun.(*ast.Ident).Name != "__ccgo_fp" {
+						panic("expected call to __ccgo_fp")
+					}
+
+					call.Args[4] = ccgoCall.Args[0]
 				}
 			}
 		}

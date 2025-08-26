@@ -1,4 +1,4 @@
-From d19cb83bd4d15238da1170c0f30c3fb153dcc28b Mon Sep 17 00:00:00 2001
+From f509f0199bf092790654d560ee566a04db6b72a9 Mon Sep 17 00:00:00 2001
 From: Oliver Bestmann <oliver.bestmann@googlemail.com>
 Date: Wed, 20 Aug 2025 21:55:07 +0200
 Subject: [PATCH] ensure compatibility with ccgo
@@ -8,8 +8,8 @@ Subject: [PATCH] ensure compatibility with ccgo
  include/box2d/id.h             | 10 +++++-----
  include/box2d/math_functions.h |  8 ++++----
  src/solver.c                   |  9 ++++++++-
- src/statics.c                  | 28 ++++++++++++++++++++++++++++
- 5 files changed, 46 insertions(+), 11 deletions(-)
+ src/statics.c                  | 18 ++++++++++++++++++
+ 5 files changed, 36 insertions(+), 11 deletions(-)
  create mode 100644 src/statics.c
 
 diff --git a/include/box2d/collision.h b/include/box2d/collision.h
@@ -87,10 +87,10 @@ index 735b516..305364d 100644
  	__asm__ __volatile__( "pause\n" );
 diff --git a/src/statics.c b/src/statics.c
 new file mode 100644
-index 0000000..f07d5ad
+index 0000000..09f64f5
 --- /dev/null
 +++ b/src/statics.c
-@@ -0,0 +1,28 @@
+@@ -0,0 +1,18 @@
 +#include "box2d/collision.h"
 +#include "box2d/id.h"
 +
@@ -109,16 +109,6 @@ index 0000000..f07d5ad
 +b2Mat22 b2Mat22_zero = { { 0.0f, 0.0f }, { 0.0f, 0.0f } };
 +
 +b2SimplexCache b2_emptySimplexCache = B2_ZERO_INIT;
-+
-+void* aligned_alloc( size_t align, size_t size )
-+{
-+	void* ptr = malloc( size + align );
-+	if (( (size_t)ptr ) % align != 0)
-+	{
-+		ptr += ( align - ( (size_t)ptr ) % align );
-+	}
-+	return ptr;
-+}
 -- 
 2.50.1
 
