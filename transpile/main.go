@@ -36,7 +36,7 @@ extern void* __builtin_aligned_alloc(size_t align, size_t size);
 func main() {
 	var noTranspile bool
 
-	flag.BoolVar(&noTranspile, "no-transpile", true, "do not transpile the c sources")
+	flag.BoolVar(&noTranspile, "no-transpile", false, "do not transpile the c sources")
 	flag.Parse()
 
 	goos := runtime.GOOS
@@ -93,7 +93,8 @@ func main() {
 	root = astutil.Apply(root, nil, removeModernC())
 	root = astutil.Apply(root, nil, hideSupportFuncs())
 	root = astutil.Apply(root, nil, fixQSortInvocation())
-	root = astutil.Apply(root, nil, useApiTypes(api.Exposed))
+	root = astutil.Apply(root, nil, useApiTypes(api.ExposedTypes))
+	ast.Inspect(root, renameApiTypes(api.ExposedTypes))
 
 	writeSource("../box2d_c.go", root)
 
@@ -120,7 +121,7 @@ func main() {
 	createClassTypes(&decls)
 
 	slog.Info("Generate go source for box2d api")
-	ast.Inspect(root, exportTypes(&decls, api.Exposed))
+	// ast.Inspect(root, exportTypes(&decls, api.Exposed))
 	ast.Inspect(root, createWrappers(&decls, api))
 	ast.Inspect(root, exportVars(&decls, api.Exposed))
 
@@ -166,6 +167,19 @@ func removeModernC() astutil.ApplyFunc {
 }
 
 type Visitor = func(ast.Node) bool
+
+func renameApiTypes(api map[string]bool) Visitor {
+	return func(node ast.Node) bool {
+		switch node := node.(type) {
+		case *ast.Ident:
+			if api[node.Name] {
+				node.Name = node.Name[2:]
+			}
+		}
+
+		return true
+	}
+}
 
 func exportTypes(decls *[]ast.Decl, api map[string]bool) Visitor {
 	return func(node ast.Node) bool {
@@ -329,7 +343,7 @@ func createWrappers(decls *[]ast.Decl, api API) Visitor {
 			for _, name := range param.Names {
 				var arg ast.Expr = name
 
-				paramType := renameApiIdent(param, api.Exposed)
+				paramType := renameApiIdent(param, api.ExposedTypes)
 
 				if isUintptr(param.Type) && api.PointerTypes[decl.Name.Name][name.Name].IsValid() {
 					actualType := api.PointerTypes[decl.Name.Name][name.Name]
@@ -435,7 +449,7 @@ func createWrappers(decls *[]ast.Decl, api API) Visitor {
 		var returnTypes []*ast.Field
 		if decl.Type.Results != nil {
 			for _, param := range decl.Type.Results.List {
-				ty := renameApiIdent(param, api.Exposed)
+				ty := renameApiIdent(param, api.ExposedTypes)
 
 				wrapTy := getClassTypeById(identOf(ty))
 				if wrapTy != nil {
@@ -658,7 +672,7 @@ type ParamType struct {
 }
 
 func (p ParamType) GoType(api *API) string {
-	if api.Exposed[p.CType] {
+	if api.ExposedTypes[p.CType] {
 		return p.CType[2:]
 	}
 
@@ -670,7 +684,8 @@ func (p ParamType) IsValid() bool {
 }
 
 type API struct {
-	Exposed map[string]bool
+	Exposed      map[string]bool
+	ExposedTypes map[string]bool
 
 	// function to param name to type
 	PointerTypes map[string]map[string]ParamType
@@ -691,6 +706,7 @@ func readAPI() API {
 	var api API
 
 	api.Exposed = map[string]bool{}
+	api.ExposedTypes = map[string]bool{}
 	api.PointerTypes = map[string]map[string]ParamType{}
 
 	headers, err := filepath.Glob("../box2d-c/include/box2d/*.h")
@@ -710,7 +726,7 @@ func readAPI() API {
 		lines := strings.Split(string(src), "\n")
 
 		for _, match := range reType.FindAllStringSubmatch(string(src), -1) {
-			api.Exposed[match[1]] = true
+			api.ExposedTypes[match[1]] = true
 		}
 
 		for _, match := range reFunc.FindAllStringSubmatch(string(src), -1) {
@@ -739,7 +755,7 @@ func readAPI() API {
 		}
 	}
 
-	api.Exposed["b2InternalAssertFcn"] = false
+	api.ExposedTypes["b2InternalAssertFcn"] = false
 	api.Exposed["b2SetAssertFcn"] = false
 	api.Exposed["b2SetAllocator"] = false
 
@@ -758,13 +774,13 @@ func readAPI() API {
 	api.Exposed["b2World_SetCustomFilterCallback"] = false
 	api.Exposed["b2World_SetPreSolveCallback"] = false
 
-	api.Exposed["b2BodyEvents"] = false
+	api.ExposedTypes["b2BodyEvents"] = false
 	api.Exposed["b2World_GetBodyEvents"] = false
 
-	api.Exposed["b2SensorEvents"] = false
+	api.ExposedTypes["b2SensorEvents"] = false
 	api.Exposed["b2World_GetSensorEvents"] = false
 
-	api.Exposed["b2ContactEvents"] = false
+	api.ExposedTypes["b2ContactEvents"] = false
 	api.Exposed["b2World_GetContactEvents"] = false
 
 	for key := range api.Exposed {

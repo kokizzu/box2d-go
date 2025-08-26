@@ -49,78 +49,6 @@ type MouseJoint struct {
 type FilterJoint struct {
 	Joint
 }
-type Version = b2Version
-type Vec2 = b2Vec2
-type CosSin = b2CosSin
-type Rot = b2Rot
-type Transform = b2Transform
-type Mat22 = b2Mat22
-type AABB = b2AABB
-type Plane = b2Plane
-type SimplexCache = b2SimplexCache
-type Hull = b2Hull
-type RayCastInput = b2RayCastInput
-type ShapeProxy = b2ShapeProxy
-type ShapeCastInput = b2ShapeCastInput
-type CastOutput = b2CastOutput
-type MassData = b2MassData
-type Circle = b2Circle
-type Capsule = b2Capsule
-type Polygon = b2Polygon
-type Segment = b2Segment
-type ChainSegment = b2ChainSegment
-type SegmentDistanceResult = b2SegmentDistanceResult
-type DistanceInput = b2DistanceInput
-type DistanceOutput = b2DistanceOutput
-type SimplexVertex = b2SimplexVertex
-type Simplex = b2Simplex
-type ShapeCastPairInput = b2ShapeCastPairInput
-type Sweep = b2Sweep
-type TOIInput = b2TOIInput
-type TOIState = b2TOIState
-type TOIOutput = b2TOIOutput
-type ManifoldPoint = b2ManifoldPoint
-type Manifold = b2Manifold
-type TreeStats = b2TreeStats
-type PlaneResult = b2PlaneResult
-type CollisionPlane = b2CollisionPlane
-type PlaneSolverResult = b2PlaneSolverResult
-type WorldId = b2WorldId
-type BodyId = b2BodyId
-type ShapeId = b2ShapeId
-type ChainId = b2ChainId
-type JointId = b2JointId
-type RayResult = b2RayResult
-type WorldDef = b2WorldDef
-type BodyType = b2BodyType
-type BodyDef = b2BodyDef
-type Filter = b2Filter
-type QueryFilter = b2QueryFilter
-type ShapeType = b2ShapeType
-type SurfaceMaterial = b2SurfaceMaterial
-type ShapeDef = b2ShapeDef
-type ChainDef = b2ChainDef
-type Profile = b2Profile
-type Counters = b2Counters
-type JointType = b2JointType
-type DistanceJointDef = b2DistanceJointDef
-type MotorJointDef = b2MotorJointDef
-type MouseJointDef = b2MouseJointDef
-type FilterJointDef = b2FilterJointDef
-type PrismaticJointDef = b2PrismaticJointDef
-type RevoluteJointDef = b2RevoluteJointDef
-type WeldJointDef = b2WeldJointDef
-type WheelJointDef = b2WheelJointDef
-type ExplosionDef = b2ExplosionDef
-type SensorBeginTouchEvent = b2SensorBeginTouchEvent
-type SensorEndTouchEvent = b2SensorEndTouchEvent
-type ContactBeginTouchEvent = b2ContactBeginTouchEvent
-type ContactEndTouchEvent = b2ContactEndTouchEvent
-type ContactHitEvent = b2ContactHitEvent
-type BodyMoveEvent = b2BodyMoveEvent
-type ContactData = b2ContactData
-type HexColor = b2HexColor
-type DebugDraw = b2DebugDraw
 
 func (b Box2D) IsValidAABB(a1 AABB) (r uint8) {
 	r = b2IsValidAABB(b.tls, a1)
@@ -354,6 +282,10 @@ func (b Box2D) SetLengthUnitsPerMeter(lengthUnits float32) {
 }
 func (b Box2D) GetLengthUnitsPerMeter() (r float32) {
 	r = b2GetLengthUnitsPerMeter(b.tls)
+	return
+}
+func (b Box2D) InternalAssertFcn(condition uintptr, fileName uintptr, lineNumber int32) (r int32) {
+	r = b2InternalAssertFcn(b.tls, condition, fileName, lineNumber)
 	return
 }
 func (b Box2D) GetVersion() (r Version) {

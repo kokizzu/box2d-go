@@ -32,9 +32,9 @@ func TestBounce(t *testing.T) {
 
 	var ground Body = w.CreateBody(groundDef)
 
-	groundSegment := b2Segment{
-		Point1: b2Vec2{-20.0, 0.0},
-		Point2: b2Vec2{20.0, 0.0},
+	groundSegment := Segment{
+		Point1: Vec2{-20.0, 0.0},
+		Point2: Vec2{20.0, 0.0},
 	}
 
 	groundShape := b.DefaultShapeDef()
