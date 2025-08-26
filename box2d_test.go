@@ -11,15 +11,15 @@ func TestBounce(t *testing.T) {
 	fmt.Println(b.GetVersion())
 
 	def := b.DefaultWorldDef()
-	w := b.CreateWorld(def)
+	var w World = b.CreateWorld(def)
 
-	b.WorldSetGravity(w, Vec2{Y: -10})
+	w.SetGravity(Vec2{Y: -10})
 
 	ballDef := b.DefaultBodyDef()
 	ballDef.Type1 = DynamicBody
 	ballDef.Position.Y = 5
 
-	ball := b.CreateBody(w, ballDef)
+	var ball Body = b.CreateBody(w, ballDef)
 
 	ballShape := b.DefaultShapeDef()
 	ballShape.Material.Restitution = 0.2
@@ -30,7 +30,7 @@ func TestBounce(t *testing.T) {
 	groundDef := b.DefaultBodyDef()
 	groundDef.Type1 = StaticBody
 
-	ground := b.CreateBody(w, groundDef)
+	var ground Body = b.CreateBody(w, groundDef)
 
 	groundSegment := b2Segment{
 		Point1: b2Vec2{-20.0, 0.0},
@@ -41,16 +41,16 @@ func TestBounce(t *testing.T) {
 	b.CreateSegmentShape(ground, groundShape, groundSegment)
 
 	for idx := range 100 {
-		b.WorldStep(w, 1.0/60.0, 1)
-		fmt.Println(idx, "pos", b.BodyGetPosition(ball), "vec", b.BodyGetLinearVelocity(ball).Y)
+		w.Step(1.0/60.0, 1)
+		fmt.Println(idx, "pos", ball.GetPosition(), "vec", ball.GetLinearVelocity().Y)
 
 		// read movement events
-		for _, ev := range b.WorldGetBodyEvents(w).MoveEvents {
+		for _, ev := range w.GetBodyEvents().MoveEvents {
 			fmt.Printf("Movement: %#v\n", ev)
 		}
 
 		// and check for collisions
-		contacts := b.WorldGetContactEvents(w)
+		contacts := w.GetContactEvents()
 		for _, ev := range contacts.BeginEvents {
 			fmt.Printf("ContactBeginTouchEvent: %#v\n", ev)
 		}

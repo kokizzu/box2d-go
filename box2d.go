@@ -2,7 +2,6 @@ package box2d
 
 import (
 	"fmt"
-	"runtime"
 	"slices"
 	"unsafe"
 )
@@ -24,122 +23,160 @@ func NewBox2D() *Box2D {
 	return box
 }
 
-func (b *Box2D) BodySetName(bodyId BodyId, name string) {
-	nameC := b.toCString(name)
+func (b Body) SetName(name string) {
+	nameC := b.tls.toCString(name)
 	defer nameC.Free()
 
-	b2Body_SetName(b.tls, bodyId, nameC.Addr)
+	b2Body_SetName(b.tls, b.Id, nameC.Addr)
 }
 
-func (b *Box2D) BodyGetShapes(bodyId BodyId, reuse []ShapeId) []ShapeId {
-	itemCount := b.BodyGetShapeCount(bodyId)
+func (b Body) GetShapes(reuse []Shape) []Shape {
+	itemCount := b.GetShapeCount()
 
+	// allocate memory on the stack to read the ids
+	n := int(itemCount) * int(unsafe.Sizeof(ShapeId{}))
+	ptr := b.tls.Alloc(n)
+	defer b.tls.Free(n)
+
+	// fill the data
+	_ = b2Body_GetShapes(b.tls, b.Id, ptr, itemCount)
+
+	// allocate memory for the result
 	if cap(reuse) < int(itemCount) {
 		// need to allocate more space
-		reuse = append(reuse[:0], make([]ShapeId, itemCount)...)
+		reuse = make([]Shape, itemCount)
 	}
 
 	// ensure the data is on the heap
 	items := reuse[:0]
-	escapes(items)
 
-	// fill the data
-	ptr := addrOf(unsafe.SliceData(items))
-	n := b2Body_GetShapes(b.tls, bodyId, ptr, int32(cap(items)))
-
-	runtime.KeepAlive(items)
-	return items[:n]
-}
-
-func (b *Box2D) BodyGetJoints(bodyId BodyId, reuse []JointId) []JointId {
-	itemCount := b.BodyGetJointCount(bodyId)
-
-	if cap(reuse) < int(itemCount) {
-		// need to allocate more space
-		reuse = append(reuse[:0], make([]JointId, itemCount)...)
+	for _, itemId := range unsafe.Slice((*ShapeId)(unsafe.Pointer(ptr)), itemCount) {
+		items = append(items, Shape{tls: b.tls, Id: itemId})
 	}
 
-	// ensure the data is on the heap
-	items := reuse[:0]
-	escapes(items)
-
-	// fill the data
-	ptr := addrOf(unsafe.SliceData(items))
-	n := b2Body_GetJoints(b.tls, bodyId, ptr, int32(cap(items)))
-
-	runtime.KeepAlive(items)
-	return items[:n]
+	return items
 }
 
-func (b *Box2D) ChainGetSegments(chainId ChainId, reuse []ShapeId) []ShapeId {
-	itemCount := b.ChainGetSegmentCount(chainId)
+func (b Body) GetJoints(reuse []Joint) []Joint {
+	itemCount := b.GetJointCount()
 
+	// allocate memory on the stack to read the ids
+	n := int(itemCount) * int(unsafe.Sizeof(JointId{}))
+	ptr := b.tls.Alloc(n)
+	defer b.tls.Free(n)
+
+	// fill the data
+	_ = b2Body_GetJoints(b.tls, b.Id, ptr, itemCount)
+
+	// allocate memory for the result
 	if cap(reuse) < int(itemCount) {
 		// need to allocate more space
-		reuse = append(reuse[:0], make([]ShapeId, itemCount)...)
+		reuse = make([]Joint, itemCount)
 	}
 
-	// ensure the data is on the heap
 	items := reuse[:0]
-	escapes(items)
 
-	// fill the data
-	ptr := addrOf(unsafe.SliceData(items))
-	n := b2Chain_GetSegments(b.tls, chainId, ptr, int32(cap(items)))
+	// copy the items
+	for _, itemId := range unsafe.Slice((*ShapeId)(unsafe.Pointer(ptr)), itemCount) {
+		items = append(items, Joint{tls: b.tls, Id: itemId})
+	}
 
-	runtime.KeepAlive(items)
-	return items[:n]
+	return items
 }
 
-// WorldSetRestitutionCallback sets the worlds RestitutionCallback.
+func (b Chain) GetSegments(reuse []Shape) []Shape {
+	itemCount := b.GetSegmentCount()
+
+	// allocate memory on the stack to read the ids
+	n := int(itemCount) * int(unsafe.Sizeof(ShapeId{}))
+	ptr := b.tls.Alloc(n)
+	defer b.tls.Free(n)
+
+	// fill the data
+	_ = b2Chain_GetSegments(b.tls, b.Id, ptr, itemCount)
+
+	// allocate memory for the result
+	if cap(reuse) < int(itemCount) {
+		// need to allocate more space
+		reuse = make([]Shape, itemCount)
+	}
+
+	items := reuse[:0]
+
+	// copy the items
+	for _, itemId := range unsafe.Slice((*ShapeId)(unsafe.Pointer(ptr)), itemCount) {
+		items = append(items, Shape{tls: b.tls, Id: itemId})
+	}
+
+	return items
+}
+
+func (b Shape) GetSensorOverlaps(reuse []Shape) []Shape {
+	// allow up to 1024 overlaps to be returned
+	itemsCap := int32(1024)
+
+	// allocate memory on the stack to read the ids
+	n := int(itemsCap) * int(unsafe.Sizeof(ShapeId{}))
+	ptr := b.tls.Alloc(n)
+	defer b.tls.Free(n)
+
+	// fill the data
+	itemCount := b2Shape_GetSensorOverlaps(b.tls, b.Id, ptr, itemsCap)
+
+	// allocate memory for the result
+	if cap(reuse) < int(itemCount) {
+		// need to allocate more space
+		reuse = make([]Shape, itemCount)
+	}
+
+	items := reuse[:0]
+
+	// copy the items
+	for _, itemId := range unsafe.Slice((*ShapeId)(unsafe.Pointer(ptr)), itemCount) {
+		items = append(items, Shape{tls: b.tls, Id: itemId})
+	}
+
+	return items
+}
+
+// SetRestitutionCallback sets the worlds RestitutionCallback.
 // CAUTION: Callback must not be a closure
-func (b *Box2D) WorldSetRestitutionCallback(worldId WorldId, callback RestitutionCallback) {
-	b2World_SetRestitutionCallback(b.tls, worldId, __ccgo_fp(callback))
+func (b World) SetRestitutionCallback(callback RestitutionCallback) {
+	b2World_SetRestitutionCallback(b.tls, b.Id, __ccgo_fp(callback))
 }
 
-// WorldSetFrictionCallback sets the worlds FrictionCallback.
+// SetFrictionCallback sets the worlds FrictionCallback.
 // CAUTION: Callback must not be a closure
-func (b *Box2D) WorldSetFrictionCallback(worldId WorldId, callback FrictionCallback) {
-	b2World_SetFrictionCallback(b.tls, worldId, __ccgo_fp(callback))
+func (b World) SetFrictionCallback(callback FrictionCallback) {
+	b2World_SetFrictionCallback(b.tls, b.Id, __ccgo_fp(callback))
 }
 
 type OverlapResultFcn = func(shapeId ShapeId, context uintptr) bool
 
-// WorldOverlapAABB sets the worlds OverlapResultFcn
+// OverlapAABB sets the worlds OverlapResultFcn
 // CAUTION: fcn must not be a closure
-func (b *Box2D) WorldOverlapAABB(worldId WorldId, aabb AABB, filter QueryFilter, fcn OverlapResultFcn, context uintptr) TreeStats {
-	return b2World_OverlapAABB(b.tls, worldId, aabb, filter, __ccgo_fp(fcn), context)
+func (b World) OverlapAABB(aabb AABB, filter QueryFilter, fcn OverlapResultFcn, context uintptr) TreeStats {
+	return b2World_OverlapAABB(b.tls, b.Id, aabb, filter, __ccgo_fp(fcn), context)
 }
 
 type CustomFilterFcn = func(shapeIdA, shapeIdB ShapeId, context uintptr) bool
 
-func (b *Box2D) WorldSetCustomFilterCallback(worldId WorldId, fcn CustomFilterFcn, context uintptr) {
-	b2World_SetCustomFilterCallback(b.tls, worldId, __ccgo_fp(fcn), context)
+func (b World) SetCustomFilterCallback(fcn CustomFilterFcn, context uintptr) {
+	b2World_SetCustomFilterCallback(b.tls, b.Id, __ccgo_fp(fcn), context)
 }
 
 type PreSolveFcn = func(shapeIdA, shapeIdB ShapeId, manifold uintptr, context uintptr)
 
-func (b *Box2D) WorldSetPreSolveCallback(worldId WorldId, fcn PreSolveFcn, context uintptr) {
-	b2World_SetPreSolveCallback(b.tls, worldId, __ccgo_fp(fcn), context)
-}
-
-func (b *Box2D) toCString(src string) alloc {
-	n := len(src) + 1
-	mem := b.tls.Alloc(n)
-
-	buf := sliceOf(mem, size_t(n))
-	copy(buf, src)
-	buf[n-1] = 0
-
-	return alloc{Addr: mem, tls: b.tls, size: n}
+func (b World) SetPreSolveCallback(fcn PreSolveFcn, context uintptr) {
+	b2World_SetPreSolveCallback(b.tls, b.Id, __ccgo_fp(fcn), context)
 }
 
 type BodyEvents struct {
 	MoveEvents []BodyMoveEvent
 }
 
-func (b *Box2D) WorldGetBodyEvents(w WorldId) BodyEvents {
-	events := b2World_GetBodyEvents(b.tls, w)
+func (b World) GetBodyEvents() BodyEvents {
+	events := b2World_GetBodyEvents(b.tls, b.Id)
 
 	return BodyEvents{
 		MoveEvents: copySlice[BodyMoveEvent](events.MoveEvents, events.MoveCount),
@@ -151,8 +188,8 @@ type SensorEvents struct {
 	EndEvents   []SensorEndTouchEvent
 }
 
-func (b *Box2D) WorldGetSensorEvents(w WorldId) SensorEvents {
-	events := b2World_GetSensorEvents(b.tls, w)
+func (b World) GetSensorEvents() SensorEvents {
+	events := b2World_GetSensorEvents(b.tls, b.Id)
 
 	return SensorEvents{
 		BeginEvents: copySlice[SensorBeginTouchEvent](events.BeginEvents, events.BeginCount),
@@ -166,8 +203,8 @@ type ContactEvents struct {
 	HitEvents   []ContactHitEvent
 }
 
-func (b *Box2D) WorldGetContactEvents(w WorldId) ContactEvents {
-	events := b2World_GetContactEvents(b.tls, w)
+func (b World) GetContactEvents() ContactEvents {
+	events := b2World_GetContactEvents(b.tls, b.Id)
 
 	return ContactEvents{
 		BeginEvents: copySlice[ContactBeginTouchEvent](events.BeginEvents, events.BeginCount),

@@ -1,10 +1,30 @@
 package box2d
 
 import (
-	"unsafe"
 	"runtime"
+	"unsafe"
 )
 
+type Body struct {
+	Id  BodyId
+	tls *TLS
+}
+type Shape struct {
+	Id  ShapeId
+	tls *TLS
+}
+type World struct {
+	Id  WorldId
+	tls *TLS
+}
+type Joint struct {
+	Id  JointId
+	tls *TLS
+}
+type Chain struct {
+	Id  ChainId
+	tls *TLS
+}
 type Version = b2Version
 type Vec2 = b2Vec2
 type CosSin = b2CosSin
@@ -82,225 +102,227 @@ func (b *Box2D) IsValidAABB(a1 AABB) (r uint8) {
 	r = b2IsValidAABB(b.tls, a1)
 	return
 }
-func (b *Box2D) CreateBody(worldId WorldId, def BodyDef) (r BodyId) {
+func (b *Box2D) CreateBody(world World, def BodyDef) (r Body) {
 	defStack := copyToStack(b.tls, def)
 	defer defStack.Free()
-	r = b2CreateBody(b.tls, worldId, defStack.Addr)
+	r.tls = b.tls
+	r.Id = b2CreateBody(b.tls, world.Id, defStack.Addr)
 	return
 }
-func (b *Box2D) DestroyBody(bodyId BodyId) {
-	b2DestroyBody(b.tls, bodyId)
+func (b *Box2D) DestroyBody(body Body) {
+	b2DestroyBody(b.tls, body.Id)
 }
-func (b *Box2D) BodyGetContactCapacity(bodyId BodyId) (r int32) {
-	r = b2Body_GetContactCapacity(b.tls, bodyId)
+func (b Body) GetContactCapacity() (r int32) {
+	r = b2Body_GetContactCapacity(b.tls, b.Id)
 	return
 }
-func (b *Box2D) BodyGetContactData(bodyId BodyId, contactData *ContactData, capacity int32) (r int32) {
+func (b Body) GetContactData(contactData *ContactData, capacity int32) (r int32) {
 	defer runtime.KeepAlive(contactData)
 	escapes(contactData)
-	r = b2Body_GetContactData(b.tls, bodyId, uintptr(unsafe.Pointer(contactData)), capacity)
+	r = b2Body_GetContactData(b.tls, b.Id, uintptr(unsafe.Pointer(contactData)), capacity)
 	return
 }
-func (b *Box2D) BodyComputeAABB(bodyId BodyId) (r AABB) {
-	r = b2Body_ComputeAABB(b.tls, bodyId)
+func (b Body) ComputeAABB() (r AABB) {
+	r = b2Body_ComputeAABB(b.tls, b.Id)
 	return
 }
-func (b *Box2D) BodyGetPosition(bodyId BodyId) (r Vec2) {
-	r = b2Body_GetPosition(b.tls, bodyId)
+func (b Body) GetPosition() (r Vec2) {
+	r = b2Body_GetPosition(b.tls, b.Id)
 	return
 }
-func (b *Box2D) BodyGetRotation(bodyId BodyId) (r Rot) {
-	r = b2Body_GetRotation(b.tls, bodyId)
+func (b Body) GetRotation() (r Rot) {
+	r = b2Body_GetRotation(b.tls, b.Id)
 	return
 }
-func (b *Box2D) BodyGetTransform(bodyId BodyId) (r Transform) {
-	r = b2Body_GetTransform(b.tls, bodyId)
+func (b Body) GetTransform() (r Transform) {
+	r = b2Body_GetTransform(b.tls, b.Id)
 	return
 }
-func (b *Box2D) BodyGetLocalPoint(bodyId BodyId, worldPoint Vec2) (r Vec2) {
-	r = b2Body_GetLocalPoint(b.tls, bodyId, worldPoint)
+func (b Body) GetLocalPoint(worldPoint Vec2) (r Vec2) {
+	r = b2Body_GetLocalPoint(b.tls, b.Id, worldPoint)
 	return
 }
-func (b *Box2D) BodyGetWorldPoint(bodyId BodyId, localPoint Vec2) (r Vec2) {
-	r = b2Body_GetWorldPoint(b.tls, bodyId, localPoint)
+func (b Body) GetWorldPoint(localPoint Vec2) (r Vec2) {
+	r = b2Body_GetWorldPoint(b.tls, b.Id, localPoint)
 	return
 }
-func (b *Box2D) BodyGetLocalVector(bodyId BodyId, worldVector Vec2) (r Vec2) {
-	r = b2Body_GetLocalVector(b.tls, bodyId, worldVector)
+func (b Body) GetLocalVector(worldVector Vec2) (r Vec2) {
+	r = b2Body_GetLocalVector(b.tls, b.Id, worldVector)
 	return
 }
-func (b *Box2D) BodyGetWorldVector(bodyId BodyId, localVector Vec2) (r Vec2) {
-	r = b2Body_GetWorldVector(b.tls, bodyId, localVector)
+func (b Body) GetWorldVector(localVector Vec2) (r Vec2) {
+	r = b2Body_GetWorldVector(b.tls, b.Id, localVector)
 	return
 }
-func (b *Box2D) BodySetTransform(bodyId BodyId, position Vec2, rotation Rot) {
-	b2Body_SetTransform(b.tls, bodyId, position, rotation)
+func (b Body) SetTransform(position Vec2, rotation Rot) {
+	b2Body_SetTransform(b.tls, b.Id, position, rotation)
 }
-func (b *Box2D) BodyGetLinearVelocity(bodyId BodyId) (r Vec2) {
-	r = b2Body_GetLinearVelocity(b.tls, bodyId)
+func (b Body) GetLinearVelocity() (r Vec2) {
+	r = b2Body_GetLinearVelocity(b.tls, b.Id)
 	return
 }
-func (b *Box2D) BodyGetAngularVelocity(bodyId BodyId) (r float32) {
-	r = b2Body_GetAngularVelocity(b.tls, bodyId)
+func (b Body) GetAngularVelocity() (r float32) {
+	r = b2Body_GetAngularVelocity(b.tls, b.Id)
 	return
 }
-func (b *Box2D) BodySetLinearVelocity(bodyId BodyId, linearVelocity Vec2) {
-	b2Body_SetLinearVelocity(b.tls, bodyId, linearVelocity)
+func (b Body) SetLinearVelocity(linearVelocity Vec2) {
+	b2Body_SetLinearVelocity(b.tls, b.Id, linearVelocity)
 }
-func (b *Box2D) BodySetAngularVelocity(bodyId BodyId, angularVelocity float32) {
-	b2Body_SetAngularVelocity(b.tls, bodyId, angularVelocity)
+func (b Body) SetAngularVelocity(angularVelocity float32) {
+	b2Body_SetAngularVelocity(b.tls, b.Id, angularVelocity)
 }
-func (b *Box2D) BodySetTargetTransform(bodyId BodyId, target Transform, timeStep float32) {
-	b2Body_SetTargetTransform(b.tls, bodyId, target, timeStep)
+func (b Body) SetTargetTransform(target Transform, timeStep float32) {
+	b2Body_SetTargetTransform(b.tls, b.Id, target, timeStep)
 }
-func (b *Box2D) BodyGetLocalPointVelocity(bodyId BodyId, localPoint Vec2) (r1 Vec2) {
-	r1 = b2Body_GetLocalPointVelocity(b.tls, bodyId, localPoint)
+func (b Body) GetLocalPointVelocity(localPoint Vec2) (r1 Vec2) {
+	r1 = b2Body_GetLocalPointVelocity(b.tls, b.Id, localPoint)
 	return
 }
-func (b *Box2D) BodyGetWorldPointVelocity(bodyId BodyId, worldPoint Vec2) (r1 Vec2) {
-	r1 = b2Body_GetWorldPointVelocity(b.tls, bodyId, worldPoint)
+func (b Body) GetWorldPointVelocity(worldPoint Vec2) (r1 Vec2) {
+	r1 = b2Body_GetWorldPointVelocity(b.tls, b.Id, worldPoint)
 	return
 }
-func (b *Box2D) BodyApplyForce(bodyId BodyId, force Vec2, point Vec2, wake uint8) {
-	b2Body_ApplyForce(b.tls, bodyId, force, point, wake)
+func (b Body) ApplyForce(force Vec2, point Vec2, wake uint8) {
+	b2Body_ApplyForce(b.tls, b.Id, force, point, wake)
 }
-func (b *Box2D) BodyApplyForceToCenter(bodyId BodyId, force Vec2, wake uint8) {
-	b2Body_ApplyForceToCenter(b.tls, bodyId, force, wake)
+func (b Body) ApplyForceToCenter(force Vec2, wake uint8) {
+	b2Body_ApplyForceToCenter(b.tls, b.Id, force, wake)
 }
-func (b *Box2D) BodyApplyTorque(bodyId BodyId, torque float32, wake uint8) {
-	b2Body_ApplyTorque(b.tls, bodyId, torque, wake)
+func (b Body) ApplyTorque(torque float32, wake uint8) {
+	b2Body_ApplyTorque(b.tls, b.Id, torque, wake)
 }
-func (b *Box2D) BodyApplyLinearImpulse(bodyId BodyId, impulse Vec2, point Vec2, wake uint8) {
-	b2Body_ApplyLinearImpulse(b.tls, bodyId, impulse, point, wake)
+func (b Body) ApplyLinearImpulse(impulse Vec2, point Vec2, wake uint8) {
+	b2Body_ApplyLinearImpulse(b.tls, b.Id, impulse, point, wake)
 }
-func (b *Box2D) BodyApplyLinearImpulseToCenter(bodyId BodyId, impulse Vec2, wake uint8) {
-	b2Body_ApplyLinearImpulseToCenter(b.tls, bodyId, impulse, wake)
+func (b Body) ApplyLinearImpulseToCenter(impulse Vec2, wake uint8) {
+	b2Body_ApplyLinearImpulseToCenter(b.tls, b.Id, impulse, wake)
 }
-func (b *Box2D) BodyApplyAngularImpulse(bodyId BodyId, impulse float32, wake uint8) {
-	b2Body_ApplyAngularImpulse(b.tls, bodyId, impulse, wake)
+func (b Body) ApplyAngularImpulse(impulse float32, wake uint8) {
+	b2Body_ApplyAngularImpulse(b.tls, b.Id, impulse, wake)
 }
-func (b *Box2D) BodyGetType(bodyId BodyId) (r BodyType) {
-	r = b2Body_GetType(b.tls, bodyId)
+func (b Body) GetType() (r BodyType) {
+	r = b2Body_GetType(b.tls, b.Id)
 	return
 }
-func (b *Box2D) BodySetType(bodyId BodyId, type1 BodyType) {
-	b2Body_SetType(b.tls, bodyId, type1)
+func (b Body) SetType(type1 BodyType) {
+	b2Body_SetType(b.tls, b.Id, type1)
 }
-func (b *Box2D) BodySetUserData(bodyId BodyId, userData uintptr) {
-	b2Body_SetUserData(b.tls, bodyId, userData)
+func (b Body) SetUserData(userData uintptr) {
+	b2Body_SetUserData(b.tls, b.Id, userData)
 }
-func (b *Box2D) BodyGetUserData(bodyId BodyId) (r uintptr) {
-	r = b2Body_GetUserData(b.tls, bodyId)
+func (b Body) GetUserData() (r uintptr) {
+	r = b2Body_GetUserData(b.tls, b.Id)
 	return
 }
-func (b *Box2D) BodyGetMass(bodyId BodyId) (r float32) {
-	r = b2Body_GetMass(b.tls, bodyId)
+func (b Body) GetMass() (r float32) {
+	r = b2Body_GetMass(b.tls, b.Id)
 	return
 }
-func (b *Box2D) BodyGetRotationalInertia(bodyId BodyId) (r float32) {
-	r = b2Body_GetRotationalInertia(b.tls, bodyId)
+func (b Body) GetRotationalInertia() (r float32) {
+	r = b2Body_GetRotationalInertia(b.tls, b.Id)
 	return
 }
-func (b *Box2D) BodyGetLocalCenterOfMass(bodyId BodyId) (r Vec2) {
-	r = b2Body_GetLocalCenterOfMass(b.tls, bodyId)
+func (b Body) GetLocalCenterOfMass() (r Vec2) {
+	r = b2Body_GetLocalCenterOfMass(b.tls, b.Id)
 	return
 }
-func (b *Box2D) BodyGetWorldCenterOfMass(bodyId BodyId) (r Vec2) {
-	r = b2Body_GetWorldCenterOfMass(b.tls, bodyId)
+func (b Body) GetWorldCenterOfMass() (r Vec2) {
+	r = b2Body_GetWorldCenterOfMass(b.tls, b.Id)
 	return
 }
-func (b *Box2D) BodySetMassData(bodyId BodyId, massData MassData) {
-	b2Body_SetMassData(b.tls, bodyId, massData)
+func (b Body) SetMassData(massData MassData) {
+	b2Body_SetMassData(b.tls, b.Id, massData)
 }
-func (b *Box2D) BodyGetMassData(bodyId BodyId) (r MassData) {
-	r = b2Body_GetMassData(b.tls, bodyId)
+func (b Body) GetMassData() (r MassData) {
+	r = b2Body_GetMassData(b.tls, b.Id)
 	return
 }
-func (b *Box2D) BodyApplyMassFromShapes(bodyId BodyId) {
-	b2Body_ApplyMassFromShapes(b.tls, bodyId)
+func (b Body) ApplyMassFromShapes() {
+	b2Body_ApplyMassFromShapes(b.tls, b.Id)
 }
-func (b *Box2D) BodySetLinearDamping(bodyId BodyId, linearDamping float32) {
-	b2Body_SetLinearDamping(b.tls, bodyId, linearDamping)
+func (b Body) SetLinearDamping(linearDamping float32) {
+	b2Body_SetLinearDamping(b.tls, b.Id, linearDamping)
 }
-func (b *Box2D) BodyGetLinearDamping(bodyId BodyId) (r float32) {
-	r = b2Body_GetLinearDamping(b.tls, bodyId)
+func (b Body) GetLinearDamping() (r float32) {
+	r = b2Body_GetLinearDamping(b.tls, b.Id)
 	return
 }
-func (b *Box2D) BodySetAngularDamping(bodyId BodyId, angularDamping float32) {
-	b2Body_SetAngularDamping(b.tls, bodyId, angularDamping)
+func (b Body) SetAngularDamping(angularDamping float32) {
+	b2Body_SetAngularDamping(b.tls, b.Id, angularDamping)
 }
-func (b *Box2D) BodyGetAngularDamping(bodyId BodyId) (r float32) {
-	r = b2Body_GetAngularDamping(b.tls, bodyId)
+func (b Body) GetAngularDamping() (r float32) {
+	r = b2Body_GetAngularDamping(b.tls, b.Id)
 	return
 }
-func (b *Box2D) BodySetGravityScale(bodyId BodyId, gravityScale float32) {
-	b2Body_SetGravityScale(b.tls, bodyId, gravityScale)
+func (b Body) SetGravityScale(gravityScale float32) {
+	b2Body_SetGravityScale(b.tls, b.Id, gravityScale)
 }
-func (b *Box2D) BodyGetGravityScale(bodyId BodyId) (r float32) {
-	r = b2Body_GetGravityScale(b.tls, bodyId)
+func (b Body) GetGravityScale() (r float32) {
+	r = b2Body_GetGravityScale(b.tls, b.Id)
 	return
 }
-func (b *Box2D) BodyIsAwake(bodyId BodyId) (r uint8) {
-	r = b2Body_IsAwake(b.tls, bodyId)
+func (b Body) IsAwake() (r uint8) {
+	r = b2Body_IsAwake(b.tls, b.Id)
 	return
 }
-func (b *Box2D) BodySetAwake(bodyId BodyId, awake uint8) {
-	b2Body_SetAwake(b.tls, bodyId, awake)
+func (b Body) SetAwake(awake uint8) {
+	b2Body_SetAwake(b.tls, b.Id, awake)
 }
-func (b *Box2D) BodyIsEnabled(bodyId BodyId) (r uint8) {
-	r = b2Body_IsEnabled(b.tls, bodyId)
+func (b Body) IsEnabled() (r uint8) {
+	r = b2Body_IsEnabled(b.tls, b.Id)
 	return
 }
-func (b *Box2D) BodyIsSleepEnabled(bodyId BodyId) (r uint8) {
-	r = b2Body_IsSleepEnabled(b.tls, bodyId)
+func (b Body) IsSleepEnabled() (r uint8) {
+	r = b2Body_IsSleepEnabled(b.tls, b.Id)
 	return
 }
-func (b *Box2D) BodySetSleepThreshold(bodyId BodyId, sleepThreshold float32) {
-	b2Body_SetSleepThreshold(b.tls, bodyId, sleepThreshold)
+func (b Body) SetSleepThreshold(sleepThreshold float32) {
+	b2Body_SetSleepThreshold(b.tls, b.Id, sleepThreshold)
 }
-func (b *Box2D) BodyGetSleepThreshold(bodyId BodyId) (r float32) {
-	r = b2Body_GetSleepThreshold(b.tls, bodyId)
+func (b Body) GetSleepThreshold() (r float32) {
+	r = b2Body_GetSleepThreshold(b.tls, b.Id)
 	return
 }
-func (b *Box2D) BodyEnableSleep(bodyId BodyId, enableSleep uint8) {
-	b2Body_EnableSleep(b.tls, bodyId, enableSleep)
+func (b Body) EnableSleep(enableSleep uint8) {
+	b2Body_EnableSleep(b.tls, b.Id, enableSleep)
 }
-func (b *Box2D) BodyDisable(bodyId BodyId) {
-	b2Body_Disable(b.tls, bodyId)
+func (b Body) Disable() {
+	b2Body_Disable(b.tls, b.Id)
 }
-func (b *Box2D) BodyEnable(bodyId BodyId) {
-	b2Body_Enable(b.tls, bodyId)
+func (b Body) Enable() {
+	b2Body_Enable(b.tls, b.Id)
 }
-func (b *Box2D) BodySetFixedRotation(bodyId BodyId, flag uint8) {
-	b2Body_SetFixedRotation(b.tls, bodyId, flag)
+func (b Body) SetFixedRotation(flag uint8) {
+	b2Body_SetFixedRotation(b.tls, b.Id, flag)
 }
-func (b *Box2D) BodyIsFixedRotation(bodyId BodyId) (r uint8) {
-	r = b2Body_IsFixedRotation(b.tls, bodyId)
+func (b Body) IsFixedRotation() (r uint8) {
+	r = b2Body_IsFixedRotation(b.tls, b.Id)
 	return
 }
-func (b *Box2D) BodySetBullet(bodyId BodyId, flag uint8) {
-	b2Body_SetBullet(b.tls, bodyId, flag)
+func (b Body) SetBullet(flag uint8) {
+	b2Body_SetBullet(b.tls, b.Id, flag)
 }
-func (b *Box2D) BodyIsBullet(bodyId BodyId) (r uint8) {
-	r = b2Body_IsBullet(b.tls, bodyId)
+func (b Body) IsBullet() (r uint8) {
+	r = b2Body_IsBullet(b.tls, b.Id)
 	return
 }
-func (b *Box2D) BodyEnableContactEvents(bodyId BodyId, flag uint8) {
-	b2Body_EnableContactEvents(b.tls, bodyId, flag)
+func (b Body) EnableContactEvents(flag uint8) {
+	b2Body_EnableContactEvents(b.tls, b.Id, flag)
 }
-func (b *Box2D) BodyEnableHitEvents(bodyId BodyId, flag uint8) {
-	b2Body_EnableHitEvents(b.tls, bodyId, flag)
+func (b Body) EnableHitEvents(flag uint8) {
+	b2Body_EnableHitEvents(b.tls, b.Id, flag)
 }
-func (b *Box2D) BodyGetWorld(bodyId BodyId) (r WorldId) {
-	r = b2Body_GetWorld(b.tls, bodyId)
+func (b Body) GetWorld() (r World) {
+	r.tls = b.tls
+	r.Id = b2Body_GetWorld(b.tls, b.Id)
 	return
 }
-func (b *Box2D) BodyGetShapeCount(bodyId BodyId) (r int32) {
-	r = b2Body_GetShapeCount(b.tls, bodyId)
+func (b Body) GetShapeCount() (r int32) {
+	r = b2Body_GetShapeCount(b.tls, b.Id)
 	return
 }
-func (b *Box2D) BodyGetJointCount(bodyId BodyId) (r int32) {
-	r = b2Body_GetJointCount(b.tls, bodyId)
+func (b Body) GetJointCount() (r int32) {
+	r = b2Body_GetJointCount(b.tls, b.Id)
 	return
 }
 func (b *Box2D) SetLengthUnitsPerMeter(lengthUnits float32) {
@@ -362,79 +384,79 @@ func (b *Box2D) TimeOfImpact(input TOIInput) (r TOIOutput) {
 	r = b2TimeOfImpact(b.tls, inputStack.Addr)
 	return
 }
-func (b *Box2D) DistanceJointSetLength(jointId JointId, length float32) {
-	b2DistanceJoint_SetLength(b.tls, jointId, length)
+func (b *Box2D) DistanceJointSetLength(joint Joint, length float32) {
+	b2DistanceJoint_SetLength(b.tls, joint.Id, length)
 }
-func (b *Box2D) DistanceJointGetLength(jointId JointId) (r float32) {
-	r = b2DistanceJoint_GetLength(b.tls, jointId)
+func (b *Box2D) DistanceJointGetLength(joint Joint) (r float32) {
+	r = b2DistanceJoint_GetLength(b.tls, joint.Id)
 	return
 }
-func (b *Box2D) DistanceJointEnableLimit(jointId JointId, enableLimit uint8) {
-	b2DistanceJoint_EnableLimit(b.tls, jointId, enableLimit)
+func (b *Box2D) DistanceJointEnableLimit(joint Joint, enableLimit uint8) {
+	b2DistanceJoint_EnableLimit(b.tls, joint.Id, enableLimit)
 }
-func (b *Box2D) DistanceJointIsLimitEnabled(jointId JointId) (r uint8) {
-	r = b2DistanceJoint_IsLimitEnabled(b.tls, jointId)
+func (b *Box2D) DistanceJointIsLimitEnabled(joint Joint) (r uint8) {
+	r = b2DistanceJoint_IsLimitEnabled(b.tls, joint.Id)
 	return
 }
-func (b *Box2D) DistanceJointSetLengthRange(jointId JointId, minLength float32, maxLength float32) {
-	b2DistanceJoint_SetLengthRange(b.tls, jointId, minLength, maxLength)
+func (b *Box2D) DistanceJointSetLengthRange(joint Joint, minLength float32, maxLength float32) {
+	b2DistanceJoint_SetLengthRange(b.tls, joint.Id, minLength, maxLength)
 }
-func (b *Box2D) DistanceJointGetMinLength(jointId JointId) (r float32) {
-	r = b2DistanceJoint_GetMinLength(b.tls, jointId)
+func (b *Box2D) DistanceJointGetMinLength(joint Joint) (r float32) {
+	r = b2DistanceJoint_GetMinLength(b.tls, joint.Id)
 	return
 }
-func (b *Box2D) DistanceJointGetMaxLength(jointId JointId) (r float32) {
-	r = b2DistanceJoint_GetMaxLength(b.tls, jointId)
+func (b *Box2D) DistanceJointGetMaxLength(joint Joint) (r float32) {
+	r = b2DistanceJoint_GetMaxLength(b.tls, joint.Id)
 	return
 }
-func (b *Box2D) DistanceJointGetCurrentLength(jointId JointId) (r float32) {
-	r = b2DistanceJoint_GetCurrentLength(b.tls, jointId)
+func (b *Box2D) DistanceJointGetCurrentLength(joint Joint) (r float32) {
+	r = b2DistanceJoint_GetCurrentLength(b.tls, joint.Id)
 	return
 }
-func (b *Box2D) DistanceJointEnableSpring(jointId JointId, enableSpring uint8) {
-	b2DistanceJoint_EnableSpring(b.tls, jointId, enableSpring)
+func (b *Box2D) DistanceJointEnableSpring(joint Joint, enableSpring uint8) {
+	b2DistanceJoint_EnableSpring(b.tls, joint.Id, enableSpring)
 }
-func (b *Box2D) DistanceJointIsSpringEnabled(jointId JointId) (r uint8) {
-	r = b2DistanceJoint_IsSpringEnabled(b.tls, jointId)
+func (b *Box2D) DistanceJointIsSpringEnabled(joint Joint) (r uint8) {
+	r = b2DistanceJoint_IsSpringEnabled(b.tls, joint.Id)
 	return
 }
-func (b *Box2D) DistanceJointSetSpringHertz(jointId JointId, hertz float32) {
-	b2DistanceJoint_SetSpringHertz(b.tls, jointId, hertz)
+func (b *Box2D) DistanceJointSetSpringHertz(joint Joint, hertz float32) {
+	b2DistanceJoint_SetSpringHertz(b.tls, joint.Id, hertz)
 }
-func (b *Box2D) DistanceJointSetSpringDampingRatio(jointId JointId, dampingRatio float32) {
-	b2DistanceJoint_SetSpringDampingRatio(b.tls, jointId, dampingRatio)
+func (b *Box2D) DistanceJointSetSpringDampingRatio(joint Joint, dampingRatio float32) {
+	b2DistanceJoint_SetSpringDampingRatio(b.tls, joint.Id, dampingRatio)
 }
-func (b *Box2D) DistanceJointGetSpringHertz(jointId JointId) (r float32) {
-	r = b2DistanceJoint_GetSpringHertz(b.tls, jointId)
+func (b *Box2D) DistanceJointGetSpringHertz(joint Joint) (r float32) {
+	r = b2DistanceJoint_GetSpringHertz(b.tls, joint.Id)
 	return
 }
-func (b *Box2D) DistanceJointGetSpringDampingRatio(jointId JointId) (r float32) {
-	r = b2DistanceJoint_GetSpringDampingRatio(b.tls, jointId)
+func (b *Box2D) DistanceJointGetSpringDampingRatio(joint Joint) (r float32) {
+	r = b2DistanceJoint_GetSpringDampingRatio(b.tls, joint.Id)
 	return
 }
-func (b *Box2D) DistanceJointEnableMotor(jointId JointId, enableMotor uint8) {
-	b2DistanceJoint_EnableMotor(b.tls, jointId, enableMotor)
+func (b *Box2D) DistanceJointEnableMotor(joint Joint, enableMotor uint8) {
+	b2DistanceJoint_EnableMotor(b.tls, joint.Id, enableMotor)
 }
-func (b *Box2D) DistanceJointIsMotorEnabled(jointId JointId) (r uint8) {
-	r = b2DistanceJoint_IsMotorEnabled(b.tls, jointId)
+func (b *Box2D) DistanceJointIsMotorEnabled(joint Joint) (r uint8) {
+	r = b2DistanceJoint_IsMotorEnabled(b.tls, joint.Id)
 	return
 }
-func (b *Box2D) DistanceJointSetMotorSpeed(jointId JointId, motorSpeed float32) {
-	b2DistanceJoint_SetMotorSpeed(b.tls, jointId, motorSpeed)
+func (b *Box2D) DistanceJointSetMotorSpeed(joint Joint, motorSpeed float32) {
+	b2DistanceJoint_SetMotorSpeed(b.tls, joint.Id, motorSpeed)
 }
-func (b *Box2D) DistanceJointGetMotorSpeed(jointId JointId) (r float32) {
-	r = b2DistanceJoint_GetMotorSpeed(b.tls, jointId)
+func (b *Box2D) DistanceJointGetMotorSpeed(joint Joint) (r float32) {
+	r = b2DistanceJoint_GetMotorSpeed(b.tls, joint.Id)
 	return
 }
-func (b *Box2D) DistanceJointGetMotorForce(jointId JointId) (r float32) {
-	r = b2DistanceJoint_GetMotorForce(b.tls, jointId)
+func (b *Box2D) DistanceJointGetMotorForce(joint Joint) (r float32) {
+	r = b2DistanceJoint_GetMotorForce(b.tls, joint.Id)
 	return
 }
-func (b *Box2D) DistanceJointSetMaxMotorForce(jointId JointId, force float32) {
-	b2DistanceJoint_SetMaxMotorForce(b.tls, jointId, force)
+func (b *Box2D) DistanceJointSetMaxMotorForce(joint Joint, force float32) {
+	b2DistanceJoint_SetMaxMotorForce(b.tls, joint.Id, force)
 }
-func (b *Box2D) DistanceJointGetMaxMotorForce(jointId JointId) (r float32) {
-	r = b2DistanceJoint_GetMaxMotorForce(b.tls, jointId)
+func (b *Box2D) DistanceJointGetMaxMotorForce(joint Joint) (r float32) {
+	r = b2DistanceJoint_GetMaxMotorForce(b.tls, joint.Id)
 	return
 }
 func (b *Box2D) IsValidRay(input RayCastInput) (r uint8) {
@@ -659,139 +681,150 @@ func (b *Box2D) DefaultExplosionDef() (r ExplosionDef) {
 	r = b2DefaultExplosionDef(b.tls)
 	return
 }
-func (b *Box2D) CreateDistanceJoint(worldId WorldId, def DistanceJointDef) (r JointId) {
+func (b *Box2D) CreateDistanceJoint(world World, def DistanceJointDef) (r Joint) {
 	defStack := copyToStack(b.tls, def)
 	defer defStack.Free()
-	r = b2CreateDistanceJoint(b.tls, worldId, defStack.Addr)
+	r.tls = b.tls
+	r.Id = b2CreateDistanceJoint(b.tls, world.Id, defStack.Addr)
 	return
 }
-func (b *Box2D) CreateMotorJoint(worldId WorldId, def MotorJointDef) (r JointId) {
+func (b *Box2D) CreateMotorJoint(world World, def MotorJointDef) (r Joint) {
 	defStack := copyToStack(b.tls, def)
 	defer defStack.Free()
-	r = b2CreateMotorJoint(b.tls, worldId, defStack.Addr)
+	r.tls = b.tls
+	r.Id = b2CreateMotorJoint(b.tls, world.Id, defStack.Addr)
 	return
 }
-func (b *Box2D) CreateMouseJoint(worldId WorldId, def MouseJointDef) (r JointId) {
+func (b *Box2D) CreateMouseJoint(world World, def MouseJointDef) (r Joint) {
 	defStack := copyToStack(b.tls, def)
 	defer defStack.Free()
-	r = b2CreateMouseJoint(b.tls, worldId, defStack.Addr)
+	r.tls = b.tls
+	r.Id = b2CreateMouseJoint(b.tls, world.Id, defStack.Addr)
 	return
 }
-func (b *Box2D) CreateFilterJoint(worldId WorldId, def FilterJointDef) (r JointId) {
+func (b *Box2D) CreateFilterJoint(world World, def FilterJointDef) (r Joint) {
 	defStack := copyToStack(b.tls, def)
 	defer defStack.Free()
-	r = b2CreateFilterJoint(b.tls, worldId, defStack.Addr)
+	r.tls = b.tls
+	r.Id = b2CreateFilterJoint(b.tls, world.Id, defStack.Addr)
 	return
 }
-func (b *Box2D) CreateRevoluteJoint(worldId WorldId, def RevoluteJointDef) (r JointId) {
+func (b *Box2D) CreateRevoluteJoint(world World, def RevoluteJointDef) (r Joint) {
 	defStack := copyToStack(b.tls, def)
 	defer defStack.Free()
-	r = b2CreateRevoluteJoint(b.tls, worldId, defStack.Addr)
+	r.tls = b.tls
+	r.Id = b2CreateRevoluteJoint(b.tls, world.Id, defStack.Addr)
 	return
 }
-func (b *Box2D) CreatePrismaticJoint(worldId WorldId, def PrismaticJointDef) (r JointId) {
+func (b *Box2D) CreatePrismaticJoint(world World, def PrismaticJointDef) (r Joint) {
 	defStack := copyToStack(b.tls, def)
 	defer defStack.Free()
-	r = b2CreatePrismaticJoint(b.tls, worldId, defStack.Addr)
+	r.tls = b.tls
+	r.Id = b2CreatePrismaticJoint(b.tls, world.Id, defStack.Addr)
 	return
 }
-func (b *Box2D) CreateWeldJoint(worldId WorldId, def WeldJointDef) (r JointId) {
+func (b *Box2D) CreateWeldJoint(world World, def WeldJointDef) (r Joint) {
 	defStack := copyToStack(b.tls, def)
 	defer defStack.Free()
-	r = b2CreateWeldJoint(b.tls, worldId, defStack.Addr)
+	r.tls = b.tls
+	r.Id = b2CreateWeldJoint(b.tls, world.Id, defStack.Addr)
 	return
 }
-func (b *Box2D) CreateWheelJoint(worldId WorldId, def WheelJointDef) (r JointId) {
+func (b *Box2D) CreateWheelJoint(world World, def WheelJointDef) (r Joint) {
 	defStack := copyToStack(b.tls, def)
 	defer defStack.Free()
-	r = b2CreateWheelJoint(b.tls, worldId, defStack.Addr)
+	r.tls = b.tls
+	r.Id = b2CreateWheelJoint(b.tls, world.Id, defStack.Addr)
 	return
 }
-func (b *Box2D) DestroyJoint(jointId JointId) {
-	b2DestroyJoint(b.tls, jointId)
+func (b *Box2D) DestroyJoint(joint Joint) {
+	b2DestroyJoint(b.tls, joint.Id)
 }
-func (b *Box2D) JointGetType(jointId JointId) (r JointType) {
-	r = b2Joint_GetType(b.tls, jointId)
+func (b Joint) GetType() (r JointType) {
+	r = b2Joint_GetType(b.tls, b.Id)
 	return
 }
-func (b *Box2D) JointGetBodyA(jointId JointId) (r BodyId) {
-	r = b2Joint_GetBodyA(b.tls, jointId)
+func (b Joint) GetBodyA() (r Body) {
+	r.tls = b.tls
+	r.Id = b2Joint_GetBodyA(b.tls, b.Id)
 	return
 }
-func (b *Box2D) JointGetBodyB(jointId JointId) (r BodyId) {
-	r = b2Joint_GetBodyB(b.tls, jointId)
+func (b Joint) GetBodyB() (r Body) {
+	r.tls = b.tls
+	r.Id = b2Joint_GetBodyB(b.tls, b.Id)
 	return
 }
-func (b *Box2D) JointGetWorld(jointId JointId) (r WorldId) {
-	r = b2Joint_GetWorld(b.tls, jointId)
+func (b Joint) GetWorld() (r World) {
+	r.tls = b.tls
+	r.Id = b2Joint_GetWorld(b.tls, b.Id)
 	return
 }
-func (b *Box2D) JointSetLocalAnchorA(jointId JointId, localAnchor Vec2) {
-	b2Joint_SetLocalAnchorA(b.tls, jointId, localAnchor)
+func (b Joint) SetLocalAnchorA(localAnchor Vec2) {
+	b2Joint_SetLocalAnchorA(b.tls, b.Id, localAnchor)
 }
-func (b *Box2D) JointGetLocalAnchorA(jointId JointId) (r Vec2) {
-	r = b2Joint_GetLocalAnchorA(b.tls, jointId)
+func (b Joint) GetLocalAnchorA() (r Vec2) {
+	r = b2Joint_GetLocalAnchorA(b.tls, b.Id)
 	return
 }
-func (b *Box2D) JointSetLocalAnchorB(jointId JointId, localAnchor Vec2) {
-	b2Joint_SetLocalAnchorB(b.tls, jointId, localAnchor)
+func (b Joint) SetLocalAnchorB(localAnchor Vec2) {
+	b2Joint_SetLocalAnchorB(b.tls, b.Id, localAnchor)
 }
-func (b *Box2D) JointGetLocalAnchorB(jointId JointId) (r Vec2) {
-	r = b2Joint_GetLocalAnchorB(b.tls, jointId)
+func (b Joint) GetLocalAnchorB() (r Vec2) {
+	r = b2Joint_GetLocalAnchorB(b.tls, b.Id)
 	return
 }
-func (b *Box2D) JointSetReferenceAngle(jointId JointId, angleInRadians float32) {
-	b2Joint_SetReferenceAngle(b.tls, jointId, angleInRadians)
+func (b Joint) SetReferenceAngle(angleInRadians float32) {
+	b2Joint_SetReferenceAngle(b.tls, b.Id, angleInRadians)
 }
-func (b *Box2D) JointGetReferenceAngle(jointId JointId) (r float32) {
-	r = b2Joint_GetReferenceAngle(b.tls, jointId)
+func (b Joint) GetReferenceAngle() (r float32) {
+	r = b2Joint_GetReferenceAngle(b.tls, b.Id)
 	return
 }
-func (b *Box2D) JointSetLocalAxisA(jointId JointId, localAxis Vec2) {
-	b2Joint_SetLocalAxisA(b.tls, jointId, localAxis)
+func (b Joint) SetLocalAxisA(localAxis Vec2) {
+	b2Joint_SetLocalAxisA(b.tls, b.Id, localAxis)
 }
-func (b *Box2D) JointGetLocalAxisA(jointId JointId) (r Vec2) {
-	r = b2Joint_GetLocalAxisA(b.tls, jointId)
+func (b Joint) GetLocalAxisA() (r Vec2) {
+	r = b2Joint_GetLocalAxisA(b.tls, b.Id)
 	return
 }
-func (b *Box2D) JointSetCollideConnected(jointId JointId, shouldCollide uint8) {
-	b2Joint_SetCollideConnected(b.tls, jointId, shouldCollide)
+func (b Joint) SetCollideConnected(shouldCollide uint8) {
+	b2Joint_SetCollideConnected(b.tls, b.Id, shouldCollide)
 }
-func (b *Box2D) JointGetCollideConnected(jointId JointId) (r uint8) {
-	r = b2Joint_GetCollideConnected(b.tls, jointId)
+func (b Joint) GetCollideConnected() (r uint8) {
+	r = b2Joint_GetCollideConnected(b.tls, b.Id)
 	return
 }
-func (b *Box2D) JointSetUserData(jointId JointId, userData uintptr) {
-	b2Joint_SetUserData(b.tls, jointId, userData)
+func (b Joint) SetUserData(userData uintptr) {
+	b2Joint_SetUserData(b.tls, b.Id, userData)
 }
-func (b *Box2D) JointGetUserData(jointId JointId) (r uintptr) {
-	r = b2Joint_GetUserData(b.tls, jointId)
+func (b Joint) GetUserData() (r uintptr) {
+	r = b2Joint_GetUserData(b.tls, b.Id)
 	return
 }
-func (b *Box2D) JointWakeBodies(jointId JointId) {
-	b2Joint_WakeBodies(b.tls, jointId)
+func (b Joint) WakeBodies() {
+	b2Joint_WakeBodies(b.tls, b.Id)
 }
-func (b *Box2D) JointGetConstraintForce(jointId JointId) (r Vec2) {
-	r = b2Joint_GetConstraintForce(b.tls, jointId)
+func (b Joint) GetConstraintForce() (r Vec2) {
+	r = b2Joint_GetConstraintForce(b.tls, b.Id)
 	return
 }
-func (b *Box2D) JointGetConstraintTorque(jointId JointId) (r float32) {
-	r = b2Joint_GetConstraintTorque(b.tls, jointId)
+func (b Joint) GetConstraintTorque() (r float32) {
+	r = b2Joint_GetConstraintTorque(b.tls, b.Id)
 	return
 }
-func (b *Box2D) JointGetLinearSeparation(jointId JointId) (r float32) {
-	r = b2Joint_GetLinearSeparation(b.tls, jointId)
+func (b Joint) GetLinearSeparation() (r float32) {
+	r = b2Joint_GetLinearSeparation(b.tls, b.Id)
 	return
 }
-func (b *Box2D) JointGetAngularSeparation(jointId JointId) (r float32) {
-	r = b2Joint_GetAngularSeparation(b.tls, jointId)
+func (b Joint) GetAngularSeparation() (r float32) {
+	r = b2Joint_GetAngularSeparation(b.tls, b.Id)
 	return
 }
-func (b *Box2D) JointGetConstraintTuning(jointId JointId, hertz uintptr, dampingRatio uintptr) {
-	b2Joint_GetConstraintTuning(b.tls, jointId, hertz, dampingRatio)
+func (b Joint) GetConstraintTuning(hertz uintptr, dampingRatio uintptr) {
+	b2Joint_GetConstraintTuning(b.tls, b.Id, hertz, dampingRatio)
 }
-func (b *Box2D) JointSetConstraintTuning(jointId JointId, hertz float32, dampingRatio float32) {
-	b2Joint_SetConstraintTuning(b.tls, jointId, hertz, dampingRatio)
+func (b Joint) SetConstraintTuning(hertz float32, dampingRatio float32) {
+	b2Joint_SetConstraintTuning(b.tls, b.Id, hertz, dampingRatio)
 }
 func (b *Box2D) CollideCircles(circleA Circle, xfA Transform, circleB Circle, xfB Transform) (r Manifold) {
 	circleAStack := copyToStack(b.tls, circleA)
@@ -917,67 +950,67 @@ func (b *Box2D) ComputeRotationBetweenUnitVectors(v1 Vec2, v2 Vec2) (r Rot) {
 	r = b2ComputeRotationBetweenUnitVectors(b.tls, v1, v2)
 	return
 }
-func (b *Box2D) MotorJointSetLinearOffset(jointId JointId, linearOffset Vec2) {
-	b2MotorJoint_SetLinearOffset(b.tls, jointId, linearOffset)
+func (b *Box2D) MotorJointSetLinearOffset(joint Joint, linearOffset Vec2) {
+	b2MotorJoint_SetLinearOffset(b.tls, joint.Id, linearOffset)
 }
-func (b *Box2D) MotorJointGetLinearOffset(jointId JointId) (r Vec2) {
-	r = b2MotorJoint_GetLinearOffset(b.tls, jointId)
+func (b *Box2D) MotorJointGetLinearOffset(joint Joint) (r Vec2) {
+	r = b2MotorJoint_GetLinearOffset(b.tls, joint.Id)
 	return
 }
-func (b *Box2D) MotorJointSetAngularOffset(jointId JointId, angularOffset float32) {
-	b2MotorJoint_SetAngularOffset(b.tls, jointId, angularOffset)
+func (b *Box2D) MotorJointSetAngularOffset(joint Joint, angularOffset float32) {
+	b2MotorJoint_SetAngularOffset(b.tls, joint.Id, angularOffset)
 }
-func (b *Box2D) MotorJointGetAngularOffset(jointId JointId) (r float32) {
-	r = b2MotorJoint_GetAngularOffset(b.tls, jointId)
+func (b *Box2D) MotorJointGetAngularOffset(joint Joint) (r float32) {
+	r = b2MotorJoint_GetAngularOffset(b.tls, joint.Id)
 	return
 }
-func (b *Box2D) MotorJointSetMaxForce(jointId JointId, maxForce float32) {
-	b2MotorJoint_SetMaxForce(b.tls, jointId, maxForce)
+func (b *Box2D) MotorJointSetMaxForce(joint Joint, maxForce float32) {
+	b2MotorJoint_SetMaxForce(b.tls, joint.Id, maxForce)
 }
-func (b *Box2D) MotorJointGetMaxForce(jointId JointId) (r float32) {
-	r = b2MotorJoint_GetMaxForce(b.tls, jointId)
+func (b *Box2D) MotorJointGetMaxForce(joint Joint) (r float32) {
+	r = b2MotorJoint_GetMaxForce(b.tls, joint.Id)
 	return
 }
-func (b *Box2D) MotorJointSetMaxTorque(jointId JointId, maxTorque float32) {
-	b2MotorJoint_SetMaxTorque(b.tls, jointId, maxTorque)
+func (b *Box2D) MotorJointSetMaxTorque(joint Joint, maxTorque float32) {
+	b2MotorJoint_SetMaxTorque(b.tls, joint.Id, maxTorque)
 }
-func (b *Box2D) MotorJointGetMaxTorque(jointId JointId) (r float32) {
-	r = b2MotorJoint_GetMaxTorque(b.tls, jointId)
+func (b *Box2D) MotorJointGetMaxTorque(joint Joint) (r float32) {
+	r = b2MotorJoint_GetMaxTorque(b.tls, joint.Id)
 	return
 }
-func (b *Box2D) MotorJointSetCorrectionFactor(jointId JointId, correctionFactor float32) {
-	b2MotorJoint_SetCorrectionFactor(b.tls, jointId, correctionFactor)
+func (b *Box2D) MotorJointSetCorrectionFactor(joint Joint, correctionFactor float32) {
+	b2MotorJoint_SetCorrectionFactor(b.tls, joint.Id, correctionFactor)
 }
-func (b *Box2D) MotorJointGetCorrectionFactor(jointId JointId) (r float32) {
-	r = b2MotorJoint_GetCorrectionFactor(b.tls, jointId)
+func (b *Box2D) MotorJointGetCorrectionFactor(joint Joint) (r float32) {
+	r = b2MotorJoint_GetCorrectionFactor(b.tls, joint.Id)
 	return
 }
-func (b *Box2D) MouseJointSetTarget(jointId JointId, target Vec2) {
-	b2MouseJoint_SetTarget(b.tls, jointId, target)
+func (b *Box2D) MouseJointSetTarget(joint Joint, target Vec2) {
+	b2MouseJoint_SetTarget(b.tls, joint.Id, target)
 }
-func (b *Box2D) MouseJointGetTarget(jointId JointId) (r Vec2) {
-	r = b2MouseJoint_GetTarget(b.tls, jointId)
+func (b *Box2D) MouseJointGetTarget(joint Joint) (r Vec2) {
+	r = b2MouseJoint_GetTarget(b.tls, joint.Id)
 	return
 }
-func (b *Box2D) MouseJointSetSpringHertz(jointId JointId, hertz float32) {
-	b2MouseJoint_SetSpringHertz(b.tls, jointId, hertz)
+func (b *Box2D) MouseJointSetSpringHertz(joint Joint, hertz float32) {
+	b2MouseJoint_SetSpringHertz(b.tls, joint.Id, hertz)
 }
-func (b *Box2D) MouseJointGetSpringHertz(jointId JointId) (r float32) {
-	r = b2MouseJoint_GetSpringHertz(b.tls, jointId)
+func (b *Box2D) MouseJointGetSpringHertz(joint Joint) (r float32) {
+	r = b2MouseJoint_GetSpringHertz(b.tls, joint.Id)
 	return
 }
-func (b *Box2D) MouseJointSetSpringDampingRatio(jointId JointId, dampingRatio float32) {
-	b2MouseJoint_SetSpringDampingRatio(b.tls, jointId, dampingRatio)
+func (b *Box2D) MouseJointSetSpringDampingRatio(joint Joint, dampingRatio float32) {
+	b2MouseJoint_SetSpringDampingRatio(b.tls, joint.Id, dampingRatio)
 }
-func (b *Box2D) MouseJointGetSpringDampingRatio(jointId JointId) (r float32) {
-	r = b2MouseJoint_GetSpringDampingRatio(b.tls, jointId)
+func (b *Box2D) MouseJointGetSpringDampingRatio(joint Joint) (r float32) {
+	r = b2MouseJoint_GetSpringDampingRatio(b.tls, joint.Id)
 	return
 }
-func (b *Box2D) MouseJointSetMaxForce(jointId JointId, maxForce float32) {
-	b2MouseJoint_SetMaxForce(b.tls, jointId, maxForce)
+func (b *Box2D) MouseJointSetMaxForce(joint Joint, maxForce float32) {
+	b2MouseJoint_SetMaxForce(b.tls, joint.Id, maxForce)
 }
-func (b *Box2D) MouseJointGetMaxForce(jointId JointId) (r float32) {
-	r = b2MouseJoint_GetMaxForce(b.tls, jointId)
+func (b *Box2D) MouseJointGetMaxForce(joint Joint) (r float32) {
+	r = b2MouseJoint_GetMaxForce(b.tls, joint.Id)
 	return
 }
 func (b *Box2D) SolvePlanes(targetDelta Vec2, planes *CollisionPlane, count int32) (r PlaneSolverResult) {
@@ -992,410 +1025,413 @@ func (b *Box2D) ClipVector(vector Vec2, planes CollisionPlane, count int32) (r V
 	r = b2ClipVector(b.tls, vector, planesStack.Addr, count)
 	return
 }
-func (b *Box2D) PrismaticJointEnableSpring(jointId JointId, enableSpring uint8) {
-	b2PrismaticJoint_EnableSpring(b.tls, jointId, enableSpring)
+func (b *Box2D) PrismaticJointEnableSpring(joint Joint, enableSpring uint8) {
+	b2PrismaticJoint_EnableSpring(b.tls, joint.Id, enableSpring)
 }
-func (b *Box2D) PrismaticJointIsSpringEnabled(jointId JointId) (r uint8) {
-	r = b2PrismaticJoint_IsSpringEnabled(b.tls, jointId)
+func (b *Box2D) PrismaticJointIsSpringEnabled(joint Joint) (r uint8) {
+	r = b2PrismaticJoint_IsSpringEnabled(b.tls, joint.Id)
 	return
 }
-func (b *Box2D) PrismaticJointSetSpringHertz(jointId JointId, hertz float32) {
-	b2PrismaticJoint_SetSpringHertz(b.tls, jointId, hertz)
+func (b *Box2D) PrismaticJointSetSpringHertz(joint Joint, hertz float32) {
+	b2PrismaticJoint_SetSpringHertz(b.tls, joint.Id, hertz)
 }
-func (b *Box2D) PrismaticJointGetSpringHertz(jointId JointId) (r float32) {
-	r = b2PrismaticJoint_GetSpringHertz(b.tls, jointId)
+func (b *Box2D) PrismaticJointGetSpringHertz(joint Joint) (r float32) {
+	r = b2PrismaticJoint_GetSpringHertz(b.tls, joint.Id)
 	return
 }
-func (b *Box2D) PrismaticJointSetSpringDampingRatio(jointId JointId, dampingRatio float32) {
-	b2PrismaticJoint_SetSpringDampingRatio(b.tls, jointId, dampingRatio)
+func (b *Box2D) PrismaticJointSetSpringDampingRatio(joint Joint, dampingRatio float32) {
+	b2PrismaticJoint_SetSpringDampingRatio(b.tls, joint.Id, dampingRatio)
 }
-func (b *Box2D) PrismaticJointGetSpringDampingRatio(jointId JointId) (r float32) {
-	r = b2PrismaticJoint_GetSpringDampingRatio(b.tls, jointId)
+func (b *Box2D) PrismaticJointGetSpringDampingRatio(joint Joint) (r float32) {
+	r = b2PrismaticJoint_GetSpringDampingRatio(b.tls, joint.Id)
 	return
 }
-func (b *Box2D) PrismaticJointSetTargetTranslation(jointId JointId, translation float32) {
-	b2PrismaticJoint_SetTargetTranslation(b.tls, jointId, translation)
+func (b *Box2D) PrismaticJointSetTargetTranslation(joint Joint, translation float32) {
+	b2PrismaticJoint_SetTargetTranslation(b.tls, joint.Id, translation)
 }
-func (b *Box2D) PrismaticJointGetTargetTranslation(jointId JointId) (r float32) {
-	r = b2PrismaticJoint_GetTargetTranslation(b.tls, jointId)
+func (b *Box2D) PrismaticJointGetTargetTranslation(joint Joint) (r float32) {
+	r = b2PrismaticJoint_GetTargetTranslation(b.tls, joint.Id)
 	return
 }
-func (b *Box2D) PrismaticJointEnableLimit(jointId JointId, enableLimit uint8) {
-	b2PrismaticJoint_EnableLimit(b.tls, jointId, enableLimit)
+func (b *Box2D) PrismaticJointEnableLimit(joint Joint, enableLimit uint8) {
+	b2PrismaticJoint_EnableLimit(b.tls, joint.Id, enableLimit)
 }
-func (b *Box2D) PrismaticJointIsLimitEnabled(jointId JointId) (r uint8) {
-	r = b2PrismaticJoint_IsLimitEnabled(b.tls, jointId)
+func (b *Box2D) PrismaticJointIsLimitEnabled(joint Joint) (r uint8) {
+	r = b2PrismaticJoint_IsLimitEnabled(b.tls, joint.Id)
 	return
 }
-func (b *Box2D) PrismaticJointGetLowerLimit(jointId JointId) (r float32) {
-	r = b2PrismaticJoint_GetLowerLimit(b.tls, jointId)
+func (b *Box2D) PrismaticJointGetLowerLimit(joint Joint) (r float32) {
+	r = b2PrismaticJoint_GetLowerLimit(b.tls, joint.Id)
 	return
 }
-func (b *Box2D) PrismaticJointGetUpperLimit(jointId JointId) (r float32) {
-	r = b2PrismaticJoint_GetUpperLimit(b.tls, jointId)
+func (b *Box2D) PrismaticJointGetUpperLimit(joint Joint) (r float32) {
+	r = b2PrismaticJoint_GetUpperLimit(b.tls, joint.Id)
 	return
 }
-func (b *Box2D) PrismaticJointSetLimits(jointId JointId, lower float32, upper float32) {
-	b2PrismaticJoint_SetLimits(b.tls, jointId, lower, upper)
+func (b *Box2D) PrismaticJointSetLimits(joint Joint, lower float32, upper float32) {
+	b2PrismaticJoint_SetLimits(b.tls, joint.Id, lower, upper)
 }
-func (b *Box2D) PrismaticJointEnableMotor(jointId JointId, enableMotor uint8) {
-	b2PrismaticJoint_EnableMotor(b.tls, jointId, enableMotor)
+func (b *Box2D) PrismaticJointEnableMotor(joint Joint, enableMotor uint8) {
+	b2PrismaticJoint_EnableMotor(b.tls, joint.Id, enableMotor)
 }
-func (b *Box2D) PrismaticJointIsMotorEnabled(jointId JointId) (r uint8) {
-	r = b2PrismaticJoint_IsMotorEnabled(b.tls, jointId)
+func (b *Box2D) PrismaticJointIsMotorEnabled(joint Joint) (r uint8) {
+	r = b2PrismaticJoint_IsMotorEnabled(b.tls, joint.Id)
 	return
 }
-func (b *Box2D) PrismaticJointSetMotorSpeed(jointId JointId, motorSpeed float32) {
-	b2PrismaticJoint_SetMotorSpeed(b.tls, jointId, motorSpeed)
+func (b *Box2D) PrismaticJointSetMotorSpeed(joint Joint, motorSpeed float32) {
+	b2PrismaticJoint_SetMotorSpeed(b.tls, joint.Id, motorSpeed)
 }
-func (b *Box2D) PrismaticJointGetMotorSpeed(jointId JointId) (r float32) {
-	r = b2PrismaticJoint_GetMotorSpeed(b.tls, jointId)
+func (b *Box2D) PrismaticJointGetMotorSpeed(joint Joint) (r float32) {
+	r = b2PrismaticJoint_GetMotorSpeed(b.tls, joint.Id)
 	return
 }
-func (b *Box2D) PrismaticJointGetMotorForce(jointId JointId) (r float32) {
-	r = b2PrismaticJoint_GetMotorForce(b.tls, jointId)
+func (b *Box2D) PrismaticJointGetMotorForce(joint Joint) (r float32) {
+	r = b2PrismaticJoint_GetMotorForce(b.tls, joint.Id)
 	return
 }
-func (b *Box2D) PrismaticJointSetMaxMotorForce(jointId JointId, force float32) {
-	b2PrismaticJoint_SetMaxMotorForce(b.tls, jointId, force)
+func (b *Box2D) PrismaticJointSetMaxMotorForce(joint Joint, force float32) {
+	b2PrismaticJoint_SetMaxMotorForce(b.tls, joint.Id, force)
 }
-func (b *Box2D) PrismaticJointGetMaxMotorForce(jointId JointId) (r float32) {
-	r = b2PrismaticJoint_GetMaxMotorForce(b.tls, jointId)
+func (b *Box2D) PrismaticJointGetMaxMotorForce(joint Joint) (r float32) {
+	r = b2PrismaticJoint_GetMaxMotorForce(b.tls, joint.Id)
 	return
 }
-func (b *Box2D) PrismaticJointGetTranslation(jointId JointId) (r float32) {
-	r = b2PrismaticJoint_GetTranslation(b.tls, jointId)
+func (b *Box2D) PrismaticJointGetTranslation(joint Joint) (r float32) {
+	r = b2PrismaticJoint_GetTranslation(b.tls, joint.Id)
 	return
 }
-func (b *Box2D) PrismaticJointGetSpeed(jointId JointId) (r float32) {
-	r = b2PrismaticJoint_GetSpeed(b.tls, jointId)
+func (b *Box2D) PrismaticJointGetSpeed(joint Joint) (r float32) {
+	r = b2PrismaticJoint_GetSpeed(b.tls, joint.Id)
 	return
 }
-func (b *Box2D) RevoluteJointEnableSpring(jointId JointId, enableSpring uint8) {
-	b2RevoluteJoint_EnableSpring(b.tls, jointId, enableSpring)
+func (b *Box2D) RevoluteJointEnableSpring(joint Joint, enableSpring uint8) {
+	b2RevoluteJoint_EnableSpring(b.tls, joint.Id, enableSpring)
 }
-func (b *Box2D) RevoluteJointIsSpringEnabled(jointId JointId) (r uint8) {
-	r = b2RevoluteJoint_IsSpringEnabled(b.tls, jointId)
+func (b *Box2D) RevoluteJointIsSpringEnabled(joint Joint) (r uint8) {
+	r = b2RevoluteJoint_IsSpringEnabled(b.tls, joint.Id)
 	return
 }
-func (b *Box2D) RevoluteJointSetSpringHertz(jointId JointId, hertz float32) {
-	b2RevoluteJoint_SetSpringHertz(b.tls, jointId, hertz)
+func (b *Box2D) RevoluteJointSetSpringHertz(joint Joint, hertz float32) {
+	b2RevoluteJoint_SetSpringHertz(b.tls, joint.Id, hertz)
 }
-func (b *Box2D) RevoluteJointGetSpringHertz(jointId JointId) (r float32) {
-	r = b2RevoluteJoint_GetSpringHertz(b.tls, jointId)
+func (b *Box2D) RevoluteJointGetSpringHertz(joint Joint) (r float32) {
+	r = b2RevoluteJoint_GetSpringHertz(b.tls, joint.Id)
 	return
 }
-func (b *Box2D) RevoluteJointSetSpringDampingRatio(jointId JointId, dampingRatio float32) {
-	b2RevoluteJoint_SetSpringDampingRatio(b.tls, jointId, dampingRatio)
+func (b *Box2D) RevoluteJointSetSpringDampingRatio(joint Joint, dampingRatio float32) {
+	b2RevoluteJoint_SetSpringDampingRatio(b.tls, joint.Id, dampingRatio)
 }
-func (b *Box2D) RevoluteJointGetSpringDampingRatio(jointId JointId) (r float32) {
-	r = b2RevoluteJoint_GetSpringDampingRatio(b.tls, jointId)
+func (b *Box2D) RevoluteJointGetSpringDampingRatio(joint Joint) (r float32) {
+	r = b2RevoluteJoint_GetSpringDampingRatio(b.tls, joint.Id)
 	return
 }
-func (b *Box2D) RevoluteJointSetTargetAngle(jointId JointId, angle float32) {
-	b2RevoluteJoint_SetTargetAngle(b.tls, jointId, angle)
+func (b *Box2D) RevoluteJointSetTargetAngle(joint Joint, angle float32) {
+	b2RevoluteJoint_SetTargetAngle(b.tls, joint.Id, angle)
 }
-func (b *Box2D) RevoluteJointGetTargetAngle(jointId JointId) (r float32) {
-	r = b2RevoluteJoint_GetTargetAngle(b.tls, jointId)
+func (b *Box2D) RevoluteJointGetTargetAngle(joint Joint) (r float32) {
+	r = b2RevoluteJoint_GetTargetAngle(b.tls, joint.Id)
 	return
 }
-func (b *Box2D) RevoluteJointGetAngle(jointId JointId) (r float32) {
-	r = b2RevoluteJoint_GetAngle(b.tls, jointId)
+func (b *Box2D) RevoluteJointGetAngle(joint Joint) (r float32) {
+	r = b2RevoluteJoint_GetAngle(b.tls, joint.Id)
 	return
 }
-func (b *Box2D) RevoluteJointEnableLimit(jointId JointId, enableLimit uint8) {
-	b2RevoluteJoint_EnableLimit(b.tls, jointId, enableLimit)
+func (b *Box2D) RevoluteJointEnableLimit(joint Joint, enableLimit uint8) {
+	b2RevoluteJoint_EnableLimit(b.tls, joint.Id, enableLimit)
 }
-func (b *Box2D) RevoluteJointIsLimitEnabled(jointId JointId) (r uint8) {
-	r = b2RevoluteJoint_IsLimitEnabled(b.tls, jointId)
+func (b *Box2D) RevoluteJointIsLimitEnabled(joint Joint) (r uint8) {
+	r = b2RevoluteJoint_IsLimitEnabled(b.tls, joint.Id)
 	return
 }
-func (b *Box2D) RevoluteJointGetLowerLimit(jointId JointId) (r float32) {
-	r = b2RevoluteJoint_GetLowerLimit(b.tls, jointId)
+func (b *Box2D) RevoluteJointGetLowerLimit(joint Joint) (r float32) {
+	r = b2RevoluteJoint_GetLowerLimit(b.tls, joint.Id)
 	return
 }
-func (b *Box2D) RevoluteJointGetUpperLimit(jointId JointId) (r float32) {
-	r = b2RevoluteJoint_GetUpperLimit(b.tls, jointId)
+func (b *Box2D) RevoluteJointGetUpperLimit(joint Joint) (r float32) {
+	r = b2RevoluteJoint_GetUpperLimit(b.tls, joint.Id)
 	return
 }
-func (b *Box2D) RevoluteJointSetLimits(jointId JointId, lower float32, upper float32) {
-	b2RevoluteJoint_SetLimits(b.tls, jointId, lower, upper)
+func (b *Box2D) RevoluteJointSetLimits(joint Joint, lower float32, upper float32) {
+	b2RevoluteJoint_SetLimits(b.tls, joint.Id, lower, upper)
 }
-func (b *Box2D) RevoluteJointEnableMotor(jointId JointId, enableMotor uint8) {
-	b2RevoluteJoint_EnableMotor(b.tls, jointId, enableMotor)
+func (b *Box2D) RevoluteJointEnableMotor(joint Joint, enableMotor uint8) {
+	b2RevoluteJoint_EnableMotor(b.tls, joint.Id, enableMotor)
 }
-func (b *Box2D) RevoluteJointIsMotorEnabled(jointId JointId) (r uint8) {
-	r = b2RevoluteJoint_IsMotorEnabled(b.tls, jointId)
+func (b *Box2D) RevoluteJointIsMotorEnabled(joint Joint) (r uint8) {
+	r = b2RevoluteJoint_IsMotorEnabled(b.tls, joint.Id)
 	return
 }
-func (b *Box2D) RevoluteJointSetMotorSpeed(jointId JointId, motorSpeed float32) {
-	b2RevoluteJoint_SetMotorSpeed(b.tls, jointId, motorSpeed)
+func (b *Box2D) RevoluteJointSetMotorSpeed(joint Joint, motorSpeed float32) {
+	b2RevoluteJoint_SetMotorSpeed(b.tls, joint.Id, motorSpeed)
 }
-func (b *Box2D) RevoluteJointGetMotorSpeed(jointId JointId) (r float32) {
-	r = b2RevoluteJoint_GetMotorSpeed(b.tls, jointId)
+func (b *Box2D) RevoluteJointGetMotorSpeed(joint Joint) (r float32) {
+	r = b2RevoluteJoint_GetMotorSpeed(b.tls, joint.Id)
 	return
 }
-func (b *Box2D) RevoluteJointGetMotorTorque(jointId JointId) (r float32) {
-	r = b2RevoluteJoint_GetMotorTorque(b.tls, jointId)
+func (b *Box2D) RevoluteJointGetMotorTorque(joint Joint) (r float32) {
+	r = b2RevoluteJoint_GetMotorTorque(b.tls, joint.Id)
 	return
 }
-func (b *Box2D) RevoluteJointSetMaxMotorTorque(jointId JointId, torque float32) {
-	b2RevoluteJoint_SetMaxMotorTorque(b.tls, jointId, torque)
+func (b *Box2D) RevoluteJointSetMaxMotorTorque(joint Joint, torque float32) {
+	b2RevoluteJoint_SetMaxMotorTorque(b.tls, joint.Id, torque)
 }
-func (b *Box2D) RevoluteJointGetMaxMotorTorque(jointId JointId) (r float32) {
-	r = b2RevoluteJoint_GetMaxMotorTorque(b.tls, jointId)
+func (b *Box2D) RevoluteJointGetMaxMotorTorque(joint Joint) (r float32) {
+	r = b2RevoluteJoint_GetMaxMotorTorque(b.tls, joint.Id)
 	return
 }
-func (b *Box2D) CreateCircleShape(bodyId BodyId, def ShapeDef, circle Circle) (r ShapeId) {
+func (b *Box2D) CreateCircleShape(body Body, def ShapeDef, circle Circle) (r Shape) {
 	defStack := copyToStack(b.tls, def)
 	defer defStack.Free()
 	circleStack := copyToStack(b.tls, circle)
 	defer circleStack.Free()
-	r = b2CreateCircleShape(b.tls, bodyId, defStack.Addr, circleStack.Addr)
+	r.tls = b.tls
+	r.Id = b2CreateCircleShape(b.tls, body.Id, defStack.Addr, circleStack.Addr)
 	return
 }
-func (b *Box2D) CreateCapsuleShape(bodyId BodyId, def ShapeDef, capsule Capsule) (r ShapeId) {
+func (b *Box2D) CreateCapsuleShape(body Body, def ShapeDef, capsule Capsule) (r Shape) {
 	defStack := copyToStack(b.tls, def)
 	defer defStack.Free()
 	capsuleStack := copyToStack(b.tls, capsule)
 	defer capsuleStack.Free()
-	r = b2CreateCapsuleShape(b.tls, bodyId, defStack.Addr, capsuleStack.Addr)
+	r.tls = b.tls
+	r.Id = b2CreateCapsuleShape(b.tls, body.Id, defStack.Addr, capsuleStack.Addr)
 	return
 }
-func (b *Box2D) CreatePolygonShape(bodyId BodyId, def ShapeDef, polygon Polygon) (r ShapeId) {
+func (b *Box2D) CreatePolygonShape(body Body, def ShapeDef, polygon Polygon) (r Shape) {
 	defStack := copyToStack(b.tls, def)
 	defer defStack.Free()
 	polygonStack := copyToStack(b.tls, polygon)
 	defer polygonStack.Free()
-	r = b2CreatePolygonShape(b.tls, bodyId, defStack.Addr, polygonStack.Addr)
+	r.tls = b.tls
+	r.Id = b2CreatePolygonShape(b.tls, body.Id, defStack.Addr, polygonStack.Addr)
 	return
 }
-func (b *Box2D) CreateSegmentShape(bodyId BodyId, def ShapeDef, segment Segment) (r ShapeId) {
+func (b *Box2D) CreateSegmentShape(body Body, def ShapeDef, segment Segment) (r Shape) {
 	defStack := copyToStack(b.tls, def)
 	defer defStack.Free()
 	segmentStack := copyToStack(b.tls, segment)
 	defer segmentStack.Free()
-	r = b2CreateSegmentShape(b.tls, bodyId, defStack.Addr, segmentStack.Addr)
+	r.tls = b.tls
+	r.Id = b2CreateSegmentShape(b.tls, body.Id, defStack.Addr, segmentStack.Addr)
 	return
 }
-func (b *Box2D) DestroyShape(shapeId ShapeId, updateBodyMass uint8) {
-	b2DestroyShape(b.tls, shapeId, updateBodyMass)
+func (b *Box2D) DestroyShape(shape Shape, updateBodyMass uint8) {
+	b2DestroyShape(b.tls, shape.Id, updateBodyMass)
 }
-func (b *Box2D) CreateChain(bodyId BodyId, def ChainDef) (r ChainId) {
+func (b *Box2D) CreateChain(body Body, def ChainDef) (r Chain) {
 	defStack := copyToStack(b.tls, def)
 	defer defStack.Free()
-	r = b2CreateChain(b.tls, bodyId, defStack.Addr)
+	r.tls = b.tls
+	r.Id = b2CreateChain(b.tls, body.Id, defStack.Addr)
 	return
 }
-func (b *Box2D) DestroyChain(chainId ChainId) {
-	b2DestroyChain(b.tls, chainId)
+func (b *Box2D) DestroyChain(chain Chain) {
+	b2DestroyChain(b.tls, chain.Id)
 }
-func (b *Box2D) ChainGetWorld(chainId ChainId) (r WorldId) {
-	r = b2Chain_GetWorld(b.tls, chainId)
+func (b Chain) GetWorld() (r World) {
+	r.tls = b.tls
+	r.Id = b2Chain_GetWorld(b.tls, b.Id)
 	return
 }
-func (b *Box2D) ChainGetSegmentCount(chainId ChainId) (r int32) {
-	r = b2Chain_GetSegmentCount(b.tls, chainId)
+func (b Chain) GetSegmentCount() (r int32) {
+	r = b2Chain_GetSegmentCount(b.tls, b.Id)
 	return
 }
-func (b *Box2D) ShapeGetBody(shapeId ShapeId) (r BodyId) {
-	r = b2Shape_GetBody(b.tls, shapeId)
+func (b Shape) GetBody() (r Body) {
+	r.tls = b.tls
+	r.Id = b2Shape_GetBody(b.tls, b.Id)
 	return
 }
-func (b *Box2D) ShapeGetWorld(shapeId ShapeId) (r WorldId) {
-	r = b2Shape_GetWorld(b.tls, shapeId)
+func (b Shape) GetWorld() (r World) {
+	r.tls = b.tls
+	r.Id = b2Shape_GetWorld(b.tls, b.Id)
 	return
 }
-func (b *Box2D) ShapeSetUserData(shapeId ShapeId, userData uintptr) {
-	b2Shape_SetUserData(b.tls, shapeId, userData)
+func (b Shape) SetUserData(userData uintptr) {
+	b2Shape_SetUserData(b.tls, b.Id, userData)
 }
-func (b *Box2D) ShapeGetUserData(shapeId ShapeId) (r uintptr) {
-	r = b2Shape_GetUserData(b.tls, shapeId)
+func (b Shape) GetUserData() (r uintptr) {
+	r = b2Shape_GetUserData(b.tls, b.Id)
 	return
 }
-func (b *Box2D) ShapeIsSensor(shapeId ShapeId) (r uint8) {
-	r = b2Shape_IsSensor(b.tls, shapeId)
+func (b Shape) IsSensor() (r uint8) {
+	r = b2Shape_IsSensor(b.tls, b.Id)
 	return
 }
-func (b *Box2D) ShapeTestPoint(shapeId ShapeId, point Vec2) (r uint8) {
-	r = b2Shape_TestPoint(b.tls, shapeId, point)
+func (b Shape) TestPoint(point Vec2) (r uint8) {
+	r = b2Shape_TestPoint(b.tls, b.Id, point)
 	return
 }
-func (b *Box2D) ShapeRayCast(shapeId ShapeId, input RayCastInput) (r CastOutput) {
+func (b Shape) RayCast(input RayCastInput) (r CastOutput) {
 	inputStack := copyToStack(b.tls, input)
 	defer inputStack.Free()
-	r = b2Shape_RayCast(b.tls, shapeId, inputStack.Addr)
+	r = b2Shape_RayCast(b.tls, b.Id, inputStack.Addr)
 	return
 }
-func (b *Box2D) ShapeSetDensity(shapeId ShapeId, density float32, updateBodyMass uint8) {
-	b2Shape_SetDensity(b.tls, shapeId, density, updateBodyMass)
+func (b Shape) SetDensity(density float32, updateBodyMass uint8) {
+	b2Shape_SetDensity(b.tls, b.Id, density, updateBodyMass)
 }
-func (b *Box2D) ShapeGetDensity(shapeId ShapeId) (r float32) {
-	r = b2Shape_GetDensity(b.tls, shapeId)
+func (b Shape) GetDensity() (r float32) {
+	r = b2Shape_GetDensity(b.tls, b.Id)
 	return
 }
-func (b *Box2D) ShapeSetFriction(shapeId ShapeId, friction float32) {
-	b2Shape_SetFriction(b.tls, shapeId, friction)
+func (b Shape) SetFriction(friction float32) {
+	b2Shape_SetFriction(b.tls, b.Id, friction)
 }
-func (b *Box2D) ShapeGetFriction(shapeId ShapeId) (r float32) {
-	r = b2Shape_GetFriction(b.tls, shapeId)
+func (b Shape) GetFriction() (r float32) {
+	r = b2Shape_GetFriction(b.tls, b.Id)
 	return
 }
-func (b *Box2D) ShapeSetRestitution(shapeId ShapeId, restitution float32) {
-	b2Shape_SetRestitution(b.tls, shapeId, restitution)
+func (b Shape) SetRestitution(restitution float32) {
+	b2Shape_SetRestitution(b.tls, b.Id, restitution)
 }
-func (b *Box2D) ShapeGetRestitution(shapeId ShapeId) (r float32) {
-	r = b2Shape_GetRestitution(b.tls, shapeId)
+func (b Shape) GetRestitution() (r float32) {
+	r = b2Shape_GetRestitution(b.tls, b.Id)
 	return
 }
-func (b *Box2D) ShapeSetMaterial(shapeId ShapeId, material int32) {
-	b2Shape_SetMaterial(b.tls, shapeId, material)
+func (b Shape) SetMaterial(material int32) {
+	b2Shape_SetMaterial(b.tls, b.Id, material)
 }
-func (b *Box2D) ShapeGetMaterial(shapeId ShapeId) (r int32) {
-	r = b2Shape_GetMaterial(b.tls, shapeId)
+func (b Shape) GetMaterial() (r int32) {
+	r = b2Shape_GetMaterial(b.tls, b.Id)
 	return
 }
-func (b *Box2D) ShapeGetSurfaceMaterial(shapeId ShapeId) (r SurfaceMaterial) {
-	r = b2Shape_GetSurfaceMaterial(b.tls, shapeId)
+func (b Shape) GetSurfaceMaterial() (r SurfaceMaterial) {
+	r = b2Shape_GetSurfaceMaterial(b.tls, b.Id)
 	return
 }
-func (b *Box2D) ShapeSetSurfaceMaterial(shapeId ShapeId, surfaceMaterial SurfaceMaterial) {
-	b2Shape_SetSurfaceMaterial(b.tls, shapeId, surfaceMaterial)
+func (b Shape) SetSurfaceMaterial(surfaceMaterial SurfaceMaterial) {
+	b2Shape_SetSurfaceMaterial(b.tls, b.Id, surfaceMaterial)
 }
-func (b *Box2D) ShapeGetFilter(shapeId ShapeId) (r Filter) {
-	r = b2Shape_GetFilter(b.tls, shapeId)
+func (b Shape) GetFilter() (r Filter) {
+	r = b2Shape_GetFilter(b.tls, b.Id)
 	return
 }
-func (b *Box2D) ShapeSetFilter(shapeId ShapeId, filter Filter) {
-	b2Shape_SetFilter(b.tls, shapeId, filter)
+func (b Shape) SetFilter(filter Filter) {
+	b2Shape_SetFilter(b.tls, b.Id, filter)
 }
-func (b *Box2D) ShapeEnableSensorEvents(shapeId ShapeId, flag uint8) {
-	b2Shape_EnableSensorEvents(b.tls, shapeId, flag)
+func (b Shape) EnableSensorEvents(flag uint8) {
+	b2Shape_EnableSensorEvents(b.tls, b.Id, flag)
 }
-func (b *Box2D) ShapeAreSensorEventsEnabled(shapeId ShapeId) (r uint8) {
-	r = b2Shape_AreSensorEventsEnabled(b.tls, shapeId)
+func (b Shape) AreSensorEventsEnabled() (r uint8) {
+	r = b2Shape_AreSensorEventsEnabled(b.tls, b.Id)
 	return
 }
-func (b *Box2D) ShapeEnableContactEvents(shapeId ShapeId, flag uint8) {
-	b2Shape_EnableContactEvents(b.tls, shapeId, flag)
+func (b Shape) EnableContactEvents(flag uint8) {
+	b2Shape_EnableContactEvents(b.tls, b.Id, flag)
 }
-func (b *Box2D) ShapeAreContactEventsEnabled(shapeId ShapeId) (r uint8) {
-	r = b2Shape_AreContactEventsEnabled(b.tls, shapeId)
+func (b Shape) AreContactEventsEnabled() (r uint8) {
+	r = b2Shape_AreContactEventsEnabled(b.tls, b.Id)
 	return
 }
-func (b *Box2D) ShapeEnablePreSolveEvents(shapeId ShapeId, flag uint8) {
-	b2Shape_EnablePreSolveEvents(b.tls, shapeId, flag)
+func (b Shape) EnablePreSolveEvents(flag uint8) {
+	b2Shape_EnablePreSolveEvents(b.tls, b.Id, flag)
 }
-func (b *Box2D) ShapeArePreSolveEventsEnabled(shapeId ShapeId) (r uint8) {
-	r = b2Shape_ArePreSolveEventsEnabled(b.tls, shapeId)
+func (b Shape) ArePreSolveEventsEnabled() (r uint8) {
+	r = b2Shape_ArePreSolveEventsEnabled(b.tls, b.Id)
 	return
 }
-func (b *Box2D) ShapeEnableHitEvents(shapeId ShapeId, flag uint8) {
-	b2Shape_EnableHitEvents(b.tls, shapeId, flag)
+func (b Shape) EnableHitEvents(flag uint8) {
+	b2Shape_EnableHitEvents(b.tls, b.Id, flag)
 }
-func (b *Box2D) ShapeAreHitEventsEnabled(shapeId ShapeId) (r uint8) {
-	r = b2Shape_AreHitEventsEnabled(b.tls, shapeId)
+func (b Shape) AreHitEventsEnabled() (r uint8) {
+	r = b2Shape_AreHitEventsEnabled(b.tls, b.Id)
 	return
 }
-func (b *Box2D) ShapeGetType(shapeId ShapeId) (r ShapeType) {
-	r = b2Shape_GetType(b.tls, shapeId)
+func (b Shape) GetType() (r ShapeType) {
+	r = b2Shape_GetType(b.tls, b.Id)
 	return
 }
-func (b *Box2D) ShapeGetCircle(shapeId ShapeId) (r Circle) {
-	r = b2Shape_GetCircle(b.tls, shapeId)
+func (b Shape) GetCircle() (r Circle) {
+	r = b2Shape_GetCircle(b.tls, b.Id)
 	return
 }
-func (b *Box2D) ShapeGetSegment(shapeId ShapeId) (r Segment) {
-	r = b2Shape_GetSegment(b.tls, shapeId)
+func (b Shape) GetSegment() (r Segment) {
+	r = b2Shape_GetSegment(b.tls, b.Id)
 	return
 }
-func (b *Box2D) ShapeGetChainSegment(shapeId ShapeId) (r ChainSegment) {
-	r = b2Shape_GetChainSegment(b.tls, shapeId)
+func (b Shape) GetChainSegment() (r ChainSegment) {
+	r = b2Shape_GetChainSegment(b.tls, b.Id)
 	return
 }
-func (b *Box2D) ShapeGetCapsule(shapeId ShapeId) (r Capsule) {
-	r = b2Shape_GetCapsule(b.tls, shapeId)
+func (b Shape) GetCapsule() (r Capsule) {
+	r = b2Shape_GetCapsule(b.tls, b.Id)
 	return
 }
-func (b *Box2D) ShapeGetPolygon(shapeId ShapeId) (r Polygon) {
-	r = b2Shape_GetPolygon(b.tls, shapeId)
+func (b Shape) GetPolygon() (r Polygon) {
+	r = b2Shape_GetPolygon(b.tls, b.Id)
 	return
 }
-func (b *Box2D) ShapeSetCircle(shapeId ShapeId, circle Circle) {
+func (b Shape) SetCircle(circle Circle) {
 	circleStack := copyToStack(b.tls, circle)
 	defer circleStack.Free()
-	b2Shape_SetCircle(b.tls, shapeId, circleStack.Addr)
+	b2Shape_SetCircle(b.tls, b.Id, circleStack.Addr)
 }
-func (b *Box2D) ShapeSetCapsule(shapeId ShapeId, capsule Capsule) {
+func (b Shape) SetCapsule(capsule Capsule) {
 	capsuleStack := copyToStack(b.tls, capsule)
 	defer capsuleStack.Free()
-	b2Shape_SetCapsule(b.tls, shapeId, capsuleStack.Addr)
+	b2Shape_SetCapsule(b.tls, b.Id, capsuleStack.Addr)
 }
-func (b *Box2D) ShapeSetSegment(shapeId ShapeId, segment Segment) {
+func (b Shape) SetSegment(segment Segment) {
 	segmentStack := copyToStack(b.tls, segment)
 	defer segmentStack.Free()
-	b2Shape_SetSegment(b.tls, shapeId, segmentStack.Addr)
+	b2Shape_SetSegment(b.tls, b.Id, segmentStack.Addr)
 }
-func (b *Box2D) ShapeSetPolygon(shapeId ShapeId, polygon Polygon) {
+func (b Shape) SetPolygon(polygon Polygon) {
 	polygonStack := copyToStack(b.tls, polygon)
 	defer polygonStack.Free()
-	b2Shape_SetPolygon(b.tls, shapeId, polygonStack.Addr)
+	b2Shape_SetPolygon(b.tls, b.Id, polygonStack.Addr)
 }
-func (b *Box2D) ShapeGetParentChain(shapeId ShapeId) (r ChainId) {
-	r = b2Shape_GetParentChain(b.tls, shapeId)
+func (b Shape) GetParentChain() (r Chain) {
+	r.tls = b.tls
+	r.Id = b2Shape_GetParentChain(b.tls, b.Id)
 	return
 }
-func (b *Box2D) ChainSetFriction(chainId ChainId, friction float32) {
-	b2Chain_SetFriction(b.tls, chainId, friction)
+func (b Chain) SetFriction(friction float32) {
+	b2Chain_SetFriction(b.tls, b.Id, friction)
 }
-func (b *Box2D) ChainGetFriction(chainId ChainId) (r float32) {
-	r = b2Chain_GetFriction(b.tls, chainId)
+func (b Chain) GetFriction() (r float32) {
+	r = b2Chain_GetFriction(b.tls, b.Id)
 	return
 }
-func (b *Box2D) ChainSetRestitution(chainId ChainId, restitution float32) {
-	b2Chain_SetRestitution(b.tls, chainId, restitution)
+func (b Chain) SetRestitution(restitution float32) {
+	b2Chain_SetRestitution(b.tls, b.Id, restitution)
 }
-func (b *Box2D) ChainGetRestitution(chainId ChainId) (r float32) {
-	r = b2Chain_GetRestitution(b.tls, chainId)
+func (b Chain) GetRestitution() (r float32) {
+	r = b2Chain_GetRestitution(b.tls, b.Id)
 	return
 }
-func (b *Box2D) ChainSetMaterial(chainId ChainId, material int32) {
-	b2Chain_SetMaterial(b.tls, chainId, material)
+func (b Chain) SetMaterial(material int32) {
+	b2Chain_SetMaterial(b.tls, b.Id, material)
 }
-func (b *Box2D) ChainGetMaterial(chainId ChainId) (r int32) {
-	r = b2Chain_GetMaterial(b.tls, chainId)
+func (b Chain) GetMaterial() (r int32) {
+	r = b2Chain_GetMaterial(b.tls, b.Id)
 	return
 }
-func (b *Box2D) ShapeGetContactCapacity(shapeId ShapeId) (r int32) {
-	r = b2Shape_GetContactCapacity(b.tls, shapeId)
+func (b Shape) GetContactCapacity() (r int32) {
+	r = b2Shape_GetContactCapacity(b.tls, b.Id)
 	return
 }
-func (b *Box2D) ShapeGetContactData(shapeId ShapeId, contactData *ContactData, capacity int32) (r int32) {
+func (b Shape) GetContactData(contactData *ContactData, capacity int32) (r int32) {
 	defer runtime.KeepAlive(contactData)
 	escapes(contactData)
-	r = b2Shape_GetContactData(b.tls, shapeId, uintptr(unsafe.Pointer(contactData)), capacity)
+	r = b2Shape_GetContactData(b.tls, b.Id, uintptr(unsafe.Pointer(contactData)), capacity)
 	return
 }
-func (b *Box2D) ShapeGetSensorCapacity(shapeId ShapeId) (r int32) {
-	r = b2Shape_GetSensorCapacity(b.tls, shapeId)
+func (b Shape) GetSensorCapacity() (r int32) {
+	r = b2Shape_GetSensorCapacity(b.tls, b.Id)
 	return
 }
-func (b *Box2D) ShapeGetSensorOverlaps(shapeId ShapeId, overlaps *ShapeId, capacity int32) (r int32) {
-	defer runtime.KeepAlive(overlaps)
-	escapes(overlaps)
-	r = b2Shape_GetSensorOverlaps(b.tls, shapeId, uintptr(unsafe.Pointer(overlaps)), capacity)
+func (b Shape) GetAABB() (r AABB) {
+	r = b2Shape_GetAABB(b.tls, b.Id)
 	return
 }
-func (b *Box2D) ShapeGetAABB(shapeId ShapeId) (r AABB) {
-	r = b2Shape_GetAABB(b.tls, shapeId)
+func (b Shape) GetMassData() (r MassData) {
+	r = b2Shape_GetMassData(b.tls, b.Id)
 	return
 }
-func (b *Box2D) ShapeGetMassData(shapeId ShapeId) (r MassData) {
-	r = b2Shape_GetMassData(b.tls, shapeId)
-	return
-}
-func (b *Box2D) ShapeGetClosestPoint(shapeId ShapeId, _target Vec2) (r Vec2) {
-	r = b2Shape_GetClosestPoint(b.tls, shapeId, _target)
+func (b Shape) GetClosestPoint(_target Vec2) (r Vec2) {
+	r = b2Shape_GetClosestPoint(b.tls, b.Id, _target)
 	return
 }
 func (b *Box2D) GetTicks() (r uint64) {
@@ -1449,245 +1485,246 @@ func (b *Box2D) DefaultDebugDraw() (r DebugDraw) {
 	r = b2DefaultDebugDraw(b.tls)
 	return
 }
-func (b *Box2D) WeldJointSetLinearHertz(jointId JointId, hertz float32) {
-	b2WeldJoint_SetLinearHertz(b.tls, jointId, hertz)
+func (b *Box2D) WeldJointSetLinearHertz(joint Joint, hertz float32) {
+	b2WeldJoint_SetLinearHertz(b.tls, joint.Id, hertz)
 }
-func (b *Box2D) WeldJointGetLinearHertz(jointId JointId) (r float32) {
-	r = b2WeldJoint_GetLinearHertz(b.tls, jointId)
+func (b *Box2D) WeldJointGetLinearHertz(joint Joint) (r float32) {
+	r = b2WeldJoint_GetLinearHertz(b.tls, joint.Id)
 	return
 }
-func (b *Box2D) WeldJointSetLinearDampingRatio(jointId JointId, dampingRatio float32) {
-	b2WeldJoint_SetLinearDampingRatio(b.tls, jointId, dampingRatio)
+func (b *Box2D) WeldJointSetLinearDampingRatio(joint Joint, dampingRatio float32) {
+	b2WeldJoint_SetLinearDampingRatio(b.tls, joint.Id, dampingRatio)
 }
-func (b *Box2D) WeldJointGetLinearDampingRatio(jointId JointId) (r float32) {
-	r = b2WeldJoint_GetLinearDampingRatio(b.tls, jointId)
+func (b *Box2D) WeldJointGetLinearDampingRatio(joint Joint) (r float32) {
+	r = b2WeldJoint_GetLinearDampingRatio(b.tls, joint.Id)
 	return
 }
-func (b *Box2D) WeldJointSetAngularHertz(jointId JointId, hertz float32) {
-	b2WeldJoint_SetAngularHertz(b.tls, jointId, hertz)
+func (b *Box2D) WeldJointSetAngularHertz(joint Joint, hertz float32) {
+	b2WeldJoint_SetAngularHertz(b.tls, joint.Id, hertz)
 }
-func (b *Box2D) WeldJointGetAngularHertz(jointId JointId) (r float32) {
-	r = b2WeldJoint_GetAngularHertz(b.tls, jointId)
+func (b *Box2D) WeldJointGetAngularHertz(joint Joint) (r float32) {
+	r = b2WeldJoint_GetAngularHertz(b.tls, joint.Id)
 	return
 }
-func (b *Box2D) WeldJointSetAngularDampingRatio(jointId JointId, dampingRatio float32) {
-	b2WeldJoint_SetAngularDampingRatio(b.tls, jointId, dampingRatio)
+func (b *Box2D) WeldJointSetAngularDampingRatio(joint Joint, dampingRatio float32) {
+	b2WeldJoint_SetAngularDampingRatio(b.tls, joint.Id, dampingRatio)
 }
-func (b *Box2D) WeldJointGetAngularDampingRatio(jointId JointId) (r float32) {
-	r = b2WeldJoint_GetAngularDampingRatio(b.tls, jointId)
+func (b *Box2D) WeldJointGetAngularDampingRatio(joint Joint) (r float32) {
+	r = b2WeldJoint_GetAngularDampingRatio(b.tls, joint.Id)
 	return
 }
-func (b *Box2D) WheelJointEnableSpring(jointId JointId, enableSpring uint8) {
-	b2WheelJoint_EnableSpring(b.tls, jointId, enableSpring)
+func (b *Box2D) WheelJointEnableSpring(joint Joint, enableSpring uint8) {
+	b2WheelJoint_EnableSpring(b.tls, joint.Id, enableSpring)
 }
-func (b *Box2D) WheelJointIsSpringEnabled(jointId JointId) (r uint8) {
-	r = b2WheelJoint_IsSpringEnabled(b.tls, jointId)
+func (b *Box2D) WheelJointIsSpringEnabled(joint Joint) (r uint8) {
+	r = b2WheelJoint_IsSpringEnabled(b.tls, joint.Id)
 	return
 }
-func (b *Box2D) WheelJointSetSpringHertz(jointId JointId, hertz float32) {
-	b2WheelJoint_SetSpringHertz(b.tls, jointId, hertz)
+func (b *Box2D) WheelJointSetSpringHertz(joint Joint, hertz float32) {
+	b2WheelJoint_SetSpringHertz(b.tls, joint.Id, hertz)
 }
-func (b *Box2D) WheelJointGetSpringHertz(jointId JointId) (r float32) {
-	r = b2WheelJoint_GetSpringHertz(b.tls, jointId)
+func (b *Box2D) WheelJointGetSpringHertz(joint Joint) (r float32) {
+	r = b2WheelJoint_GetSpringHertz(b.tls, joint.Id)
 	return
 }
-func (b *Box2D) WheelJointSetSpringDampingRatio(jointId JointId, dampingRatio float32) {
-	b2WheelJoint_SetSpringDampingRatio(b.tls, jointId, dampingRatio)
+func (b *Box2D) WheelJointSetSpringDampingRatio(joint Joint, dampingRatio float32) {
+	b2WheelJoint_SetSpringDampingRatio(b.tls, joint.Id, dampingRatio)
 }
-func (b *Box2D) WheelJointGetSpringDampingRatio(jointId JointId) (r float32) {
-	r = b2WheelJoint_GetSpringDampingRatio(b.tls, jointId)
+func (b *Box2D) WheelJointGetSpringDampingRatio(joint Joint) (r float32) {
+	r = b2WheelJoint_GetSpringDampingRatio(b.tls, joint.Id)
 	return
 }
-func (b *Box2D) WheelJointEnableLimit(jointId JointId, enableLimit uint8) {
-	b2WheelJoint_EnableLimit(b.tls, jointId, enableLimit)
+func (b *Box2D) WheelJointEnableLimit(joint Joint, enableLimit uint8) {
+	b2WheelJoint_EnableLimit(b.tls, joint.Id, enableLimit)
 }
-func (b *Box2D) WheelJointIsLimitEnabled(jointId JointId) (r uint8) {
-	r = b2WheelJoint_IsLimitEnabled(b.tls, jointId)
+func (b *Box2D) WheelJointIsLimitEnabled(joint Joint) (r uint8) {
+	r = b2WheelJoint_IsLimitEnabled(b.tls, joint.Id)
 	return
 }
-func (b *Box2D) WheelJointGetLowerLimit(jointId JointId) (r float32) {
-	r = b2WheelJoint_GetLowerLimit(b.tls, jointId)
+func (b *Box2D) WheelJointGetLowerLimit(joint Joint) (r float32) {
+	r = b2WheelJoint_GetLowerLimit(b.tls, joint.Id)
 	return
 }
-func (b *Box2D) WheelJointGetUpperLimit(jointId JointId) (r float32) {
-	r = b2WheelJoint_GetUpperLimit(b.tls, jointId)
+func (b *Box2D) WheelJointGetUpperLimit(joint Joint) (r float32) {
+	r = b2WheelJoint_GetUpperLimit(b.tls, joint.Id)
 	return
 }
-func (b *Box2D) WheelJointSetLimits(jointId JointId, lower float32, upper float32) {
-	b2WheelJoint_SetLimits(b.tls, jointId, lower, upper)
+func (b *Box2D) WheelJointSetLimits(joint Joint, lower float32, upper float32) {
+	b2WheelJoint_SetLimits(b.tls, joint.Id, lower, upper)
 }
-func (b *Box2D) WheelJointEnableMotor(jointId JointId, enableMotor uint8) {
-	b2WheelJoint_EnableMotor(b.tls, jointId, enableMotor)
+func (b *Box2D) WheelJointEnableMotor(joint Joint, enableMotor uint8) {
+	b2WheelJoint_EnableMotor(b.tls, joint.Id, enableMotor)
 }
-func (b *Box2D) WheelJointIsMotorEnabled(jointId JointId) (r uint8) {
-	r = b2WheelJoint_IsMotorEnabled(b.tls, jointId)
+func (b *Box2D) WheelJointIsMotorEnabled(joint Joint) (r uint8) {
+	r = b2WheelJoint_IsMotorEnabled(b.tls, joint.Id)
 	return
 }
-func (b *Box2D) WheelJointSetMotorSpeed(jointId JointId, motorSpeed float32) {
-	b2WheelJoint_SetMotorSpeed(b.tls, jointId, motorSpeed)
+func (b *Box2D) WheelJointSetMotorSpeed(joint Joint, motorSpeed float32) {
+	b2WheelJoint_SetMotorSpeed(b.tls, joint.Id, motorSpeed)
 }
-func (b *Box2D) WheelJointGetMotorSpeed(jointId JointId) (r float32) {
-	r = b2WheelJoint_GetMotorSpeed(b.tls, jointId)
+func (b *Box2D) WheelJointGetMotorSpeed(joint Joint) (r float32) {
+	r = b2WheelJoint_GetMotorSpeed(b.tls, joint.Id)
 	return
 }
-func (b *Box2D) WheelJointGetMotorTorque(jointId JointId) (r float32) {
-	r = b2WheelJoint_GetMotorTorque(b.tls, jointId)
+func (b *Box2D) WheelJointGetMotorTorque(joint Joint) (r float32) {
+	r = b2WheelJoint_GetMotorTorque(b.tls, joint.Id)
 	return
 }
-func (b *Box2D) WheelJointSetMaxMotorTorque(jointId JointId, torque float32) {
-	b2WheelJoint_SetMaxMotorTorque(b.tls, jointId, torque)
+func (b *Box2D) WheelJointSetMaxMotorTorque(joint Joint, torque float32) {
+	b2WheelJoint_SetMaxMotorTorque(b.tls, joint.Id, torque)
 }
-func (b *Box2D) WheelJointGetMaxMotorTorque(jointId JointId) (r float32) {
-	r = b2WheelJoint_GetMaxMotorTorque(b.tls, jointId)
+func (b *Box2D) WheelJointGetMaxMotorTorque(joint Joint) (r float32) {
+	r = b2WheelJoint_GetMaxMotorTorque(b.tls, joint.Id)
 	return
 }
-func (b *Box2D) CreateWorld(def WorldDef) (r WorldId) {
+func (b *Box2D) CreateWorld(def WorldDef) (r World) {
 	defStack := copyToStack(b.tls, def)
 	defer defStack.Free()
-	r = b2CreateWorld(b.tls, defStack.Addr)
+	r.tls = b.tls
+	r.Id = b2CreateWorld(b.tls, defStack.Addr)
 	return
 }
-func (b *Box2D) DestroyWorld(worldId WorldId) {
-	b2DestroyWorld(b.tls, worldId)
+func (b *Box2D) DestroyWorld(world World) {
+	b2DestroyWorld(b.tls, world.Id)
 }
-func (b *Box2D) WorldStep(worldId WorldId, timeStep float32, subStepCount int32) {
-	b2World_Step(b.tls, worldId, timeStep, subStepCount)
+func (b World) Step(timeStep float32, subStepCount int32) {
+	b2World_Step(b.tls, b.Id, timeStep, subStepCount)
 }
-func (b *Box2D) WorldDraw(worldId WorldId, draw *DebugDraw) {
+func (b World) Draw(draw *DebugDraw) {
 	defer runtime.KeepAlive(draw)
 	escapes(draw)
-	b2World_Draw(b.tls, worldId, uintptr(unsafe.Pointer(draw)))
+	b2World_Draw(b.tls, b.Id, uintptr(unsafe.Pointer(draw)))
 }
-func (b *Box2D) WorldIsValid(id WorldId) (r uint8) {
-	r = b2World_IsValid(b.tls, id)
+func (b World) IsValid() (r uint8) {
+	r = b2World_IsValid(b.tls, b.Id)
 	return
 }
-func (b *Box2D) BodyIsValid(id BodyId) (r uint8) {
-	r = b2Body_IsValid(b.tls, id)
+func (b Body) IsValid() (r uint8) {
+	r = b2Body_IsValid(b.tls, b.Id)
 	return
 }
-func (b *Box2D) ShapeIsValid(id ShapeId) (r uint8) {
-	r = b2Shape_IsValid(b.tls, id)
+func (b Shape) IsValid() (r uint8) {
+	r = b2Shape_IsValid(b.tls, b.Id)
 	return
 }
-func (b *Box2D) ChainIsValid(id ChainId) (r uint8) {
-	r = b2Chain_IsValid(b.tls, id)
+func (b Chain) IsValid() (r uint8) {
+	r = b2Chain_IsValid(b.tls, b.Id)
 	return
 }
-func (b *Box2D) JointIsValid(id JointId) (r uint8) {
-	r = b2Joint_IsValid(b.tls, id)
+func (b Joint) IsValid() (r uint8) {
+	r = b2Joint_IsValid(b.tls, b.Id)
 	return
 }
-func (b *Box2D) WorldEnableSleeping(worldId WorldId, flag uint8) {
-	b2World_EnableSleeping(b.tls, worldId, flag)
+func (b World) EnableSleeping(flag uint8) {
+	b2World_EnableSleeping(b.tls, b.Id, flag)
 }
-func (b *Box2D) WorldIsSleepingEnabled(worldId WorldId) (r uint8) {
-	r = b2World_IsSleepingEnabled(b.tls, worldId)
+func (b World) IsSleepingEnabled() (r uint8) {
+	r = b2World_IsSleepingEnabled(b.tls, b.Id)
 	return
 }
-func (b *Box2D) WorldEnableWarmStarting(worldId WorldId, flag uint8) {
-	b2World_EnableWarmStarting(b.tls, worldId, flag)
+func (b World) EnableWarmStarting(flag uint8) {
+	b2World_EnableWarmStarting(b.tls, b.Id, flag)
 }
-func (b *Box2D) WorldIsWarmStartingEnabled(worldId WorldId) (r uint8) {
-	r = b2World_IsWarmStartingEnabled(b.tls, worldId)
+func (b World) IsWarmStartingEnabled() (r uint8) {
+	r = b2World_IsWarmStartingEnabled(b.tls, b.Id)
 	return
 }
-func (b *Box2D) WorldGetAwakeBodyCount(worldId WorldId) (r int32) {
-	r = b2World_GetAwakeBodyCount(b.tls, worldId)
+func (b World) GetAwakeBodyCount() (r int32) {
+	r = b2World_GetAwakeBodyCount(b.tls, b.Id)
 	return
 }
-func (b *Box2D) WorldEnableContinuous(worldId WorldId, flag uint8) {
-	b2World_EnableContinuous(b.tls, worldId, flag)
+func (b World) EnableContinuous(flag uint8) {
+	b2World_EnableContinuous(b.tls, b.Id, flag)
 }
-func (b *Box2D) WorldIsContinuousEnabled(worldId WorldId) (r uint8) {
-	r = b2World_IsContinuousEnabled(b.tls, worldId)
+func (b World) IsContinuousEnabled() (r uint8) {
+	r = b2World_IsContinuousEnabled(b.tls, b.Id)
 	return
 }
-func (b *Box2D) WorldSetRestitutionThreshold(worldId WorldId, value float32) {
-	b2World_SetRestitutionThreshold(b.tls, worldId, value)
+func (b World) SetRestitutionThreshold(value float32) {
+	b2World_SetRestitutionThreshold(b.tls, b.Id, value)
 }
-func (b *Box2D) WorldGetRestitutionThreshold(worldId WorldId) (r float32) {
-	r = b2World_GetRestitutionThreshold(b.tls, worldId)
+func (b World) GetRestitutionThreshold() (r float32) {
+	r = b2World_GetRestitutionThreshold(b.tls, b.Id)
 	return
 }
-func (b *Box2D) WorldSetHitEventThreshold(worldId WorldId, value float32) {
-	b2World_SetHitEventThreshold(b.tls, worldId, value)
+func (b World) SetHitEventThreshold(value float32) {
+	b2World_SetHitEventThreshold(b.tls, b.Id, value)
 }
-func (b *Box2D) WorldGetHitEventThreshold(worldId WorldId) (r float32) {
-	r = b2World_GetHitEventThreshold(b.tls, worldId)
+func (b World) GetHitEventThreshold() (r float32) {
+	r = b2World_GetHitEventThreshold(b.tls, b.Id)
 	return
 }
-func (b *Box2D) WorldSetContactTuning(worldId WorldId, hertz float32, dampingRatio float32, pushSpeed float32) {
-	b2World_SetContactTuning(b.tls, worldId, hertz, dampingRatio, pushSpeed)
+func (b World) SetContactTuning(hertz float32, dampingRatio float32, pushSpeed float32) {
+	b2World_SetContactTuning(b.tls, b.Id, hertz, dampingRatio, pushSpeed)
 }
-func (b *Box2D) WorldSetMaximumLinearSpeed(worldId WorldId, maximumLinearSpeed float32) {
-	b2World_SetMaximumLinearSpeed(b.tls, worldId, maximumLinearSpeed)
+func (b World) SetMaximumLinearSpeed(maximumLinearSpeed float32) {
+	b2World_SetMaximumLinearSpeed(b.tls, b.Id, maximumLinearSpeed)
 }
-func (b *Box2D) WorldGetMaximumLinearSpeed(worldId WorldId) (r float32) {
-	r = b2World_GetMaximumLinearSpeed(b.tls, worldId)
+func (b World) GetMaximumLinearSpeed() (r float32) {
+	r = b2World_GetMaximumLinearSpeed(b.tls, b.Id)
 	return
 }
-func (b *Box2D) WorldGetProfile(worldId WorldId) (r Profile) {
-	r = b2World_GetProfile(b.tls, worldId)
+func (b World) GetProfile() (r Profile) {
+	r = b2World_GetProfile(b.tls, b.Id)
 	return
 }
-func (b *Box2D) WorldGetCounters(worldId WorldId) (r Counters) {
-	r = b2World_GetCounters(b.tls, worldId)
+func (b World) GetCounters() (r Counters) {
+	r = b2World_GetCounters(b.tls, b.Id)
 	return
 }
-func (b *Box2D) WorldSetUserData(worldId WorldId, userData uintptr) {
-	b2World_SetUserData(b.tls, worldId, userData)
+func (b World) SetUserData(userData uintptr) {
+	b2World_SetUserData(b.tls, b.Id, userData)
 }
-func (b *Box2D) WorldGetUserData(worldId WorldId) (r uintptr) {
-	r = b2World_GetUserData(b.tls, worldId)
+func (b World) GetUserData() (r uintptr) {
+	r = b2World_GetUserData(b.tls, b.Id)
 	return
 }
-func (b *Box2D) WorldDumpMemoryStats(worldId WorldId) {
-	b2World_DumpMemoryStats(b.tls, worldId)
+func (b World) DumpMemoryStats() {
+	b2World_DumpMemoryStats(b.tls, b.Id)
 }
-func (b *Box2D) WorldOverlapShape(worldId WorldId, proxy ShapeProxy, filter QueryFilter, fcn uintptr, context uintptr) (r1 TreeStats) {
+func (b World) OverlapShape(proxy ShapeProxy, filter QueryFilter, fcn uintptr, context uintptr) (r1 TreeStats) {
 	proxyStack := copyToStack(b.tls, proxy)
 	defer proxyStack.Free()
-	r1 = b2World_OverlapShape(b.tls, worldId, proxyStack.Addr, filter, fcn, context)
+	r1 = b2World_OverlapShape(b.tls, b.Id, proxyStack.Addr, filter, fcn, context)
 	return
 }
-func (b *Box2D) WorldCastRay(worldId WorldId, origin Vec2, translation Vec2, filter QueryFilter, fcn uintptr, context uintptr) (r TreeStats) {
-	r = b2World_CastRay(b.tls, worldId, origin, translation, filter, fcn, context)
+func (b World) CastRay(origin Vec2, translation Vec2, filter QueryFilter, fcn uintptr, context uintptr) (r TreeStats) {
+	r = b2World_CastRay(b.tls, b.Id, origin, translation, filter, fcn, context)
 	return
 }
-func (b *Box2D) WorldCastRayClosest(worldId WorldId, origin Vec2, translation Vec2, filter QueryFilter) (r RayResult) {
-	r = b2World_CastRayClosest(b.tls, worldId, origin, translation, filter)
+func (b World) CastRayClosest(origin Vec2, translation Vec2, filter QueryFilter) (r RayResult) {
+	r = b2World_CastRayClosest(b.tls, b.Id, origin, translation, filter)
 	return
 }
-func (b *Box2D) WorldCastShape(worldId WorldId, proxy ShapeProxy, translation Vec2, filter QueryFilter, fcn uintptr, context uintptr) (r TreeStats) {
+func (b World) CastShape(proxy ShapeProxy, translation Vec2, filter QueryFilter, fcn uintptr, context uintptr) (r TreeStats) {
 	proxyStack := copyToStack(b.tls, proxy)
 	defer proxyStack.Free()
-	r = b2World_CastShape(b.tls, worldId, proxyStack.Addr, translation, filter, fcn, context)
+	r = b2World_CastShape(b.tls, b.Id, proxyStack.Addr, translation, filter, fcn, context)
 	return
 }
-func (b *Box2D) WorldCastMover(worldId WorldId, mover Capsule, translation Vec2, filter QueryFilter) (r float32) {
+func (b World) CastMover(mover Capsule, translation Vec2, filter QueryFilter) (r float32) {
 	moverStack := copyToStack(b.tls, mover)
 	defer moverStack.Free()
-	r = b2World_CastMover(b.tls, worldId, moverStack.Addr, translation, filter)
+	r = b2World_CastMover(b.tls, b.Id, moverStack.Addr, translation, filter)
 	return
 }
-func (b *Box2D) WorldSetGravity(worldId WorldId, gravity Vec2) {
-	b2World_SetGravity(b.tls, worldId, gravity)
+func (b World) SetGravity(gravity Vec2) {
+	b2World_SetGravity(b.tls, b.Id, gravity)
 }
-func (b *Box2D) WorldGetGravity(worldId WorldId) (r Vec2) {
-	r = b2World_GetGravity(b.tls, worldId)
+func (b World) GetGravity() (r Vec2) {
+	r = b2World_GetGravity(b.tls, b.Id)
 	return
 }
-func (b *Box2D) WorldExplode(worldId WorldId, explosionDef ExplosionDef) {
+func (b World) Explode(explosionDef ExplosionDef) {
 	explosionDefStack := copyToStack(b.tls, explosionDef)
 	defer explosionDefStack.Free()
-	b2World_Explode(b.tls, worldId, explosionDefStack.Addr)
+	b2World_Explode(b.tls, b.Id, explosionDefStack.Addr)
 }
-func (b *Box2D) WorldRebuildStaticTree(worldId WorldId) {
-	b2World_RebuildStaticTree(b.tls, worldId)
+func (b World) RebuildStaticTree() {
+	b2World_RebuildStaticTree(b.tls, b.Id)
 }
-func (b *Box2D) WorldEnableSpeculative(worldId WorldId, flag uint8) {
-	b2World_EnableSpeculative(b.tls, worldId, flag)
+func (b World) EnableSpeculative(flag uint8) {
+	b2World_EnableSpeculative(b.tls, b.Id, flag)
 }
 
 const ToiStateUnknown TOIState = b2_toiStateUnknown

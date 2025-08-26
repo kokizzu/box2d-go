@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"go/ast"
 	"go/format"
 	"go/parser"
@@ -33,6 +34,11 @@ extern void* __builtin_aligned_alloc(size_t align, size_t size);
 `
 
 func main() {
+	var noTranspile bool
+
+	flag.BoolVar(&noTranspile, "no-transpile", true, "do not transpile the c sources")
+	flag.Parse()
+
 	goos := runtime.GOOS
 	goarch := runtime.GOARCH
 
@@ -53,7 +59,7 @@ func main() {
 
 	args = append(args, files...)
 
-	if true {
+	if !noTranspile {
 		slog.Info("Transpile c to go")
 		err := ccgo.NewTask(goos, goarch, args, os.Stdout, os.Stderr, nil).Main()
 		must(err)
@@ -110,6 +116,8 @@ func main() {
 			},
 		},
 	})
+
+	createClassTypes(&decls)
 
 	slog.Info("Generate go source for box2d api")
 	ast.Inspect(root, exportTypes(&decls, api.Exposed))
@@ -246,6 +254,33 @@ func exportVars(decls *[]ast.Decl, api map[string]bool) Visitor {
 	}
 }
 
+func createClassTypes(decls *[]ast.Decl) {
+	for _, ty := range classTypes {
+		*decls = append(*decls, &ast.GenDecl{
+			Tok: token.TYPE,
+			Specs: []ast.Spec{
+				&ast.TypeSpec{
+					Name: ast.NewIdent(ty.Name),
+					Type: &ast.StructType{
+						Fields: &ast.FieldList{
+							List: []*ast.Field{
+								{
+									Names: []*ast.Ident{ast.NewIdent("Id")},
+									Type:  ast.NewIdent(ty.IdType),
+								},
+								{
+									Names: []*ast.Ident{ast.NewIdent("tls")},
+									Type:  &ast.StarExpr{X: ast.NewIdent("TLS")},
+								},
+							},
+						},
+					},
+				},
+			},
+		})
+	}
+}
+
 func createWrappers(decls *[]ast.Decl, api API) Visitor {
 	return func(node ast.Node) bool {
 		decl, ok := node.(*ast.FuncDecl)
@@ -255,6 +290,21 @@ func createWrappers(decls *[]ast.Decl, api API) Visitor {
 
 		if !api.Exposed[decl.Name.Name] {
 			return true
+		}
+
+		var classType *ClassTypes
+
+		for idx := range classTypes {
+			ty := &classTypes[idx]
+			if strings.HasPrefix(decl.Name.Name, ty.FnPrefix) {
+				if decl.Type.Params != nil && len(decl.Type.Params.List) >= 2 {
+					arg0, ok := decl.Type.Params.List[1].Type.(*ast.Ident)
+					if ok && arg0.Name == ty.IdType {
+						classType = ty
+						break
+					}
+				}
+			}
 		}
 
 		var args []ast.Expr
@@ -354,6 +404,17 @@ func createWrappers(decls *[]ast.Decl, api API) Visitor {
 					}
 				}
 
+				if classType := getClassTypeById(identOf(paramType)); classType != nil {
+					name.Name = strings.TrimSuffix(name.Name, "Id")
+
+					paramType = ast.NewIdent(classType.Name)
+
+					arg = &ast.SelectorExpr{
+						X:   arg,
+						Sel: ast.NewIdent("Id"),
+					}
+				}
+
 				paramTypes = append(paramTypes, &ast.Field{
 					Names: []*ast.Ident{name},
 					Type:  paramType,
@@ -367,6 +428,11 @@ func createWrappers(decls *[]ast.Decl, api API) Visitor {
 		if decl.Type.Results != nil {
 			for _, param := range decl.Type.Results.List {
 				ty := renameApiIdent(param, api.Exposed)
+
+				wrapTy := getClassTypeById(identOf(ty))
+				if wrapTy != nil {
+					ty = ast.NewIdent(wrapTy.Name)
+				}
 
 				for _, name := range param.Names {
 					returnTypes = append(returnTypes, &ast.Field{
@@ -390,38 +456,111 @@ func createWrappers(decls *[]ast.Decl, api API) Visitor {
 
 			for _, ret := range decl.Type.Results.List {
 				for _, name := range ret.Names {
-					assign.Lhs = append(assign.Lhs, name)
+					isWrapper := getClassTypeById(identOf(ret.Type)) != nil
+					if isWrapper {
+						assign.Lhs = append(assign.Lhs, &ast.SelectorExpr{
+							X:   name,
+							Sel: ast.NewIdent("Id"),
+						})
+
+						// body.tls = b.tls
+						body = append(body, &ast.AssignStmt{
+							Tok: token.ASSIGN,
+							Lhs: []ast.Expr{
+								&ast.SelectorExpr{
+									X:   name,
+									Sel: ast.NewIdent("tls"),
+								},
+							},
+							Rhs: []ast.Expr{
+								&ast.SelectorExpr{
+									X:   ast.NewIdent("b"),
+									Sel: ast.NewIdent("tls"),
+								},
+							},
+						})
+					} else {
+						assign.Lhs = append(assign.Lhs, name)
+					}
 				}
 			}
 
 			body = append(body, assign)
+
 			body = append(body, &ast.ReturnStmt{})
 		} else {
 			body = append(body, &ast.ExprStmt{X: call})
 		}
 
-		fdecl := &ast.FuncDecl{
-			Name: ast.NewIdent(strings.ReplaceAll(decl.Name.Name[2:], "_", "")),
-			Recv: &ast.FieldList{
-				List: []*ast.Field{
-					{
-						Names: []*ast.Ident{ast.NewIdent("b")},
-						Type:  &ast.StarExpr{X: ast.NewIdent("Box2D")},
+		var fdecl *ast.FuncDecl
+
+		if classType != nil {
+			// adjust the id parameter value to come from the wrapper type
+			args[1] = &ast.SelectorExpr{
+				X:   ast.NewIdent("b"),
+				Sel: ast.NewIdent("Id"),
+			}
+
+			fdecl = &ast.FuncDecl{
+				Name: ast.NewIdent(strings.TrimPrefix(decl.Name.Name, classType.FnPrefix)),
+				Recv: &ast.FieldList{
+					List: []*ast.Field{
+						{
+							Names: []*ast.Ident{ast.NewIdent("b")},
+							Type:  ast.NewIdent(classType.Name),
+						},
 					},
 				},
-			},
-			Type: &ast.FuncType{
-				TypeParams: decl.Type.TypeParams,
-				Params:     &ast.FieldList{List: paramTypes},
-				Results:    &ast.FieldList{List: returnTypes},
-			},
-			Body: &ast.BlockStmt{List: body},
+				Type: &ast.FuncType{
+					TypeParams: decl.Type.TypeParams,
+					Params:     &ast.FieldList{List: paramTypes[1:]},
+					Results:    &ast.FieldList{List: returnTypes},
+				},
+				Body: &ast.BlockStmt{List: body},
+			}
+		} else {
+			// normal method
+			fdecl = &ast.FuncDecl{
+				Name: ast.NewIdent(strings.ReplaceAll(decl.Name.Name[2:], "_", "")),
+				Recv: &ast.FieldList{
+					List: []*ast.Field{
+						{
+							Names: []*ast.Ident{ast.NewIdent("b")},
+							Type:  &ast.StarExpr{X: ast.NewIdent("Box2D")},
+						},
+					},
+				},
+				Type: &ast.FuncType{
+					TypeParams: decl.Type.TypeParams,
+					Params:     &ast.FieldList{List: paramTypes},
+					Results:    &ast.FieldList{List: returnTypes},
+				},
+				Body: &ast.BlockStmt{List: body},
+			}
 		}
 
 		*decls = append(*decls, fdecl)
 
 		return true
 	}
+}
+
+func needClassTypeWrap(list []*ast.Field) bool {
+	for _, f := range list {
+		if getClassTypeById(identOf(f.Type)) != nil {
+			return true
+		}
+	}
+
+	return false
+}
+
+func identOf(expr ast.Expr) string {
+	if ident, ok := expr.(*ast.Ident); ok {
+		return ident.Name
+	}
+
+	return ""
 }
 
 func isUintptr(expr ast.Expr) bool {
@@ -456,13 +595,15 @@ func fixQSortInvocation() astutil.ApplyFunc {
 		if call, ok := cursor.Node().(*ast.CallExpr); ok {
 			if name, ok := call.Fun.(*ast.Ident); ok {
 				if name.Name == "qsort" {
-					ccgoCall := call.Args[4].(*ast.CallExpr)
+					ccgoCall, ok := call.Args[4].(*ast.CallExpr)
+					if ok {
 
-					if ccgoCall.Fun.(*ast.Ident).Name != "__ccgo_fp" {
-						panic("expected call to __ccgo_fp")
+						if ccgoCall.Fun.(*ast.Ident).Name != "__ccgo_fp" {
+							panic("expected call to __ccgo_fp")
+						}
+
+						call.Args[4] = ccgoCall.Args[0]
 					}
-
-					call.Args[4] = ccgoCall.Args[0]
 				}
 			}
 		}
@@ -590,6 +731,7 @@ func readAPI() API {
 	api.Exposed["b2Body_GetJoints"] = false
 	api.Exposed["b2Body_GetShapes"] = false
 	api.Exposed["b2Chain_GetSegments"] = false
+	api.Exposed["b2Shape_GetSensorOverlaps"] = false
 
 	api.Exposed["b2World_CollideMover"] = false
 	api.Exposed["b2World_SetRestitutionCallback"] = false
@@ -640,4 +782,48 @@ func cleanApiName(api map[string]bool, name string) string {
 	}
 
 	return name
+}
+
+type ClassTypes struct {
+	Name     string
+	IdType   string
+	FnPrefix string
+}
+
+var classTypes = []ClassTypes{
+	{
+		Name:     "Body",
+		IdType:   "BodyId",
+		FnPrefix: "b2Body_",
+	},
+	{
+		Name:     "Shape",
+		IdType:   "ShapeId",
+		FnPrefix: "b2Shape_",
+	},
+	{
+		Name:     "World",
+		IdType:   "WorldId",
+		FnPrefix: "b2World_",
+	},
+	{
+		Name:     "Joint",
+		IdType:   "JointId",
+		FnPrefix: "b2Joint_",
+	},
+	{
+		Name:     "Chain",
+		IdType:   "ChainId",
+		FnPrefix: "b2Chain_",
+	},
+}
+
+func getClassTypeById(idType string) *ClassTypes {
+	for idx := range classTypes {
+		if classTypes[idx].IdType == idType {
+			return &classTypes[idx]
+		}
+	}
+
+	return nil
 }

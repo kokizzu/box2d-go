@@ -21,7 +21,7 @@ func NewTLS(stackSize int) *TLS {
 	}
 }
 
-func StackAlloc[T any](tls *TLS) *T {
+func stackAlloc[T any](tls *TLS) *T {
 	var tZero T
 	ptr := tls.Alloc(int(unsafe.Sizeof(tZero)))
 	return (*T)(unsafe.Pointer(ptr))
@@ -59,6 +59,17 @@ func (tls *TLS) Free(n int) uintptr {
 	tls.pos -= n
 
 	return 0
+}
+
+func (tls *TLS) toCString(src string) alloc {
+	n := len(src) + 1
+	mem := tls.Alloc(n)
+
+	buf := sliceOf(mem, size_t(n))
+	copy(buf, src)
+	buf[n-1] = 0
+
+	return alloc{Addr: mem, tls: tls, size: n}
 }
 
 type alloc struct {
