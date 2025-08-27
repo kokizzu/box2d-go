@@ -1,4 +1,4 @@
-module github.com/oliverbestmann/box2d/transpile
+module github.com/oliverbestmann/box2d-go/transpile
 
 go 1.24.5
 
