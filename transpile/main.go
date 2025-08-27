@@ -98,6 +98,7 @@ func main() {
 	root = astutil.Apply(root, nil, fixQSortInvocation())
 	root = astutil.Apply(root, nil, useApiTypes(api.ExposedTypes))
 	ast.Inspect(root, renameApiTypes(api.ExposedTypes))
+	ast.Inspect(root, removeTypeAliases())
 
 	writeSource("../box2d_c.go", root)
 
@@ -124,7 +125,6 @@ func main() {
 	createClassTypes(&decls)
 
 	slog.Info("Generate go source for box2d api")
-	// ast.Inspect(root, exportTypes(&decls, api.ExposedTypes))
 	ast.Inspect(root, createWrappers(&decls, api))
 	ast.Inspect(root, exportVars(&decls, api.Exposed))
 
@@ -187,28 +187,15 @@ func renameApiTypes(api map[string]bool) Visitor {
 	}
 }
 
-func exportTypes(decls *[]ast.Decl, api map[string]bool) Visitor {
+func removeTypeAliases() Visitor {
 	return func(node ast.Node) bool {
-		spec, ok := node.(*ast.TypeSpec)
-		if !ok {
-			return true
+		switch node := node.(type) {
+		case *ast.TypeSpec:
+			_, ok := node.Type.(*ast.StructType)
+			if ok {
+				node.Assign = token.NoPos
+			}
 		}
-
-		if !api[spec.Name.Name] {
-			return true
-		}
-
-		// type X = b2X
-		*decls = append(*decls, &ast.GenDecl{
-			Tok: token.TYPE,
-			Specs: []ast.Spec{
-				&ast.TypeSpec{
-					Name:   ast.NewIdent(spec.Name.Name[2:]),
-					Type:   spec.Name,
-					Assign: token.Pos(1),
-				},
-			},
-		})
 
 		return true
 	}

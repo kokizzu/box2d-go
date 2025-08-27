@@ -77,7 +77,7 @@ func (b Body) GetJoints(reuse []Joint) []Joint {
 	items := reuse[:0]
 
 	// copy the items
-	for _, itemId := range unsafe.Slice((*ShapeId)(unsafe.Pointer(ptr)), itemCount) {
+	for _, itemId := range unsafe.Slice((*JointId)(unsafe.Pointer(ptr)), itemCount) {
 		items = append(items, Joint{tls: b.tls, Id: itemId})
 	}
 
