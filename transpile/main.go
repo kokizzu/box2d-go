@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"flag"
 	"go/ast"
 	"go/format"
@@ -34,6 +35,8 @@ extern void* __builtin_aligned_alloc(size_t align, size_t size);
 `
 
 func main() {
+	// defer profile.Start(profile.CPUProfile).Stop()
+
 	var noTranspile bool
 
 	flag.BoolVar(&noTranspile, "no-transpile", false, "do not transpile the c sources")
@@ -121,7 +124,7 @@ func main() {
 	createClassTypes(&decls)
 
 	slog.Info("Generate go source for box2d api")
-	// ast.Inspect(root, exportTypes(&decls, api.Exposed))
+	// ast.Inspect(root, exportTypes(&decls, api.ExposedTypes))
 	ast.Inspect(root, createWrappers(&decls, api))
 	ast.Inspect(root, exportVars(&decls, api.Exposed))
 
@@ -138,7 +141,10 @@ func writeSource(target string, src ast.Node) {
 	must(err)
 	defer fp.Close()
 
-	must(format.Node(fp, token.NewFileSet(), src))
+	w := bufio.NewWriter(fp)
+	defer func() { must(w.Flush()) }()
+
+	must(format.Node(w, token.NewFileSet(), src))
 }
 
 func useApiTypes(api map[string]bool) astutil.ApplyFunc {
@@ -727,6 +733,7 @@ func readAPI() API {
 
 		for _, match := range reType.FindAllStringSubmatch(string(src), -1) {
 			api.ExposedTypes[match[1]] = true
+			api.Exposed[match[1]] = true
 		}
 
 		for _, match := range reFunc.FindAllStringSubmatch(string(src), -1) {
