@@ -8,19 +8,15 @@ import (
 )
 
 func b2New(gravity float64) Physics {
-	b := box2d.NewBox2D()
-
-	def := b.DefaultWorldDef()
+	def := box2d.DefaultWorldDef()
 	def.Gravity = box2d.Vec2{Y: float32(gravity)}
 
 	return &Box2D{
-		Box:   b,
-		World: b.CreateWorld(def),
+		World: box2d.CreateWorld(def),
 	}
 }
 
 type Box2D struct {
-	Box   *box2d.Box2D
 	World box2d.World
 }
 
@@ -36,25 +32,25 @@ func (ph Box2D) CreateSquare(halfSize float64, centerX, centerY float64) Body {
 	tr.P.Y = float32(centerY)
 	tr.Q.C = 1
 
-	def := ph.Box.DefaultBodyDef()
+	def := box2d.DefaultBodyDef()
 	def.Type1 = box2d.DynamicBody
 	body := ph.World.CreateBody(def)
 	body.SetTransform(tr.P, tr.Q)
 
-	shape := ph.Box.DefaultShapeDef()
+	shape := box2d.DefaultShapeDef()
 	shape.Density = 1
 	shape.Material.Restitution = 0
 	shape.Material.Friction = 1
-	body.CreatePolygonShape(shape, ph.Box.MakeSquare(float32(halfSize)))
+	body.CreatePolygonShape(shape, box2d.MakeSquare(float32(halfSize)))
 
 	return &b2Body{shape: p, body: body}
 }
 
 func (ph Box2D) CreateStaticLine(x0, y0, x1, y1 float64) Body {
-	def := ph.Box.DefaultBodyDef()
+	def := box2d.DefaultBodyDef()
 	def.Type1 = box2d.StaticBody
 
-	shape := ph.Box.DefaultShapeDef()
+	shape := box2d.DefaultShapeDef()
 	shape.Density = 1
 	shape.Material.Restitution = 0
 	shape.Material.Friction = 1

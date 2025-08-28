@@ -5,6 +5,8 @@ import (
 	"unsafe"
 )
 
+var theStack *_Stack = newStack(1024 * 256)
+
 type _Stack struct {
 	Stack  []byte
 	allocs []int
@@ -14,17 +16,11 @@ type _Stack struct {
 }
 
 //go:noinline
-func NewTLS(stackSize int) *_Stack {
+func newStack(stackSize int) *_Stack {
 	return &_Stack{
 		Stack: make([]byte, stackSize),
 		heap:  make(map[uintptr]unsafe.Pointer, 4096),
 	}
-}
-
-func stackAlloc[T any](tls *_Stack) *T {
-	var tZero T
-	ptr := tls.Alloc(int(unsafe.Sizeof(tZero)))
-	return (*T)(unsafe.Pointer(ptr))
 }
 
 func (tls *_Stack) Alloc(n int) uintptr {

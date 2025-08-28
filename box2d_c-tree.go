@@ -58,6 +58,18 @@ func b2DynamicTree_CreateProxy(tls *_Stack, tree uintptr, aabb AABB, categoryBit
 	var proxyId int32
 	var shouldRotate uint8
 	_, _, _ = node, proxyId, shouldRotate
+	if !(-float32(float32FromFloat32(100000)*b2_lengthUnitsPerMeter) < aabb.LowerBound.X && aabb.LowerBound.X < float32(float32FromFloat32(100000)*b2_lengthUnitsPerMeter)) && b2InternalAssertFcn(tls, __ccgo_ts+5228, __ccgo_ts+4746, int32FromInt32(772)) != 0 {
+		__builtin_trap(tls)
+	}
+	if !(-float32(float32FromFloat32(100000)*b2_lengthUnitsPerMeter) < aabb.LowerBound.Y && aabb.LowerBound.Y < float32(float32FromFloat32(100000)*b2_lengthUnitsPerMeter)) && b2InternalAssertFcn(tls, __ccgo_ts+5288, __ccgo_ts+4746, int32FromInt32(773)) != 0 {
+		__builtin_trap(tls)
+	}
+	if !(-float32(float32FromFloat32(100000)*b2_lengthUnitsPerMeter) < aabb.UpperBound.X && aabb.UpperBound.X < float32(float32FromFloat32(100000)*b2_lengthUnitsPerMeter)) && b2InternalAssertFcn(tls, __ccgo_ts+5348, __ccgo_ts+4746, int32FromInt32(774)) != 0 {
+		__builtin_trap(tls)
+	}
+	if !(-float32(float32FromFloat32(100000)*b2_lengthUnitsPerMeter) < aabb.UpperBound.Y && aabb.UpperBound.Y < float32(float32FromFloat32(100000)*b2_lengthUnitsPerMeter)) && b2InternalAssertFcn(tls, __ccgo_ts+5408, __ccgo_ts+4746, int32FromInt32(775)) != 0 {
+		__builtin_trap(tls)
+	}
 	proxyId = b2AllocateNode(tls, tree)
 	node = (*DynamicTree)(unsafe.Pointer(tree)).Nodes + uintptr(proxyId)*40
 	(*b2TreeNode)(unsafe.Pointer(node)).Aabb = aabb
@@ -72,8 +84,17 @@ func b2DynamicTree_CreateProxy(tls *_Stack, tree uintptr, aabb AABB, categoryBit
 }
 
 func b2DynamicTree_DestroyProxy(tls *_Stack, tree uintptr, proxyId int32) {
+	if !(0 <= proxyId && proxyId < (*DynamicTree)(unsafe.Pointer(tree)).NodeCapacity) && b2InternalAssertFcn(tls, __ccgo_ts+5468, __ccgo_ts+4746, int32FromInt32(796)) != 0 {
+		__builtin_trap(tls)
+	}
+	if !(b2IsLeaf(tls, (*DynamicTree)(unsafe.Pointer(tree)).Nodes+uintptr(proxyId)*40) != 0) && b2InternalAssertFcn(tls, __ccgo_ts+5513, __ccgo_ts+4746, int32FromInt32(797)) != 0 {
+		__builtin_trap(tls)
+	}
 	b2RemoveLeaf(tls, tree, proxyId)
 	b2FreeNode(tls, tree, proxyId)
+	if !((*DynamicTree)(unsafe.Pointer(tree)).ProxyCount > int32FromInt32(0)) && b2InternalAssertFcn(tls, __ccgo_ts+5547, __ccgo_ts+4746, int32FromInt32(802)) != 0 {
+		__builtin_trap(tls)
+	}
 	*(*int32)(unsafe.Pointer(tree + 24)) -= int32(1)
 }
 
@@ -84,6 +105,21 @@ func b2DynamicTree_GetProxyCount(tls *_Stack, tree uintptr) (r int32) {
 func b2DynamicTree_MoveProxy(tls *_Stack, tree uintptr, proxyId int32, aabb AABB) {
 	var shouldRotate uint8
 	_ = shouldRotate
+	if !(b2IsValidAABB(tls, aabb) != 0) && b2InternalAssertFcn(tls, __ccgo_ts+5568, __ccgo_ts+4746, int32FromInt32(813)) != 0 {
+		__builtin_trap(tls)
+	}
+	if !(aabb.UpperBound.X-aabb.LowerBound.X < float32(float32FromFloat32(100000)*b2_lengthUnitsPerMeter)) && b2InternalAssertFcn(tls, __ccgo_ts+5590, __ccgo_ts+4746, int32FromInt32(814)) != 0 {
+		__builtin_trap(tls)
+	}
+	if !(aabb.UpperBound.Y-aabb.LowerBound.Y < float32(float32FromFloat32(100000)*b2_lengthUnitsPerMeter)) && b2InternalAssertFcn(tls, __ccgo_ts+5638, __ccgo_ts+4746, int32FromInt32(815)) != 0 {
+		__builtin_trap(tls)
+	}
+	if !(0 <= proxyId && proxyId < (*DynamicTree)(unsafe.Pointer(tree)).NodeCapacity) && b2InternalAssertFcn(tls, __ccgo_ts+5468, __ccgo_ts+4746, int32FromInt32(816)) != 0 {
+		__builtin_trap(tls)
+	}
+	if !(b2IsLeaf(tls, (*DynamicTree)(unsafe.Pointer(tree)).Nodes+uintptr(proxyId)*40) != 0) && b2InternalAssertFcn(tls, __ccgo_ts+5513, __ccgo_ts+4746, int32FromInt32(817)) != 0 {
+		__builtin_trap(tls)
+	}
 	b2RemoveLeaf(tls, tree, proxyId)
 	(*(*b2TreeNode)(unsafe.Pointer((*DynamicTree)(unsafe.Pointer(tree)).Nodes + uintptr(proxyId)*40))).Aabb = aabb
 	shouldRotate = uint8(false1)
@@ -91,41 +127,70 @@ func b2DynamicTree_MoveProxy(tls *_Stack, tree uintptr, proxyId int32, aabb AABB
 }
 
 func b2DynamicTree_EnlargeProxy(tls *_Stack, tree uintptr, proxyId int32, aabb AABB) {
-	var changed, changed1, v3 uint8
-	var nodes, v1, p5, p6 uintptr
+	var changed, changed1, s, v3, v7 uint8
+	var nodes, v5, p10, p9 uintptr
 	var parentIndex int32
-	var v2 AABB
-	_, _, _, _, _, _, _, _, _ = changed, changed1, nodes, parentIndex, v1, v2, v3, p5, p6
+	var v1, v2, v6 AABB
+	_, _, _, _, _, _, _, _, _, _, _, _, _ = changed, changed1, nodes, parentIndex, s, v1, v2, v3, v5, v6, v7, p10, p9
 	nodes = (*DynamicTree)(unsafe.Pointer(tree)).Nodes
+	if !(b2IsValidAABB(tls, aabb) != 0) && b2InternalAssertFcn(tls, __ccgo_ts+5568, __ccgo_ts+4746, int32FromInt32(831)) != 0 {
+		__builtin_trap(tls)
+	}
+	if !(aabb.UpperBound.X-aabb.LowerBound.X < float32(float32FromFloat32(100000)*b2_lengthUnitsPerMeter)) && b2InternalAssertFcn(tls, __ccgo_ts+5590, __ccgo_ts+4746, int32FromInt32(832)) != 0 {
+		__builtin_trap(tls)
+	}
+	if !(aabb.UpperBound.Y-aabb.LowerBound.Y < float32(float32FromFloat32(100000)*b2_lengthUnitsPerMeter)) && b2InternalAssertFcn(tls, __ccgo_ts+5638, __ccgo_ts+4746, int32FromInt32(833)) != 0 {
+		__builtin_trap(tls)
+	}
+	if !(0 <= proxyId && proxyId < (*DynamicTree)(unsafe.Pointer(tree)).NodeCapacity) && b2InternalAssertFcn(tls, __ccgo_ts+5468, __ccgo_ts+4746, int32FromInt32(834)) != 0 {
+		__builtin_trap(tls)
+	}
+	if !(b2IsLeaf(tls, (*DynamicTree)(unsafe.Pointer(tree)).Nodes+uintptr(proxyId)*40) != 0) && b2InternalAssertFcn(tls, __ccgo_ts+5513, __ccgo_ts+4746, int32FromInt32(835)) != 0 {
+		__builtin_trap(tls)
+	}
 	// Caller must ensure this
+	v1 = (*(*b2TreeNode)(unsafe.Pointer(nodes + uintptr(proxyId)*40))).Aabb
+	v2 = aabb
+	s = uint8(true1)
+	s = boolUint8(s != 0 && v1.LowerBound.X <= v2.LowerBound.X)
+	s = boolUint8(s != 0 && v1.LowerBound.Y <= v2.LowerBound.Y)
+	s = boolUint8(s != 0 && v2.UpperBound.X <= v1.UpperBound.X)
+	s = boolUint8(s != 0 && v2.UpperBound.Y <= v1.UpperBound.Y)
+	v3 = s
+	goto _4
+_4:
+	;
+	if !(int32FromUint8(v3) == int32FromInt32(false1)) && b2InternalAssertFcn(tls, __ccgo_ts+5686, __ccgo_ts+4746, int32FromInt32(838)) != 0 {
+		__builtin_trap(tls)
+	}
 	(*(*b2TreeNode)(unsafe.Pointer(nodes + uintptr(proxyId)*40))).Aabb = aabb
 	parentIndex = (*(*b2TreeNode)(unsafe.Pointer(nodes + uintptr(proxyId)*40))).ｆ__ccgo3_32.Parent
 	for parentIndex != -int32(1) {
-		v1 = nodes + uintptr(parentIndex)*40
-		v2 = aabb
+		v5 = nodes + uintptr(parentIndex)*40
+		v6 = aabb
 		changed = uint8(false1)
-		if v2.LowerBound.X < (*AABB)(unsafe.Pointer(v1)).LowerBound.X {
-			(*AABB)(unsafe.Pointer(v1)).LowerBound.X = v2.LowerBound.X
+		if v6.LowerBound.X < (*AABB)(unsafe.Pointer(v5)).LowerBound.X {
+			(*AABB)(unsafe.Pointer(v5)).LowerBound.X = v6.LowerBound.X
 			changed = uint8(true1)
 		}
-		if v2.LowerBound.Y < (*AABB)(unsafe.Pointer(v1)).LowerBound.Y {
-			(*AABB)(unsafe.Pointer(v1)).LowerBound.Y = v2.LowerBound.Y
+		if v6.LowerBound.Y < (*AABB)(unsafe.Pointer(v5)).LowerBound.Y {
+			(*AABB)(unsafe.Pointer(v5)).LowerBound.Y = v6.LowerBound.Y
 			changed = uint8(true1)
 		}
-		if (*AABB)(unsafe.Pointer(v1)).UpperBound.X < v2.UpperBound.X {
-			(*AABB)(unsafe.Pointer(v1)).UpperBound.X = v2.UpperBound.X
+		if (*AABB)(unsafe.Pointer(v5)).UpperBound.X < v6.UpperBound.X {
+			(*AABB)(unsafe.Pointer(v5)).UpperBound.X = v6.UpperBound.X
 			changed = uint8(true1)
 		}
-		if (*AABB)(unsafe.Pointer(v1)).UpperBound.Y < v2.UpperBound.Y {
-			(*AABB)(unsafe.Pointer(v1)).UpperBound.Y = v2.UpperBound.Y
+		if (*AABB)(unsafe.Pointer(v5)).UpperBound.Y < v6.UpperBound.Y {
+			(*AABB)(unsafe.Pointer(v5)).UpperBound.Y = v6.UpperBound.Y
 			changed = uint8(true1)
 		}
-		v3 = changed
-		goto _4
-	_4:
-		changed1 = v3
-		p5 = nodes + uintptr(parentIndex)*40 + 38
-		*(*uint16_t)(unsafe.Pointer(p5)) = uint16_t(int32(*(*uint16_t)(unsafe.Pointer(p5))) | int32(b2_enlargedNode))
+		v7 = changed
+		goto _8
+	_8:
+		changed1 = v7
+		p9 = nodes + uintptr(parentIndex)*40 + 38
+		*(*uint16_t)(unsafe.Pointer(p9)) = uint16_t(int32(*(*uint16_t)(unsafe.Pointer(p9))) | int32(b2_enlargedNode))
 		parentIndex = (*(*b2TreeNode)(unsafe.Pointer(nodes + uintptr(parentIndex)*40))).ｆ__ccgo3_32.Parent
 		if int32FromUint8(changed1) == false1 {
 			break
@@ -136,8 +201,8 @@ func b2DynamicTree_EnlargeProxy(tls *_Stack, tree uintptr, proxyId int32, aabb A
 			// early out because this ancestor was previously ascended and marked as enlarged
 			break
 		}
-		p6 = nodes + uintptr(parentIndex)*40 + 38
-		*(*uint16_t)(unsafe.Pointer(p6)) = uint16_t(int32(*(*uint16_t)(unsafe.Pointer(p6))) | int32(b2_enlargedNode))
+		p10 = nodes + uintptr(parentIndex)*40 + 38
+		*(*uint16_t)(unsafe.Pointer(p10)) = uint16_t(int32(*(*uint16_t)(unsafe.Pointer(p10))) | int32(b2_enlargedNode))
 		parentIndex = (*(*b2TreeNode)(unsafe.Pointer(nodes + uintptr(parentIndex)*40))).ｆ__ccgo3_32.Parent
 	}
 }
@@ -147,19 +212,37 @@ func b2DynamicTree_SetCategoryBits(tls *_Stack, tree uintptr, proxyId int32, cat
 	var node, nodes uintptr
 	_, _, _, _, _ = child1, child2, node, nodeIndex, nodes
 	nodes = (*DynamicTree)(unsafe.Pointer(tree)).Nodes
+	if !((*(*b2TreeNode)(unsafe.Pointer(nodes + uintptr(proxyId)*40))).ｆ__ccgo2_24.Children.Child1 == -int32FromInt32(1)) && b2InternalAssertFcn(tls, __ccgo_ts+5740, __ccgo_ts+4746, int32FromInt32(872)) != 0 {
+		__builtin_trap(tls)
+	}
+	if !((*(*b2TreeNode)(unsafe.Pointer(nodes + uintptr(proxyId)*40))).ｆ__ccgo2_24.Children.Child2 == -int32FromInt32(1)) && b2InternalAssertFcn(tls, __ccgo_ts+5788, __ccgo_ts+4746, int32FromInt32(873)) != 0 {
+		__builtin_trap(tls)
+	}
+	if !(int32FromUint16((*(*b2TreeNode)(unsafe.Pointer(nodes + uintptr(proxyId)*40))).Flags)&int32(b2_leafNode) == int32(b2_leafNode)) && b2InternalAssertFcn(tls, __ccgo_ts+5836, __ccgo_ts+4746, int32FromInt32(874)) != 0 {
+		__builtin_trap(tls)
+	}
 	(*(*b2TreeNode)(unsafe.Pointer(nodes + uintptr(proxyId)*40))).CategoryBits = categoryBits
 	// Fix up category bits in ancestor internal nodes
 	nodeIndex = (*(*b2TreeNode)(unsafe.Pointer(nodes + uintptr(proxyId)*40))).ｆ__ccgo3_32.Parent
 	for nodeIndex != -int32(1) {
 		node = nodes + uintptr(nodeIndex)*40
 		child1 = (*b2TreeNode)(unsafe.Pointer(node)).ｆ__ccgo2_24.Children.Child1
+		if !(child1 != -int32FromInt32(1)) && b2InternalAssertFcn(tls, __ccgo_ts+5180, __ccgo_ts+4746, int32FromInt32(884)) != 0 {
+			__builtin_trap(tls)
+		}
 		child2 = (*b2TreeNode)(unsafe.Pointer(node)).ｆ__ccgo2_24.Children.Child2
+		if !(child2 != -int32FromInt32(1)) && b2InternalAssertFcn(tls, __ccgo_ts+5204, __ccgo_ts+4746, int32FromInt32(886)) != 0 {
+			__builtin_trap(tls)
+		}
 		(*b2TreeNode)(unsafe.Pointer(node)).CategoryBits = (*(*b2TreeNode)(unsafe.Pointer(nodes + uintptr(child1)*40))).CategoryBits | (*(*b2TreeNode)(unsafe.Pointer(nodes + uintptr(child2)*40))).CategoryBits
 		nodeIndex = (*b2TreeNode)(unsafe.Pointer(node)).ｆ__ccgo3_32.Parent
 	}
 }
 
 func b2DynamicTree_GetCategoryBits(tls *_Stack, tree uintptr, proxyId int32) (r uint64) {
+	if !(0 <= proxyId && proxyId < (*DynamicTree)(unsafe.Pointer(tree)).NodeCapacity) && b2InternalAssertFcn(tls, __ccgo_ts+5468, __ccgo_ts+4746, int32FromInt32(895)) != 0 {
+		__builtin_trap(tls)
+	}
 	return (*(*b2TreeNode)(unsafe.Pointer((*DynamicTree)(unsafe.Pointer(tree)).Nodes + uintptr(proxyId)*40))).CategoryBits
 }
 
@@ -241,10 +324,16 @@ func b2DynamicTree_GetByteCount(tls *_Stack, tree uintptr) (r int32) {
 }
 
 func b2DynamicTree_GetUserData(tls *_Stack, tree uintptr, proxyId int32) (r uint64) {
+	if !(0 <= proxyId && proxyId < (*DynamicTree)(unsafe.Pointer(tree)).NodeCapacity) && b2InternalAssertFcn(tls, __ccgo_ts+5468, __ccgo_ts+4746, int32FromInt32(1104)) != 0 {
+		__builtin_trap(tls)
+	}
 	return *(*uint64_t)(unsafe.Add(unsafe.Pointer(&*(*b2TreeNode)(unsafe.Pointer((*DynamicTree)(unsafe.Pointer(tree)).Nodes + uintptr(proxyId)*40))), 24))
 }
 
 func b2DynamicTree_GetAABB(tls *_Stack, tree uintptr, proxyId int32) (r AABB) {
+	if !(0 <= proxyId && proxyId < (*DynamicTree)(unsafe.Pointer(tree)).NodeCapacity) && b2InternalAssertFcn(tls, __ccgo_ts+5468, __ccgo_ts+4746, int32FromInt32(1110)) != 0 {
+		__builtin_trap(tls)
+	}
 	return (*(*b2TreeNode)(unsafe.Pointer((*DynamicTree)(unsafe.Pointer(tree)).Nodes + uintptr(proxyId)*40))).Aabb
 }
 
@@ -270,6 +359,9 @@ func b2DynamicTree_Query(tls *_Stack, tree uintptr, aabb AABB, maskBits uint64, 
 		nodeId = stack[v2]
 		if nodeId == -int32(1) {
 			// todo huh?
+			if bool(!(int32FromInt32(false1) != 0)) && b2InternalAssertFcn(tls, __ccgo_ts+4123, __ccgo_ts+4746, int32FromInt32(1134)) != 0 {
+				__builtin_trap(tls)
+			}
 			continue
 		}
 		node = (*DynamicTree)(unsafe.Pointer(tree)).Nodes + uintptr(nodeId)*40
@@ -297,6 +389,9 @@ func b2DynamicTree_Query(tls *_Stack, tree uintptr, aabb AABB, maskBits uint64, 
 					stackCount++
 					stack[v8] = (*b2TreeNode)(unsafe.Pointer(node)).ｆ__ccgo2_24.Children.Child2
 				} else {
+					if !(stackCount < int32FromInt32(B2_TREE_STACK_SIZE)-int32FromInt32(1)) && b2InternalAssertFcn(tls, __ccgo_ts+5888, __ccgo_ts+4746, int32FromInt32(1163)) != 0 {
+						__builtin_trap(tls)
+					}
 				}
 			}
 		}
@@ -458,6 +553,9 @@ _51:
 		nodeId = stack[v53]
 		if nodeId == -int32(1) {
 			// todo is this possible?
+			if bool(!(int32FromInt32(false1) != 0)) && b2InternalAssertFcn(tls, __ccgo_ts+4123, __ccgo_ts+4746, int32FromInt32(1215)) != 0 {
+				__builtin_trap(tls)
+			}
 			continue
 		}
 		node = nodes + uintptr(nodeId)*40
@@ -659,6 +757,9 @@ _51:
 					stack[v131] = (*b2TreeNode)(unsafe.Pointer(node)).ｆ__ccgo2_24.Children.Child2
 				}
 			} else {
+				if !(stackCount < int32FromInt32(B2_TREE_STACK_SIZE)-int32FromInt32(1)) && b2InternalAssertFcn(tls, __ccgo_ts+5888, __ccgo_ts+4746, int32FromInt32(1284)) != 0 {
+					__builtin_trap(tls)
+				}
 			}
 		}
 	}
@@ -928,6 +1029,9 @@ _98:
 		nodeId = stack[v100]
 		if nodeId == -int32(1) {
 			// todo is this possible?
+			if bool(!(int32FromInt32(false1) != 0)) && b2InternalAssertFcn(tls, __ccgo_ts+4123, __ccgo_ts+4746, int32FromInt32(1347)) != 0 {
+				__builtin_trap(tls)
+			}
 			continue
 		}
 		node = nodes + uintptr(nodeId)*40
@@ -1150,6 +1254,9 @@ _98:
 					stack[v189] = (*b2TreeNode)(unsafe.Pointer(node)).ｆ__ccgo2_24.Children.Child2
 				}
 			} else {
+				if !(stackCount < int32FromInt32(B2_TREE_STACK_SIZE)-int32FromInt32(1)) && b2InternalAssertFcn(tls, __ccgo_ts+5888, __ccgo_ts+4746, int32FromInt32(1412)) != 0 {
+					__builtin_trap(tls)
+				}
 			}
 		}
 	}
@@ -1217,6 +1324,9 @@ func b2DynamicTree_Rebuild(tls *_Stack, tree uintptr, fullBuild uint8) (r int32)
 				stackCount++
 				stack[v4] = (*b2TreeNode)(unsafe.Pointer(node)).ｆ__ccgo2_24.Children.Child2
 			} else {
+				if !(stackCount < int32FromInt32(B2_TREE_STACK_SIZE)) && b2InternalAssertFcn(tls, __ccgo_ts+6449, __ccgo_ts+4746, int32FromInt32(1951)) != 0 {
+					__builtin_trap(tls)
+				}
 			}
 			node = nodes + uintptr(nodeIndex)*40
 			// Remove doomed node
@@ -1230,6 +1340,9 @@ func b2DynamicTree_Rebuild(tls *_Stack, tree uintptr, fullBuild uint8) (r int32)
 		v5 = stackCount
 		nodeIndex = stack[v5]
 		node = nodes + uintptr(nodeIndex)*40
+	}
+	if !(leafCount <= proxyCount) && b2InternalAssertFcn(tls, __ccgo_ts+6481, __ccgo_ts+4746, int32FromInt32(1982)) != 0 {
+		__builtin_trap(tls)
 	}
 	(*DynamicTree)(unsafe.Pointer(tree)).Root = b2BuildTree(tls, tree, leafCount)
 	b2DynamicTree_Validate(tls, tree)

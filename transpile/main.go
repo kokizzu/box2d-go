@@ -399,10 +399,10 @@ func createClassTypes(decls *[]dst.Decl) {
 				Type:  dst.NewIdent(ty.IdType),
 			})
 
-			fields.List = append(fields.List, &dst.Field{
-				Names: []*dst.Ident{dst.NewIdent("tls")},
-				Type:  &dst.StarExpr{X: dst.NewIdent("_Stack")},
-			})
+			// fields.List = append(fields.List, &dst.Field{
+			// 	Names: []*dst.Ident{dst.NewIdent("tls")},
+			// 	Type:  &dst.StarExpr{X: dst.NewIdent("_Stack")},
+			// })
 		} else {
 			fields.List = append(fields.List, &dst.Field{
 				Type: dst.NewIdent(ty.Extends),
@@ -451,10 +451,7 @@ func createWrappers(decls *[]dst.Decl, api API) Visitor {
 
 		var args []dst.Expr
 
-		args = append(args, &dst.SelectorExpr{
-			X:   dst.NewIdent("b"),
-			Sel: dst.NewIdent("tls"),
-		})
+		args = append(args, dst.NewIdent("theStack"))
 
 		var body []dst.Stmt
 
@@ -481,10 +478,7 @@ func createWrappers(decls *[]dst.Decl, api API) Visitor {
 									&dst.CallExpr{
 										Fun: dst.NewIdent("copyToStack"),
 										Args: []dst.Expr{
-											&dst.SelectorExpr{
-												X:   dst.NewIdent("b"),
-												Sel: dst.NewIdent("tls"),
-											},
+											dst.NewIdent("theStack"),
 											dst.NewIdent(name.Name),
 										},
 									},
@@ -607,22 +601,23 @@ func createWrappers(decls *[]dst.Decl, api API) Visitor {
 							Sel: dst.NewIdent("Id"),
 						})
 
-						// body.tls = b.tls
-						body = append(body, &dst.AssignStmt{
-							Tok: token.ASSIGN,
-							Lhs: []dst.Expr{
-								&dst.SelectorExpr{
-									X:   dst.NewIdent(name.Name),
-									Sel: dst.NewIdent("tls"),
-								},
-							},
-							Rhs: []dst.Expr{
-								&dst.SelectorExpr{
-									X:   dst.NewIdent("b"),
-									Sel: dst.NewIdent("tls"),
-								},
-							},
-						})
+						//	// body.tls = b.tls
+						//	body = append(body, &dst.AssignStmt{
+						//		Tok: token.ASSIGN,
+						//		Lhs: []dst.Expr{
+						//			&dst.SelectorExpr{
+						//				X:   dst.NewIdent(name.Name),
+						//				Sel: dst.NewIdent("tls"),
+						//			},
+						//		},
+						//		Rhs: []dst.Expr{
+						//			&dst.SelectorExpr{
+						//				X:   dst.NewIdent("b"),
+						//				Sel: dst.NewIdent("tls"),
+						//			},
+						//		},
+						//	})
+
 					} else {
 						assign.Lhs = append(assign.Lhs, dst.NewIdent(name.Name))
 					}
@@ -671,14 +666,6 @@ func createWrappers(decls *[]dst.Decl, api API) Visitor {
 			// normal method
 			fdecl = &dst.FuncDecl{
 				Name: dst.NewIdent(strings.ReplaceAll(decl.Name.Name[2:], "_", "")),
-				Recv: &dst.FieldList{
-					List: []*dst.Field{
-						{
-							Names: []*dst.Ident{dst.NewIdent("b")},
-							Type:  dst.NewIdent("Box2D"),
-						},
-					},
-				},
 				Type: &dst.FuncType{
 					TypeParams: decl.Type.TypeParams,
 					Params:     &dst.FieldList{List: paramTypes},

@@ -1197,6 +1197,9 @@ _48:
 _52:
 	dd2 = v51
 	epsSqr = float32(float32FromFloat32(1.1920928955078125e-07) * float32FromFloat32(1.1920928955078125e-07))
+	if !(dd1 > epsSqr && dd2 > epsSqr) && b2InternalAssertFcn(tls, __ccgo_ts+9962, __ccgo_ts+9936, int32FromInt32(285)) != 0 {
+		__builtin_trap(tls)
+	}
 	v53 = p1
 	v54 = p2
 	v55 = Vec2{
@@ -2198,6 +2201,9 @@ _24:
 		v21 = *(*Vec2)(unsafe.Pointer(bp + 144 + uintptr(i21)*8))
 		v22 = *(*Vec2)(unsafe.Pointer(bp + 144 + uintptr(i22)*8))
 		result = b2SegmentDistance(tls, v11, v12, v21, v22)
+		if !(result.DistanceSquared > float32FromFloat32(0)) && b2InternalAssertFcn(tls, __ccgo_ts+9991, __ccgo_ts+9936, int32FromInt32(848)) != 0 {
+			__builtin_trap(tls)
+		}
 		distance = sqrtf(tls, result.DistanceSquared)
 		separation = distance - radius
 		if distance-radius > speculativeDistance {
@@ -3212,12 +3218,18 @@ _66:
 			incidentIndex = int32FromUint8(*(*uint8_t)(unsafe.Pointer(cache + 5)))
 		} else {
 			// vertex-edge collision
+			if !(int32FromUint16((*SimplexCache)(unsafe.Pointer(cache)).Count) == int32FromInt32(2)) && b2InternalAssertFcn(tls, __ccgo_ts+10021, __ccgo_ts+9936, int32FromInt32(1438)) != 0 {
+				__builtin_trap(tls)
+			}
 			ia1 = int32FromUint8(*(*uint8_t)(unsafe.Pointer(cache + 2)))
 			ia2 = int32FromUint8(*(*uint8_t)(unsafe.Pointer(cache + 2 + 1)))
 			ib1 = int32FromUint8(*(*uint8_t)(unsafe.Pointer(cache + 5)))
 			ib2 = int32FromUint8(*(*uint8_t)(unsafe.Pointer(cache + 5 + 1)))
 			if ia1 == ia2 {
 				// 1 point on A, expect 2 points on B
+				if !(ib1 != ib2) && b2InternalAssertFcn(tls, __ccgo_ts+10039, __ccgo_ts+9936, int32FromInt32(1448)) != 0 {
+					__builtin_trap(tls)
+				}
 				v121 = output.PointA
 				v122 = output.PointB
 				v123 = Vec2{
@@ -3332,6 +3344,9 @@ _66:
 						}
 					}
 					*(*Manifold)(unsafe.Pointer(bp)) = b2ClipSegments(tls, b11, b21, p11, p2, normalB, radiusB, float32FromFloat32(0), uint16FromInt32(int32FromUint8(uint8FromInt32(ib1))<<int32FromInt32(8)|int32FromUint8(uint8FromInt32(int32FromInt32(1)))), uint16FromInt32(int32FromUint8(uint8FromInt32(ib2))<<int32FromInt32(8)|int32FromUint8(uint8FromInt32(int32FromInt32(0)))))
+					if !((*(*Manifold)(unsafe.Pointer(bp))).PointCount == 0 || (*(*Manifold)(unsafe.Pointer(bp))).PointCount == int32(2)) && b2InternalAssertFcn(tls, __ccgo_ts+10050, __ccgo_ts+9936, int32FromInt32(1499)) != 0 {
+						__builtin_trap(tls)
+					}
 					if (*(*Manifold)(unsafe.Pointer(bp))).PointCount == int32(2) {
 						v170 = normalB
 						v171 = Vec2{
@@ -3701,6 +3716,9 @@ _66:
 				}
 			}
 			*(*Manifold)(unsafe.Pointer(bp)) = b2ClipSegments(tls, a11, a21, p11, p2, normals[ia11], radiusB, float32FromFloat32(0), uint16FromInt32(int32FromUint8(uint8FromInt32(ia11))<<int32FromInt32(8)|int32FromUint8(uint8FromInt32(int32FromInt32(1)))), uint16FromInt32(int32FromUint8(uint8FromInt32(ia21))<<int32FromInt32(8)|int32FromUint8(uint8FromInt32(int32FromInt32(0)))))
+			if !((*(*Manifold)(unsafe.Pointer(bp))).PointCount == 0 || (*(*Manifold)(unsafe.Pointer(bp))).PointCount == int32(2)) && b2InternalAssertFcn(tls, __ccgo_ts+10050, __ccgo_ts+9936, int32FromInt32(1648)) != 0 {
+				__builtin_trap(tls)
+			}
 			if (*(*Manifold)(unsafe.Pointer(bp))).PointCount == int32(2) {
 				v307 = normals[ia11]
 				v308 = Vec2{
@@ -3790,6 +3808,9 @@ _66:
 		}
 		// fall through segment normal axis
 	}
+	if !(incidentNormal != -int32(1) || incidentIndex != -int32(1)) && b2InternalAssertFcn(tls, __ccgo_ts+10103, __ccgo_ts+9936, int32FromInt32(1674)) != 0 {
+		__builtin_trap(tls)
+	}
 	if incidentNormal != -int32(1) {
 		ib11 = incidentNormal
 		if ib11 < count-int32(1) {
@@ -3838,6 +3859,9 @@ _66:
 		}
 	}
 	*(*Manifold)(unsafe.Pointer(bp)) = b2ClipSegments(tls, p11, p2, b12, b22, normal1, float32FromFloat32(0), radiusB, uint16FromInt32(int32FromUint8(uint8FromInt32(int32FromInt32(0)))<<int32FromInt32(8)|int32FromUint8(uint8FromInt32(ib21))), uint16FromInt32(int32FromUint8(uint8FromInt32(int32FromInt32(1)))<<int32FromInt32(8)|int32FromUint8(uint8FromInt32(ib11))))
+	if !((*(*Manifold)(unsafe.Pointer(bp))).PointCount == 0 || (*(*Manifold)(unsafe.Pointer(bp))).PointCount == int32(2)) && b2InternalAssertFcn(tls, __ccgo_ts+10050, __ccgo_ts+9936, int32FromInt32(1711)) != 0 {
+		__builtin_trap(tls)
+	}
 	if (*(*Manifold)(unsafe.Pointer(bp))).PointCount == int32(2) {
 		// There may be no points c
 		v353 = xfA.Q
@@ -3980,21 +4004,27 @@ _12:
 }
 
 func b2CollideTask(tls *_Stack, startIndex int32, endIndex int32, threadIndex uint32, context uintptr) {
-	var blockIndex, v17, v18, v6 uint32_t
-	var bodies, bodyA, bodyB, bodySimA, bodySimB, contactSim, contactSims, shapeA, shapeB, shapes, stepContext, taskContext, world uintptr
-	var centerOffsetA, centerOffsetB, v10, v11, v14, v15 Vec2
-	var contactId, contactIndex, v7, v8 int32
+	var blockIndex, v19, v21, v7 uint32_t
+	var bodies, bodyA, bodyB, bodySimA, bodySimB, contactSim, contactSims, shapeA, shapeB, shapes, stepContext, taskContext, world, v18, v20, v6 uintptr
+	var centerOffsetA, centerOffsetB, v11, v12, v15, v16 Vec2
+	var contactId, contactIndex, v8, v9 int32
 	var overlap, touching, wasTouching, v4 uint8
 	var transformA, transformB Transform
-	var v13, v9 Rot
+	var v10, v14 Rot
 	var v2, v3 AABB
-	_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ = blockIndex, bodies, bodyA, bodyB, bodySimA, bodySimB, centerOffsetA, centerOffsetB, contactId, contactIndex, contactSim, contactSims, overlap, shapeA, shapeB, shapes, stepContext, taskContext, touching, transformA, transformB, wasTouching, world, v10, v11, v13, v14, v15, v17, v18, v2, v3, v4, v6, v7, v8, v9
+	_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ = blockIndex, bodies, bodyA, bodyB, bodySimA, bodySimB, centerOffsetA, centerOffsetB, contactId, contactIndex, contactSim, contactSims, overlap, shapeA, shapeB, shapes, stepContext, taskContext, touching, transformA, transformB, wasTouching, world, v10, v11, v12, v14, v15, v16, v18, v19, v2, v20, v21, v3, v4, v6, v7, v8, v9
 	stepContext = context
 	world = (*b2StepContext)(unsafe.Pointer(stepContext)).World
+	if !(int32FromUint32(threadIndex) < (*b2World)(unsafe.Pointer(world)).WorkerCount) && b2InternalAssertFcn(tls, __ccgo_ts+10751, __ccgo_ts+15342, int32FromInt32(363)) != 0 {
+		__builtin_trap(tls)
+	}
 	taskContext = (*b2World)(unsafe.Pointer(world)).TaskContexts.Data + uintptr(threadIndex)*56
 	contactSims = (*b2StepContext)(unsafe.Pointer(stepContext)).Contacts
 	shapes = (*b2World)(unsafe.Pointer(world)).Shapes.Data
 	bodies = (*b2World)(unsafe.Pointer(world)).Bodies.Data
+	if !(startIndex < endIndex) && b2InternalAssertFcn(tls, __ccgo_ts+10813, __ccgo_ts+15342, int32FromInt32(369)) != 0 {
+		__builtin_trap(tls)
+	}
 	contactIndex = startIndex
 	for {
 		if !(contactIndex < endIndex) {
@@ -4014,9 +4044,13 @@ func b2CollideTask(tls *_Stack, startIndex int32, endIndex int32, threadIndex ui
 		if int32FromUint8(overlap) == false1 {
 			*(*uint32_t)(unsafe.Pointer(contactSim + 164)) |= uint32(b2_simDisjoint)
 			*(*uint32_t)(unsafe.Pointer(contactSim + 164)) &= uint32FromInt32(^int32(b2_simTouchingFlag))
-			v6 = uint32FromInt32(contactId)
-			blockIndex = v6 / uint32(64)
-			*(*uint64_t)(unsafe.Pointer((*b2BitSet)(unsafe.Pointer(taskContext)).Bits + uintptr(blockIndex)*8)) |= uint64FromInt32(1) << (v6 % uint32FromInt32(64))
+			v6 = taskContext
+			v7 = uint32FromInt32(contactId)
+			blockIndex = v7 / uint32(64)
+			if !(blockIndex < (*b2BitSet)(unsafe.Pointer(v6)).BlockCount) && b2InternalAssertFcn(tls, __ccgo_ts+10859, __ccgo_ts+10891, int32FromInt32(28)) != 0 {
+				__builtin_trap(tls)
+			}
+			*(*uint64_t)(unsafe.Pointer((*b2BitSet)(unsafe.Pointer(v6)).Bits + uintptr(blockIndex)*8)) |= uint64FromInt32(1) << (v7 % uint32FromInt32(64))
 		} else {
 			wasTouching = uint8(boolUint32((*b2ContactSim)(unsafe.Pointer(contactSim)).SimFlags&uint32(b2_simTouchingFlag) != 0))
 			// Update contact respecting shape/body order (A,B)
@@ -4026,55 +4060,63 @@ func b2CollideTask(tls *_Stack, startIndex int32, endIndex int32, threadIndex ui
 			bodySimB = b2GetBodySim(tls, world, bodyB)
 			// avoid cache misses in b2PrepareContactsTask
 			if (*b2Body)(unsafe.Pointer(bodyA)).SetIndex == int32(b2_awakeSet) {
-				v7 = (*b2Body)(unsafe.Pointer(bodyA)).LocalIndex
-			} else {
-				v7 = -int32(1)
-			}
-			(*b2ContactSim)(unsafe.Pointer(contactSim)).BodySimIndexA = v7
-			(*b2ContactSim)(unsafe.Pointer(contactSim)).InvMassA = (*b2BodySim)(unsafe.Pointer(bodySimA)).InvMass
-			(*b2ContactSim)(unsafe.Pointer(contactSim)).InvIA = (*b2BodySim)(unsafe.Pointer(bodySimA)).InvInertia
-			if (*b2Body)(unsafe.Pointer(bodyB)).SetIndex == int32(b2_awakeSet) {
-				v8 = (*b2Body)(unsafe.Pointer(bodyB)).LocalIndex
+				v8 = (*b2Body)(unsafe.Pointer(bodyA)).LocalIndex
 			} else {
 				v8 = -int32(1)
 			}
-			(*b2ContactSim)(unsafe.Pointer(contactSim)).BodySimIndexB = v8
+			(*b2ContactSim)(unsafe.Pointer(contactSim)).BodySimIndexA = v8
+			(*b2ContactSim)(unsafe.Pointer(contactSim)).InvMassA = (*b2BodySim)(unsafe.Pointer(bodySimA)).InvMass
+			(*b2ContactSim)(unsafe.Pointer(contactSim)).InvIA = (*b2BodySim)(unsafe.Pointer(bodySimA)).InvInertia
+			if (*b2Body)(unsafe.Pointer(bodyB)).SetIndex == int32(b2_awakeSet) {
+				v9 = (*b2Body)(unsafe.Pointer(bodyB)).LocalIndex
+			} else {
+				v9 = -int32(1)
+			}
+			(*b2ContactSim)(unsafe.Pointer(contactSim)).BodySimIndexB = v9
 			(*b2ContactSim)(unsafe.Pointer(contactSim)).InvMassB = (*b2BodySim)(unsafe.Pointer(bodySimB)).InvMass
 			(*b2ContactSim)(unsafe.Pointer(contactSim)).InvIB = (*b2BodySim)(unsafe.Pointer(bodySimB)).InvInertia
 			transformA = (*b2BodySim)(unsafe.Pointer(bodySimA)).Transform
 			transformB = (*b2BodySim)(unsafe.Pointer(bodySimB)).Transform
-			v9 = transformA.Q
-			v10 = (*b2BodySim)(unsafe.Pointer(bodySimA)).LocalCenter
-			v11 = Vec2{
-				X: float32(v9.C*v10.X) - float32(v9.S*v10.Y),
-				Y: float32(v9.S*v10.X) + float32(v9.C*v10.Y),
+			v10 = transformA.Q
+			v11 = (*b2BodySim)(unsafe.Pointer(bodySimA)).LocalCenter
+			v12 = Vec2{
+				X: float32(v10.C*v11.X) - float32(v10.S*v11.Y),
+				Y: float32(v10.S*v11.X) + float32(v10.C*v11.Y),
 			}
-			goto _12
-		_12:
-			centerOffsetA = v11
-			v13 = transformB.Q
-			v14 = (*b2BodySim)(unsafe.Pointer(bodySimB)).LocalCenter
-			v15 = Vec2{
-				X: float32(v13.C*v14.X) - float32(v13.S*v14.Y),
-				Y: float32(v13.S*v14.X) + float32(v13.C*v14.Y),
+			goto _13
+		_13:
+			centerOffsetA = v12
+			v14 = transformB.Q
+			v15 = (*b2BodySim)(unsafe.Pointer(bodySimB)).LocalCenter
+			v16 = Vec2{
+				X: float32(v14.C*v15.X) - float32(v14.S*v15.Y),
+				Y: float32(v14.S*v15.X) + float32(v14.C*v15.Y),
 			}
-			goto _16
-		_16:
-			centerOffsetB = v15
+			goto _17
+		_17:
+			centerOffsetB = v16
 			// This updates solid contacts
 			touching = b2UpdateContact(tls, world, contactSim, shapeA, transformA, centerOffsetA, shapeB, transformB, centerOffsetB)
 			// State changes that affect island connectivity. Also affects contact events.
 			if int32FromUint8(touching) == int32(true1) && int32FromUint8(wasTouching) == false1 {
 				*(*uint32_t)(unsafe.Pointer(contactSim + 164)) |= uint32(b2_simStartedTouching)
-				v17 = uint32FromInt32(contactId)
-				blockIndex = v17 / uint32(64)
-				*(*uint64_t)(unsafe.Pointer((*b2BitSet)(unsafe.Pointer(taskContext)).Bits + uintptr(blockIndex)*8)) |= uint64FromInt32(1) << (v17 % uint32FromInt32(64))
+				v18 = taskContext
+				v19 = uint32FromInt32(contactId)
+				blockIndex = v19 / uint32(64)
+				if !(blockIndex < (*b2BitSet)(unsafe.Pointer(v18)).BlockCount) && b2InternalAssertFcn(tls, __ccgo_ts+10859, __ccgo_ts+10891, int32FromInt32(28)) != 0 {
+					__builtin_trap(tls)
+				}
+				*(*uint64_t)(unsafe.Pointer((*b2BitSet)(unsafe.Pointer(v18)).Bits + uintptr(blockIndex)*8)) |= uint64FromInt32(1) << (v19 % uint32FromInt32(64))
 			} else {
 				if int32FromUint8(touching) == false1 && int32FromUint8(wasTouching) == int32(true1) {
 					*(*uint32_t)(unsafe.Pointer(contactSim + 164)) |= uint32(b2_simStoppedTouching)
-					v18 = uint32FromInt32(contactId)
-					blockIndex = v18 / uint32(64)
-					*(*uint64_t)(unsafe.Pointer((*b2BitSet)(unsafe.Pointer(taskContext)).Bits + uintptr(blockIndex)*8)) |= uint64FromInt32(1) << (v18 % uint32FromInt32(64))
+					v20 = taskContext
+					v21 = uint32FromInt32(contactId)
+					blockIndex = v21 / uint32(64)
+					if !(blockIndex < (*b2BitSet)(unsafe.Pointer(v20)).BlockCount) && b2InternalAssertFcn(tls, __ccgo_ts+10859, __ccgo_ts+10891, int32FromInt32(28)) != 0 {
+						__builtin_trap(tls)
+					}
+					*(*uint64_t)(unsafe.Pointer((*b2BitSet)(unsafe.Pointer(v20)).Bits + uintptr(blockIndex)*8)) |= uint64FromInt32(1) << (v21 % uint32FromInt32(64))
 				}
 			}
 			// To make this work, the time of impact code needs to adjust the target
@@ -4101,16 +4143,19 @@ func b2CollideTask(tls *_Stack, startIndex int32, endIndex int32, threadIndex ui
 //
 //	// Narrow-phase collision
 func b2Collide(tls *_Stack, context uintptr) {
-	var awakeSet, base, base1, bitSet, color, color1, contact, contactSim, contactSims, graphColors, shapeA, shapeB, shapes, userCollideTask, world, v10, v15, v17, v19, v21, v23, v25 uintptr
+	var awakeSet, base, base1, bitSet, color, color1, contact, contactSim, contactSims, graphColors, shapeA, shapeB, shapes, userCollideTask, world, v10, v12, v17, v19, v21, v23, v25, v27, v29, v31, v33, v35 uintptr
 	var bits uint64_t
-	var bodyIdA, bodyIdB, colorIndex, contactCount, contactId, contactIdCapacity, contactIndex, count, endEventArrayIndex, i, i1, i2, i3, i4, j, localIndex, minRange, newCapacity, newCapacity1, nonTouchingCount, v1, v22, v26, v6 int32
-	var ctz, flags, k, simFlags, v13 uint32_t
+	var bodyIdA, bodyIdB, colorIndex, contactCount, contactId, contactIdCapacity, contactIndex, count, endEventArrayIndex, i, i1, i2, i3, i4, j, localIndex, minRange, newCapacity, newCapacity1, nonTouchingCount, v1, v11, v18, v22, v26, v30, v32, v36, v6 int32
+	var ctz, flags, k, simFlags, v15 uint32_t
 	var event ContactBeginTouchEvent
 	var event1 ContactEndTouchEvent
 	var shapeIdA, shapeIdB ShapeId
 	var worldId uint16_t
-	_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ = awakeSet, base, base1, bitSet, bits, bodyIdA, bodyIdB, color, color1, colorIndex, contact, contactCount, contactId, contactIdCapacity, contactIndex, contactSim, contactSims, count, ctz, endEventArrayIndex, event, event1, flags, graphColors, i, i1, i2, i3, i4, j, k, localIndex, minRange, newCapacity, newCapacity1, nonTouchingCount, shapeA, shapeB, shapeIdA, shapeIdB, shapes, simFlags, userCollideTask, world, worldId, v1, v10, v13, v15, v17, v19, v21, v22, v23, v25, v26, v6
+	_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ = awakeSet, base, base1, bitSet, bits, bodyIdA, bodyIdB, color, color1, colorIndex, contact, contactCount, contactId, contactIdCapacity, contactIndex, contactSim, contactSims, count, ctz, endEventArrayIndex, event, event1, flags, graphColors, i, i1, i2, i3, i4, j, k, localIndex, minRange, newCapacity, newCapacity1, nonTouchingCount, shapeA, shapeB, shapeIdA, shapeIdB, shapes, simFlags, userCollideTask, world, worldId, v1, v10, v11, v12, v15, v17, v18, v19, v21, v22, v23, v25, v26, v27, v29, v30, v31, v32, v33, v35, v36, v6
 	world = (*b2StepContext)(unsafe.Pointer(context)).World
+	if !((*b2World)(unsafe.Pointer(world)).WorkerCount > int32FromInt32(0)) && b2InternalAssertFcn(tls, __ccgo_ts+10955, __ccgo_ts+15342, int32FromInt32(492)) != 0 {
+		__builtin_trap(tls)
+	}
 	// Task that can be done in parallel with the narrow-phase
 	// - rebuild the collision tree for dynamic and kinematic bodies to keep their query performance good
 	// todo_erin move this to start when contacts are being created
@@ -4141,7 +4186,7 @@ func b2Collide(tls *_Stack, context uintptr) {
 	if contactCount == 0 {
 		return
 	}
-	contactSims = b2AllocateArenaItem(tls, world, int32FromUint64(uint64FromInt32(contactCount)*uint64(8)), __ccgo_ts+243)
+	contactSims = b2AllocateArenaItem(tls, world, int32FromUint64(uint64FromInt32(contactCount)*uint64(8)), __ccgo_ts+15810)
 	contactIndex = 0
 	i1 = 0
 	for {
@@ -4180,6 +4225,9 @@ func b2Collide(tls *_Stack, context uintptr) {
 	_5:
 		;
 		i2++
+	}
+	if !(contactIndex == contactCount) && b2InternalAssertFcn(tls, __ccgo_ts+15819, __ccgo_ts+15342, int32FromInt32(544)) != 0 {
+		__builtin_trap(tls)
 	}
 	(*b2StepContext)(unsafe.Pointer(context)).Contacts = contactSims
 	v6 = (*b2IdPool)(unsafe.Pointer(world + 1120)).NextIndex
@@ -4223,10 +4271,15 @@ _7:
 		;
 		i4++
 	}
-	v10 = (*b2SolverSetArray)(unsafe.Pointer(world+1064)).Data + uintptr(int32(b2_awakeSet))*88
-	goto _11
-_11:
-	awakeSet = v10
+	v10 = world + 1064
+	v11 = int32(b2_awakeSet)
+	if !(0 <= v11 && v11 < (*b2SolverSetArray)(unsafe.Pointer(v10)).Count) && b2InternalAssertFcn(tls, __ccgo_ts+349, __ccgo_ts+402, int32FromInt32(57)) != 0 {
+		__builtin_trap(tls)
+	}
+	v12 = (*b2SolverSetArray)(unsafe.Pointer(v10)).Data + uintptr(v11)*88
+	goto _13
+_13:
+	awakeSet = v12
 	endEventArrayIndex = (*b2World)(unsafe.Pointer(world)).EndEventArrayIndex
 	shapes = (*b2World)(unsafe.Pointer(world)).Shapes.Data
 	worldId = (*b2World)(unsafe.Pointer(world)).WorldId
@@ -4238,30 +4291,51 @@ _11:
 		}
 		bits = *(*uint64_t)(unsafe.Pointer((*b2BitSet)(unsafe.Pointer(bitSet)).Bits + uintptr(k)*8))
 		for bits != uint64(0) {
-			v13 = uint32FromInt32(__builtin_ctzll(tls, bits))
-			goto _14
-		_14:
-			ctz = v13
-			contactId = int32FromUint32(uint32FromInt32(64)*k + ctz)
-			v15 = (*b2ContactArray)(unsafe.Pointer(world+1144)).Data + uintptr(contactId)*68
+			v15 = uint32FromInt32(__builtin_ctzll(tls, bits))
 			goto _16
 		_16:
-			contact = v15
+			ctz = v15
+			contactId = int32FromUint32(uint32FromInt32(64)*k + ctz)
+			v17 = world + 1144
+			v18 = contactId
+			if !(0 <= v18 && v18 < (*b2ContactArray)(unsafe.Pointer(v17)).Count) && b2InternalAssertFcn(tls, __ccgo_ts+349, __ccgo_ts+705, int32FromInt32(146)) != 0 {
+				__builtin_trap(tls)
+			}
+			v19 = (*b2ContactArray)(unsafe.Pointer(v17)).Data + uintptr(v18)*68
+			goto _20
+		_20:
+			contact = v19
+			if !((*b2Contact)(unsafe.Pointer(contact)).SetIndex == int32(b2_awakeSet)) && b2InternalAssertFcn(tls, __ccgo_ts+3637, __ccgo_ts+15342, int32FromInt32(596)) != 0 {
+				__builtin_trap(tls)
+			}
 			colorIndex = (*b2Contact)(unsafe.Pointer(contact)).ColorIndex
 			localIndex = (*b2Contact)(unsafe.Pointer(contact)).LocalIndex
 			contactSim = uintptrFromInt32(0)
 			if colorIndex != -int32(1) {
 				// contact lives in constraint graph
+				if !(0 <= colorIndex && colorIndex < int32(B2_GRAPH_COLOR_COUNT)) && b2InternalAssertFcn(tls, __ccgo_ts+3038, __ccgo_ts+15342, int32FromInt32(605)) != 0 {
+					__builtin_trap(tls)
+				}
 				color1 = graphColors + uintptr(colorIndex)*56
-				v17 = (*b2ContactSimArray)(unsafe.Pointer(color1+16)).Data + uintptr(localIndex)*176
-				goto _18
-			_18:
-				contactSim = v17
+				v21 = color1 + 16
+				v22 = localIndex
+				if !(0 <= v22 && v22 < (*b2ContactSimArray)(unsafe.Pointer(v21)).Count) && b2InternalAssertFcn(tls, __ccgo_ts+349, __ccgo_ts+705, int32FromInt32(147)) != 0 {
+					__builtin_trap(tls)
+				}
+				v23 = (*b2ContactSimArray)(unsafe.Pointer(v21)).Data + uintptr(v22)*176
+				goto _24
+			_24:
+				contactSim = v23
 			} else {
-				v19 = (*b2ContactSimArray)(unsafe.Pointer(awakeSet+48)).Data + uintptr(localIndex)*176
-				goto _20
-			_20:
-				contactSim = v19
+				v25 = awakeSet + 48
+				v26 = localIndex
+				if !(0 <= v26 && v26 < (*b2ContactSimArray)(unsafe.Pointer(v25)).Count) && b2InternalAssertFcn(tls, __ccgo_ts+349, __ccgo_ts+705, int32FromInt32(147)) != 0 {
+					__builtin_trap(tls)
+				}
+				v27 = (*b2ContactSimArray)(unsafe.Pointer(v25)).Data + uintptr(v26)*176
+				goto _28
+			_28:
+				contactSim = v27
 			}
 			shapeA = shapes + uintptr((*b2Contact)(unsafe.Pointer(contact)).ShapeIdA)*288
 			shapeB = shapes + uintptr((*b2Contact)(unsafe.Pointer(contact)).ShapeIdB)*288
@@ -4284,36 +4358,56 @@ _11:
 				contactSim = uintptrFromInt32(0)
 			} else {
 				if simFlags&uint32(b2_simStartedTouching) != 0 {
+					if !((*b2Contact)(unsafe.Pointer(contact)).IslandId == -int32FromInt32(1)) && b2InternalAssertFcn(tls, __ccgo_ts+7197, __ccgo_ts+15342, int32FromInt32(630)) != 0 {
+						__builtin_trap(tls)
+					}
 					if flags&uint32(b2_contactEnableContactEvents) != 0 {
 						event = ContactBeginTouchEvent{
 							ShapeIdA: shapeIdA,
 							ShapeIdB: shapeIdB,
 							Manifold: (*b2ContactSim)(unsafe.Pointer(contactSim)).Manifold,
 						}
-						v21 = world + 1360
-						if (*b2ContactBeginTouchEventArray)(unsafe.Pointer(v21)).Count == (*b2ContactBeginTouchEventArray)(unsafe.Pointer(v21)).Capacity {
-							if (*b2ContactBeginTouchEventArray)(unsafe.Pointer(v21)).Capacity < int32(2) {
-								v22 = int32(2)
+						v29 = world + 1360
+						if (*b2ContactBeginTouchEventArray)(unsafe.Pointer(v29)).Count == (*b2ContactBeginTouchEventArray)(unsafe.Pointer(v29)).Capacity {
+							if (*b2ContactBeginTouchEventArray)(unsafe.Pointer(v29)).Capacity < int32(2) {
+								v30 = int32(2)
 							} else {
-								v22 = (*b2ContactBeginTouchEventArray)(unsafe.Pointer(v21)).Capacity + (*b2ContactBeginTouchEventArray)(unsafe.Pointer(v21)).Capacity>>int32(1)
+								v30 = (*b2ContactBeginTouchEventArray)(unsafe.Pointer(v29)).Capacity + (*b2ContactBeginTouchEventArray)(unsafe.Pointer(v29)).Capacity>>int32(1)
 							}
-							newCapacity = v22
-							b2ContactBeginTouchEventArray_Reserve(tls, v21, newCapacity)
+							newCapacity = v30
+							b2ContactBeginTouchEventArray_Reserve(tls, v29, newCapacity)
 						}
-						*(*ContactBeginTouchEvent)(unsafe.Pointer((*b2ContactBeginTouchEventArray)(unsafe.Pointer(v21)).Data + uintptr((*b2ContactBeginTouchEventArray)(unsafe.Pointer(v21)).Count)*128)) = event
-						*(*int32)(unsafe.Pointer(v21 + 8)) += int32(1)
+						*(*ContactBeginTouchEvent)(unsafe.Pointer((*b2ContactBeginTouchEventArray)(unsafe.Pointer(v29)).Data + uintptr((*b2ContactBeginTouchEventArray)(unsafe.Pointer(v29)).Count)*128)) = event
+						*(*int32)(unsafe.Pointer(v29 + 8)) += int32(1)
+					}
+					if !((*b2ContactSim)(unsafe.Pointer(contactSim)).Manifold.PointCount > int32FromInt32(0)) && b2InternalAssertFcn(tls, __ccgo_ts+2821, __ccgo_ts+15342, int32FromInt32(638)) != 0 {
+						__builtin_trap(tls)
+					}
+					if !((*b2Contact)(unsafe.Pointer(contact)).SetIndex == int32(b2_awakeSet)) && b2InternalAssertFcn(tls, __ccgo_ts+3637, __ccgo_ts+15342, int32FromInt32(639)) != 0 {
+						__builtin_trap(tls)
 					}
 					// Link first because this wakes colliding bodies and ensures the body sims
 					// are in the correct place.
 					*(*uint32_t)(unsafe.Pointer(contact + 60)) |= uint32(b2_contactTouchingFlag)
 					b2LinkContact(tls, world, contact)
 					// Make sure these didn't change
+					if !((*b2Contact)(unsafe.Pointer(contact)).ColorIndex == -int32FromInt32(1)) && b2InternalAssertFcn(tls, __ccgo_ts+15848, __ccgo_ts+15342, int32FromInt32(647)) != 0 {
+						__builtin_trap(tls)
+					}
+					if !((*b2Contact)(unsafe.Pointer(contact)).LocalIndex == localIndex) && b2InternalAssertFcn(tls, __ccgo_ts+15885, __ccgo_ts+15342, int32FromInt32(648)) != 0 {
+						__builtin_trap(tls)
+					}
 					// Contact sim pointer may have become orphaned due to awake set growth,
 					// so I just need to refresh it.
-					v23 = (*b2ContactSimArray)(unsafe.Pointer(awakeSet+48)).Data + uintptr(localIndex)*176
-					goto _24
-				_24:
-					contactSim = v23
+					v31 = awakeSet + 48
+					v32 = localIndex
+					if !(0 <= v32 && v32 < (*b2ContactSimArray)(unsafe.Pointer(v31)).Count) && b2InternalAssertFcn(tls, __ccgo_ts+349, __ccgo_ts+705, int32FromInt32(147)) != 0 {
+						__builtin_trap(tls)
+					}
+					v33 = (*b2ContactSimArray)(unsafe.Pointer(v31)).Data + uintptr(v32)*176
+					goto _34
+				_34:
+					contactSim = v33
 					*(*uint32_t)(unsafe.Pointer(contactSim + 164)) &= uint32FromInt32(^int32(b2_simStartedTouching))
 					b2AddContactToGraph(tls, world, contactSim, contact)
 					b2RemoveNonTouchingContact(tls, world, int32(b2_awakeSet), localIndex)
@@ -4327,18 +4421,21 @@ _11:
 								ShapeIdA: shapeIdA,
 								ShapeIdB: shapeIdB,
 							}
-							v25 = world + 1408 + uintptr(endEventArrayIndex)*16
-							if (*b2ContactEndTouchEventArray)(unsafe.Pointer(v25)).Count == (*b2ContactEndTouchEventArray)(unsafe.Pointer(v25)).Capacity {
-								if (*b2ContactEndTouchEventArray)(unsafe.Pointer(v25)).Capacity < int32(2) {
-									v26 = int32(2)
+							v35 = world + 1408 + uintptr(endEventArrayIndex)*16
+							if (*b2ContactEndTouchEventArray)(unsafe.Pointer(v35)).Count == (*b2ContactEndTouchEventArray)(unsafe.Pointer(v35)).Capacity {
+								if (*b2ContactEndTouchEventArray)(unsafe.Pointer(v35)).Capacity < int32(2) {
+									v36 = int32(2)
 								} else {
-									v26 = (*b2ContactEndTouchEventArray)(unsafe.Pointer(v25)).Capacity + (*b2ContactEndTouchEventArray)(unsafe.Pointer(v25)).Capacity>>int32(1)
+									v36 = (*b2ContactEndTouchEventArray)(unsafe.Pointer(v35)).Capacity + (*b2ContactEndTouchEventArray)(unsafe.Pointer(v35)).Capacity>>int32(1)
 								}
-								newCapacity1 = v26
-								b2ContactEndTouchEventArray_Reserve(tls, v25, newCapacity1)
+								newCapacity1 = v36
+								b2ContactEndTouchEventArray_Reserve(tls, v35, newCapacity1)
 							}
-							*(*ContactEndTouchEvent)(unsafe.Pointer((*b2ContactEndTouchEventArray)(unsafe.Pointer(v25)).Data + uintptr((*b2ContactEndTouchEventArray)(unsafe.Pointer(v25)).Count)*16)) = event1
-							*(*int32)(unsafe.Pointer(v25 + 8)) += int32(1)
+							*(*ContactEndTouchEvent)(unsafe.Pointer((*b2ContactEndTouchEventArray)(unsafe.Pointer(v35)).Data + uintptr((*b2ContactEndTouchEventArray)(unsafe.Pointer(v35)).Count)*16)) = event1
+							*(*int32)(unsafe.Pointer(v35 + 8)) += int32(1)
+						}
+						if !((*b2ContactSim)(unsafe.Pointer(contactSim)).Manifold.PointCount == int32FromInt32(0)) && b2InternalAssertFcn(tls, __ccgo_ts+14641, __ccgo_ts+15342, int32FromInt32(671)) != 0 {
+							__builtin_trap(tls)
 						}
 						b2UnlinkContact(tls, world, contact)
 						bodyIdA = (*(*b2ContactEdge)(unsafe.Pointer(contact + 12))).BodyId
@@ -4353,8 +4450,8 @@ _11:
 			// Clear the smallest set bit
 			bits = bits & (bits - uint64(1))
 		}
-		goto _12
-	_12:
+		goto _14
+	_14:
 		;
 		k++
 	}

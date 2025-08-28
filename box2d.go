@@ -14,25 +14,15 @@ var IdentityRot = Rot{C: 1.0, S: 0.0}
 var IdentityTransform = Transform{Q: IdentityRot}
 var ZeroMat = Mat22{}
 
-type Box2D struct {
-	tls *_Stack
-}
-
-func NewBox2D() *Box2D {
-	box := &Box2D{
-		tls: NewTLS(256 * 1024),
-	}
-
-	b2SetAssertFcn(box.tls, __ccgo_fp(b2DefaultAssertFcnGo))
-
-	return box
+func init() {
+	b2SetAssertFcn(theStack, __ccgo_fp(b2DefaultAssertFcnGo))
 }
 
 func (b Body) SetName(name string) {
-	nameC := b.tls.toCString(name)
+	nameC := theStack.toCString(name)
 	defer nameC.Free()
 
-	b2Body_SetName(b.tls, b.Id, nameC.Addr)
+	b2Body_SetName(theStack, b.Id, nameC.Addr)
 }
 
 func (b Body) GetShapes(reuse []Shape) []Shape {
@@ -40,11 +30,11 @@ func (b Body) GetShapes(reuse []Shape) []Shape {
 
 	// allocate memory on the stack to read the ids
 	n := int(itemCount) * int(unsafe.Sizeof(ShapeId{}))
-	ptr := b.tls.Alloc(n)
-	defer b.tls.Free(n)
+	ptr := theStack.Alloc(n)
+	defer theStack.Free(n)
 
 	// fill the data
-	_ = b2Body_GetShapes(b.tls, b.Id, ptr, itemCount)
+	_ = b2Body_GetShapes(theStack, b.Id, ptr, itemCount)
 
 	// allocate memory for the result
 	if cap(reuse) < int(itemCount) {
@@ -56,7 +46,7 @@ func (b Body) GetShapes(reuse []Shape) []Shape {
 	items := reuse[:0]
 
 	for _, itemId := range unsafe.Slice((*ShapeId)(unsafe.Pointer(ptr)), itemCount) {
-		items = append(items, Shape{tls: b.tls, Id: itemId})
+		items = append(items, Shape{Id: itemId})
 	}
 
 	return items
@@ -67,11 +57,11 @@ func (b Body) GetJoints(reuse []Joint) []Joint {
 
 	// allocate memory on the stack to read the ids
 	n := int(itemCount) * int(unsafe.Sizeof(JointId{}))
-	ptr := b.tls.Alloc(n)
-	defer b.tls.Free(n)
+	ptr := theStack.Alloc(n)
+	defer theStack.Free(n)
 
 	// fill the data
-	_ = b2Body_GetJoints(b.tls, b.Id, ptr, itemCount)
+	_ = b2Body_GetJoints(theStack, b.Id, ptr, itemCount)
 
 	// allocate memory for the result
 	if cap(reuse) < int(itemCount) {
@@ -83,7 +73,7 @@ func (b Body) GetJoints(reuse []Joint) []Joint {
 
 	// copy the items
 	for _, itemId := range unsafe.Slice((*JointId)(unsafe.Pointer(ptr)), itemCount) {
-		items = append(items, Joint{tls: b.tls, Id: itemId})
+		items = append(items, Joint{Id: itemId})
 	}
 
 	return items
@@ -94,11 +84,11 @@ func (b Chain) GetSegments(reuse []Shape) []Shape {
 
 	// allocate memory on the stack to read the ids
 	n := int(itemCount) * int(unsafe.Sizeof(ShapeId{}))
-	ptr := b.tls.Alloc(n)
-	defer b.tls.Free(n)
+	ptr := theStack.Alloc(n)
+	defer theStack.Free(n)
 
 	// fill the data
-	_ = b2Chain_GetSegments(b.tls, b.Id, ptr, itemCount)
+	_ = b2Chain_GetSegments(theStack, b.Id, ptr, itemCount)
 
 	// allocate memory for the result
 	if cap(reuse) < int(itemCount) {
@@ -110,7 +100,7 @@ func (b Chain) GetSegments(reuse []Shape) []Shape {
 
 	// copy the items
 	for _, itemId := range unsafe.Slice((*ShapeId)(unsafe.Pointer(ptr)), itemCount) {
-		items = append(items, Shape{tls: b.tls, Id: itemId})
+		items = append(items, Shape{Id: itemId})
 	}
 
 	return items
@@ -122,11 +112,11 @@ func (b Shape) GetSensorOverlaps(reuse []Shape) []Shape {
 
 	// allocate memory on the stack to read the ids
 	n := int(itemsCap) * int(unsafe.Sizeof(ShapeId{}))
-	ptr := b.tls.Alloc(n)
-	defer b.tls.Free(n)
+	ptr := theStack.Alloc(n)
+	defer theStack.Free(n)
 
 	// fill the data
-	itemCount := b2Shape_GetSensorOverlaps(b.tls, b.Id, ptr, itemsCap)
+	itemCount := b2Shape_GetSensorOverlaps(theStack, b.Id, ptr, itemsCap)
 
 	// allocate memory for the result
 	if cap(reuse) < int(itemCount) {
@@ -138,7 +128,7 @@ func (b Shape) GetSensorOverlaps(reuse []Shape) []Shape {
 
 	// copy the items
 	for _, itemId := range unsafe.Slice((*ShapeId)(unsafe.Pointer(ptr)), itemCount) {
-		items = append(items, Shape{tls: b.tls, Id: itemId})
+		items = append(items, Shape{Id: itemId})
 	}
 
 	return items
@@ -147,13 +137,13 @@ func (b Shape) GetSensorOverlaps(reuse []Shape) []Shape {
 // SetRestitutionCallback sets the worlds RestitutionCallback.
 // CAUTION: Callback must not be a closure
 func (b World) SetRestitutionCallback(callback RestitutionCallback) {
-	b2World_SetRestitutionCallback(b.tls, b.Id, __ccgo_fp(callback))
+	b2World_SetRestitutionCallback(theStack, b.Id, __ccgo_fp(callback))
 }
 
 // SetFrictionCallback sets the worlds FrictionCallback.
 // CAUTION: Callback must not be a closure
 func (b World) SetFrictionCallback(callback FrictionCallback) {
-	b2World_SetFrictionCallback(b.tls, b.Id, __ccgo_fp(callback))
+	b2World_SetFrictionCallback(theStack, b.Id, __ccgo_fp(callback))
 }
 
 type OverlapResultFcn = func(shapeId ShapeId, context uintptr) bool
@@ -161,19 +151,19 @@ type OverlapResultFcn = func(shapeId ShapeId, context uintptr) bool
 // OverlapAABB sets the worlds OverlapResultFcn
 // CAUTION: fcn must not be a closure
 func (b World) OverlapAABB(aabb AABB, filter QueryFilter, fcn OverlapResultFcn, context uintptr) TreeStats {
-	return b2World_OverlapAABB(b.tls, b.Id, aabb, filter, __ccgo_fp(fcn), context)
+	return b2World_OverlapAABB(theStack, b.Id, aabb, filter, __ccgo_fp(fcn), context)
 }
 
 type CustomFilterFcn = func(shapeIdA, shapeIdB ShapeId, context uintptr) bool
 
 func (b World) SetCustomFilterCallback(fcn CustomFilterFcn, context uintptr) {
-	b2World_SetCustomFilterCallback(b.tls, b.Id, __ccgo_fp(fcn), context)
+	b2World_SetCustomFilterCallback(theStack, b.Id, __ccgo_fp(fcn), context)
 }
 
 type PreSolveFcn = func(shapeIdA, shapeIdB ShapeId, manifold uintptr, context uintptr)
 
 func (b World) SetPreSolveCallback(fcn PreSolveFcn, context uintptr) {
-	b2World_SetPreSolveCallback(b.tls, b.Id, __ccgo_fp(fcn), context)
+	b2World_SetPreSolveCallback(theStack, b.Id, __ccgo_fp(fcn), context)
 }
 
 type BodyEvents struct {
@@ -181,7 +171,7 @@ type BodyEvents struct {
 }
 
 func (b World) GetBodyEvents() BodyEvents {
-	events := b2World_GetBodyEvents(b.tls, b.Id)
+	events := b2World_GetBodyEvents(theStack, b.Id)
 
 	return BodyEvents{
 		MoveEvents: copySlice[BodyMoveEvent](events.MoveEvents, events.MoveCount),
@@ -194,7 +184,7 @@ type SensorEvents struct {
 }
 
 func (b World) GetSensorEvents() SensorEvents {
-	events := b2World_GetSensorEvents(b.tls, b.Id)
+	events := b2World_GetSensorEvents(theStack, b.Id)
 
 	return SensorEvents{
 		BeginEvents: copySlice[SensorBeginTouchEvent](events.BeginEvents, events.BeginCount),
@@ -209,7 +199,7 @@ type ContactEvents struct {
 }
 
 func (b World) GetContactEvents() ContactEvents {
-	events := b2World_GetContactEvents(b.tls, b.Id)
+	events := b2World_GetContactEvents(theStack, b.Id)
 
 	return ContactEvents{
 		BeginEvents: copySlice[ContactBeginTouchEvent](events.BeginEvents, events.BeginCount),

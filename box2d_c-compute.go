@@ -35,6 +35,9 @@ func b2ComputeSimplexWitnessPoints(tls *_Stack, a uintptr, b uintptr, s uintptr)
 	default:
 		*(*Vec2)(unsafe.Pointer(a)) = b2Vec2_zero
 		*(*Vec2)(unsafe.Pointer(b)) = b2Vec2_zero
+		if bool(!(int32FromInt32(false1) != 0)) && b2InternalAssertFcn(tls, __ccgo_ts+4123, __ccgo_ts+4097, int32FromInt32(241)) != 0 {
+			__builtin_trap(tls)
+		}
 		break
 	}
 }
@@ -104,6 +107,9 @@ func b2ComputePolygonCentroid(tls *_Stack, vertices uintptr, count int32) (r Vec
 	_1:
 		;
 		i++
+	}
+	if !(area > float32FromFloat32(1.1920928955078125e-07)) && b2InternalAssertFcn(tls, __ccgo_ts+6505, __ccgo_ts+6524, int32FromInt32(45)) != 0 {
+		__builtin_trap(tls)
 	}
 	invArea = float32FromFloat32(1) / area
 	center.X *= invArea
@@ -226,6 +232,9 @@ func b2ComputePolygonMass(tls *_Stack, shape uintptr, density float32) (r1 MassD
 	// Simplification: triangle centroid = (1/3) * (p1 + p2 + p3)
 	//
 	// The rest of the derivation is handled by computer algebra.
+	if !((*Polygon)(unsafe.Pointer(shape)).Count > int32FromInt32(0)) && b2InternalAssertFcn(tls, __ccgo_ts+6762, __ccgo_ts+6524, int32FromInt32(302)) != 0 {
+		__builtin_trap(tls)
+	}
 	if (*Polygon)(unsafe.Pointer(shape)).Count == int32(1) {
 		(*(*Circle)(unsafe.Pointer(bp))).Center = *(*Vec2)(unsafe.Pointer(shape))
 		(*(*Circle)(unsafe.Pointer(bp))).Radius = (*Polygon)(unsafe.Pointer(shape)).Radius
@@ -380,6 +389,9 @@ func b2ComputePolygonMass(tls *_Stack, shape uintptr, density float32) (r1 MassD
 	// Total mass
 	massData.Mass = float32(density * area)
 	// Center of mass, shift back from origin at r
+	if !(area > float32FromFloat32(1.1920928955078125e-07)) && b2InternalAssertFcn(tls, __ccgo_ts+6505, __ccgo_ts+6524, int32FromInt32(386)) != 0 {
+		__builtin_trap(tls)
+	}
 	invArea = float32FromFloat32(1) / area
 	center.X *= invArea
 	center.Y *= invArea
@@ -558,6 +570,9 @@ func b2ComputePolygonAABB(tls *_Stack, shape uintptr, xf Transform) (r1 AABB) {
 	var x, y, v12, v13, v14, v16, v17, v18, v19, v21, v26, v27, v28, v30, v31, v32, v33, v35 float32
 	var v1, v6 Transform
 	_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ = aabb, c, c1, i, lower, r, upper, v, x, y, v1, v10, v11, v12, v13, v14, v16, v17, v18, v19, v2, v21, v22, v24, v25, v26, v27, v28, v3, v30, v31, v32, v33, v35, v36, v38, v39, v40, v42, v43, v44, v6, v7, v8
+	if !((*Polygon)(unsafe.Pointer(shape)).Count > int32FromInt32(0)) && b2InternalAssertFcn(tls, __ccgo_ts+6762, __ccgo_ts+6524, int32FromInt32(425)) != 0 {
+		__builtin_trap(tls)
+	}
 	v1 = xf
 	v2 = *(*Vec2)(unsafe.Pointer(shape))
 	x = float32(v1.Q.C*v2.X) - float32(v1.Q.S*v2.Y) + v1.P.X
@@ -1113,6 +1128,9 @@ _68:
 		;
 		i5++
 	}
+	if !((*(*Hull)(unsafe.Pointer(bp))).Count <= int32FromInt32(B2_MAX_POLYGON_VERTICES)) && b2InternalAssertFcn(tls, __ccgo_ts+6905, __ccgo_ts+6883, int32FromInt32(225)) != 0 {
+		__builtin_trap(tls)
+	}
 	// merge collinear
 	searching = uint8(true1)
 	for searching != 0 && (*(*Hull)(unsafe.Pointer(bp))).Count > int32(2) {
@@ -1247,36 +1265,70 @@ _2:
 }
 
 func b2ComputeRotationBetweenUnitVectors(tls *_Stack, v1 Vec2, v2 Vec2) (r Rot) {
-	var invMag, mag, v10, v3, v7 float32
-	var qn, rot, v111, v9 Rot
-	var v11, v21, v5, v6 Vec2
-	_, _, _, _, _, _, _, _, _, _, _, _, _ = invMag, mag, qn, rot, v11, v10, v111, v21, v3, v5, v6, v7, v9
+	var invMag, mag, v111, v12, v14, v17, v21, v211, v24, v4, v5, v7, v9 float32
+	var qn, rot, v23, v25 Rot
+	var v11, v15, v16, v19, v20, v8 Vec2
+	_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ = invMag, mag, qn, rot, v11, v111, v12, v14, v15, v16, v17, v19, v21, v20, v211, v23, v24, v25, v4, v5, v7, v8, v9
 	v11 = v1
-	v21 = v2
-	v3 = float32(v11.X*v21.X) + float32(v11.Y*v21.Y)
-	goto _4
-_4:
-	rot.C = v3
-	v5 = v1
-	v6 = v2
-	v7 = float32(v5.X*v6.Y) - float32(v5.Y*v6.X)
-	goto _8
-_8:
-	rot.S = v7
-	v9 = rot
-	mag = sqrtf(tls, float32(v9.S*v9.S)+float32(v9.C*v9.C))
-	if float64(mag) > float64(0) {
-		v10 = float32FromFloat32(1) / mag
+	v21 = sqrtf(tls, float32(v11.X*v11.X)+float32(v11.Y*v11.Y))
+	goto _3
+_3:
+	v4 = float32FromFloat32(1) - v21
+	if v4 < float32FromInt32(0) {
+		v7 = -v4
 	} else {
-		v10 = float32FromFloat32(0)
+		v7 = v4
 	}
-	invMag = v10
+	v5 = v7
+	goto _6
+_6:
+	;
+	if !(v5 < float32(float32FromFloat32(100)*float32FromFloat32(1.1920928955078125e-07))) && b2InternalAssertFcn(tls, __ccgo_ts+10147, __ccgo_ts+10206, int32FromInt32(152)) != 0 {
+		__builtin_trap(tls)
+	}
+	v8 = v2
+	v9 = sqrtf(tls, float32(v8.X*v8.X)+float32(v8.Y*v8.Y))
+	goto _10
+_10:
+	v111 = float32FromFloat32(1) - v9
+	if v111 < float32FromInt32(0) {
+		v14 = -v111
+	} else {
+		v14 = v111
+	}
+	v12 = v14
+	goto _13
+_13:
+	;
+	if !(v12 < float32(float32FromFloat32(100)*float32FromFloat32(1.1920928955078125e-07))) && b2InternalAssertFcn(tls, __ccgo_ts+10238, __ccgo_ts+10206, int32FromInt32(153)) != 0 {
+		__builtin_trap(tls)
+	}
+	v15 = v1
+	v16 = v2
+	v17 = float32(v15.X*v16.X) + float32(v15.Y*v16.Y)
+	goto _18
+_18:
+	rot.C = v17
+	v19 = v1
+	v20 = v2
+	v211 = float32(v19.X*v20.Y) - float32(v19.Y*v20.X)
+	goto _22
+_22:
+	rot.S = v211
+	v23 = rot
+	mag = sqrtf(tls, float32(v23.S*v23.S)+float32(v23.C*v23.C))
+	if float64(mag) > float64(0) {
+		v24 = float32FromFloat32(1) / mag
+	} else {
+		v24 = float32FromFloat32(0)
+	}
+	invMag = v24
 	qn = Rot{
-		C: float32(v9.C * invMag),
-		S: float32(v9.S * invMag),
+		C: float32(v23.C * invMag),
+		S: float32(v23.S * invMag),
 	}
-	v111 = qn
-	goto _12
-_12:
-	return v111
+	v25 = qn
+	goto _26
+_26:
+	return v25
 }

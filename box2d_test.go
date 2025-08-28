@@ -6,28 +6,26 @@ import (
 )
 
 func TestBounce(t *testing.T) {
-	b := NewBox2D()
+	fmt.Println(GetVersion())
 
-	fmt.Println(b.GetVersion())
-
-	def := b.DefaultWorldDef()
-	var w World = b.CreateWorld(def)
+	def := DefaultWorldDef()
+	var w World = CreateWorld(def)
 
 	w.SetGravity(Vec2{Y: -10})
 
-	ballDef := b.DefaultBodyDef()
+	ballDef := DefaultBodyDef()
 	ballDef.Type1 = DynamicBody
 	ballDef.Position.Y = 5
 
 	var ball Body = w.CreateBody(ballDef)
 
-	ballShape := b.DefaultShapeDef()
+	ballShape := DefaultShapeDef()
 	ballShape.Material.Restitution = 0.2
 	ballShape.EnableContactEvents = 1
 	ballShape.EnableHitEvents = 1
 	ball.CreateCircleShape(ballShape, Circle{Radius: 1})
 
-	groundDef := b.DefaultBodyDef()
+	groundDef := DefaultBodyDef()
 	groundDef.Type1 = StaticBody
 
 	var ground Body = w.CreateBody(groundDef)
@@ -37,7 +35,7 @@ func TestBounce(t *testing.T) {
 		Point2: Vec2{20.0, 0.0},
 	}
 
-	groundShape := b.DefaultShapeDef()
+	groundShape := DefaultShapeDef()
 	ground.CreateSegmentShape(groundShape, groundSegment)
 
 	for idx := range 100 {
