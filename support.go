@@ -17,7 +17,7 @@ func sliceOf(p uintptr, n size_t) []byte {
 	return (*arr)[:n]
 }
 
-func __atomic_fetch_addInt32(tls *TLS, addr uintptr, inc int32, mode int32) int32 {
+func __atomic_fetch_addInt32(tls *_Stack, addr uintptr, inc int32, mode int32) int32 {
 	value := (*int32)(unsafe.Pointer(addr))
 
 	prev := *value
@@ -26,7 +26,7 @@ func __atomic_fetch_addInt32(tls *TLS, addr uintptr, inc int32, mode int32) int3
 	return prev
 }
 
-func __builtin___atomic_compare_exchange_n(tls *TLS, addr, expected uintptr, desired int32, weak uint8, success_memorder, failure_memorder int32) uint8 {
+func __builtin___atomic_compare_exchange_n(tls *_Stack, addr, expected uintptr, desired int32, weak uint8, success_memorder, failure_memorder int32) uint8 {
 	ptrValue := (*int32)(unsafe.Pointer(addr))
 	ptrExpected := (*int32)(unsafe.Pointer(expected))
 
@@ -37,23 +37,23 @@ func __builtin___atomic_compare_exchange_n(tls *TLS, addr, expected uintptr, des
 	}
 }
 
-func __builtin_remainderf(_ *TLS, a, b float32) float32 {
+func __builtin_remainderf(_ *_Stack, a, b float32) float32 {
 	return float32(math.Remainder(float64(a), float64(b)))
 }
 
-func __builtin_trap(_ *TLS) {
+func __builtin_trap(_ *_Stack) {
 	panic("trap")
 }
 
-func __builtin_clz(t *TLS, n uint32) int32 {
+func __builtin_clz(t *_Stack, n uint32) int32 {
 	return int32(bits.LeadingZeros32(n))
 }
 
-func __builtin_ctzll(_ *TLS, value uint64) int32 {
+func __builtin_ctzll(_ *_Stack, value uint64) int32 {
 	return int32(bits.TrailingZeros64(value))
 }
 
-func __builtin_aligned_alloc(tls *TLS, align, size uint64) uintptr {
+func __builtin_aligned_alloc(tls *_Stack, align, size uint64) uintptr {
 	buf := unsafe.Pointer(unsafe.SliceData(make([]byte, size+align)))
 	addr := uintptr(buf)
 
@@ -70,7 +70,7 @@ func __builtin_aligned_alloc(tls *TLS, align, size uint64) uintptr {
 	return addr
 }
 
-func memset(_ *TLS, dest uintptr, c int32, n size_t) (r uintptr) {
+func memset(_ *_Stack, dest uintptr, c int32, n size_t) (r uintptr) {
 	slice := sliceOf(dest, n)
 
 	if c == 0 {
@@ -84,14 +84,14 @@ func memset(_ *TLS, dest uintptr, c int32, n size_t) (r uintptr) {
 	return dest
 }
 
-func memcpy(_ *TLS, a uintptr, b uintptr, n size_t) uintptr {
+func memcpy(_ *_Stack, a uintptr, b uintptr, n size_t) uintptr {
 	dst := sliceOf(a, n)
 	src := sliceOf(b, n)
 	copy(dst, src)
 	return a
 }
 
-func free(tls *TLS, ptr uintptr) {
+func free(tls *_Stack, ptr uintptr) {
 	if _, ok := tls.heap[ptr]; !ok {
 		err := fmt.Errorf("free(%#x): unknown address", ptr)
 		panic(err)
@@ -100,28 +100,28 @@ func free(tls *TLS, ptr uintptr) {
 	delete(tls.heap, ptr)
 }
 
-func sqrtf(_ *TLS, f float32) float32 {
+func sqrtf(_ *_Stack, f float32) float32 {
 	return float32(math.Sqrt(float64(f)))
 }
 
 type _qsort struct {
-	tls      *TLS
+	tls      *_Stack
 	memory   []byte
-	compare  func(_ *TLS, a, b uintptr) int32
+	compare  func(_ *_Stack, a, b uintptr) int32
 	itemSize int
 	len      int
 }
 
-func (q _qsort) sliceOf(idx int) []byte {
+func (q *_qsort) sliceOf(idx int) []byte {
 	start := idx * q.itemSize
 	return q.memory[start:][:q.itemSize]
 }
 
-func (q _qsort) Len() int {
+func (q *_qsort) Len() int {
 	return q.len
 }
 
-func (q _qsort) Less(i, j int) bool {
+func (q *_qsort) Less(i, j int) bool {
 	lhs := q.sliceOf(i)
 	rhs := q.sliceOf(j)
 
@@ -134,7 +134,7 @@ func (q _qsort) Less(i, j int) bool {
 	return rc < 0
 }
 
-func (q _qsort) Swap(i, j int) {
+func (q *_qsort) Swap(i, j int) {
 	lhs := q.sliceOf(i)
 	rhs := q.sliceOf(j)
 
@@ -144,8 +144,8 @@ func (q _qsort) Swap(i, j int) {
 	}
 }
 
-func qsort(tls *TLS, base uintptr, nel size_t, width size_t, compare func(_ *TLS, a, b uintptr) int32) {
-	sort.Sort(_qsort{
+func qsort(tls *_Stack, base uintptr, nel size_t, width size_t, compare func(_ *_Stack, a, b uintptr) int32) {
+	sort.Sort(&_qsort{
 		tls:      tls,
 		memory:   sliceOf(base, nel*width),
 		compare:  compare,
@@ -154,7 +154,7 @@ func qsort(tls *TLS, base uintptr, nel size_t, width size_t, compare func(_ *TLS
 	})
 }
 
-func clock_gettime(tls *TLS, clk clockid_t, ts uintptr) (r int32) {
+func clock_gettime(tls *_Stack, clk clockid_t, ts uintptr) (r int32) {
 	now := time.Now()
 
 	(*timespec)(unsafe.Pointer(ts)).Tv_sec = now.Unix()
@@ -163,32 +163,32 @@ func clock_gettime(tls *TLS, clk clockid_t, ts uintptr) (r int32) {
 	return 0
 }
 
-func sched_yield(tls *TLS) int32 {
+func sched_yield(tls *_Stack) int32 {
 	runtime.Gosched()
 	return 0
 }
 
-func __builtin_Gosched(tls *TLS) {
+func __builtin_Gosched(tls *_Stack) {
 	runtime.Gosched()
 }
 
-func printf(tls *TLS, fmt uintptr, va uintptr) (r int32) {
+func printf(tls *_Stack, fmt uintptr, va uintptr) (r int32) {
 	panic("printf: not implemented")
 }
 
-func __builtin_snprintf(t *TLS, str uintptr, size size_t, format, args uintptr) int32 {
+func __builtin_snprintf(t *_Stack, str uintptr, size size_t, format, args uintptr) int32 {
 	panic("snprintf: not implemented")
 }
 
-func fprintf(tls *TLS, f uintptr, fmt uintptr, va uintptr) (r int32) {
+func fprintf(tls *_Stack, f uintptr, fmt uintptr, va uintptr) (r int32) {
 	panic("fprintf: not implemented")
 }
 
-func fopen(tls *TLS, filename uintptr, mode uintptr) (r uintptr) {
+func fopen(tls *_Stack, filename uintptr, mode uintptr) (r uintptr) {
 	panic("fopen: not implemented")
 }
 
-func fclose(tls *TLS, f uintptr) (r1 int32) {
+func fclose(tls *_Stack, f uintptr) (r1 int32) {
 	panic("fclose: not implemented")
 }
 
@@ -204,11 +204,6 @@ func escapes(x any) {
 var dummy struct {
 	b bool
 	x any
-}
-
-func addrOf[T any](val *T) uintptr {
-	escapes(val)
-	return uintptr(unsafe.Pointer(val))
 }
 
 func toString(base uintptr) string {

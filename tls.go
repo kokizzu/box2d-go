@@ -5,7 +5,7 @@ import (
 	"unsafe"
 )
 
-type TLS struct {
+type _Stack struct {
 	Stack  []byte
 	allocs []int
 	pos    int
@@ -14,20 +14,20 @@ type TLS struct {
 }
 
 //go:noinline
-func NewTLS(stackSize int) *TLS {
-	return &TLS{
+func NewTLS(stackSize int) *_Stack {
+	return &_Stack{
 		Stack: make([]byte, stackSize),
 		heap:  make(map[uintptr]unsafe.Pointer, 4096),
 	}
 }
 
-func stackAlloc[T any](tls *TLS) *T {
+func stackAlloc[T any](tls *_Stack) *T {
 	var tZero T
 	ptr := tls.Alloc(int(unsafe.Sizeof(tZero)))
 	return (*T)(unsafe.Pointer(ptr))
 }
 
-func (tls *TLS) Alloc(n int) uintptr {
+func (tls *_Stack) Alloc(n int) uintptr {
 	if n%8 > 0 {
 		// round up to a multiple of 8
 		n += 8 - n%8
@@ -44,7 +44,7 @@ func (tls *TLS) Alloc(n int) uintptr {
 	return buf
 }
 
-func (tls *TLS) Free(n int) uintptr {
+func (tls *_Stack) Free(n int) uintptr {
 	if n%8 > 0 {
 		// round up to a multiple of 8
 		n += 8 - n%8
@@ -61,7 +61,7 @@ func (tls *TLS) Free(n int) uintptr {
 	return 0
 }
 
-func (tls *TLS) toCString(src string) alloc {
+func (tls *_Stack) toCString(src string) alloc {
 	n := len(src) + 1
 	mem := tls.Alloc(n)
 
@@ -74,7 +74,7 @@ func (tls *TLS) toCString(src string) alloc {
 
 type alloc struct {
 	Addr uintptr
-	tls  *TLS
+	tls  *_Stack
 	size int
 }
 
@@ -82,7 +82,7 @@ func (a alloc) Free() {
 	a.tls.Free(a.size)
 }
 
-func copyToStack[T any](tls *TLS, value T) alloc {
+func copyToStack[T any](tls *_Stack, value T) alloc {
 	n := unsafe.Sizeof(value)
 	stack := tls.Alloc(int(n))
 	memcpy(tls, stack, uintptr(unsafe.Pointer(&value)), size_t(n))

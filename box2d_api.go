@@ -5,25 +5,28 @@ import (
 	"runtime"
 )
 
+var _ unsafe.Pointer
+var _ runtime.MemStats
+
 type Body struct {
 	Id  BodyId
-	tls *TLS
+	tls *_Stack
 }
 type Shape struct {
 	Id  ShapeId
-	tls *TLS
+	tls *_Stack
 }
 type World struct {
 	Id  WorldId
-	tls *TLS
+	tls *_Stack
 }
 type Joint struct {
 	Id  JointId
-	tls *TLS
+	tls *_Stack
 }
 type Chain struct {
 	Id  ChainId
-	tls *TLS
+	tls *_Stack
 }
 type PrismaticJoint struct {
 	Joint
@@ -50,10 +53,7 @@ type FilterJoint struct {
 	Joint
 }
 
-func (b Box2D) IsValidAABB(a1 AABB) (r uint8) {
-	r = b2IsValidAABB(b.tls, a1)
-	return
-}
+func (b Box2D) IsValidAABB(a1 AABB) (r uint8) { r = b2IsValidAABB(b.tls, a1); return }
 func (b World) CreateBody(def BodyDef) (r Body) {
 	defStack := copyToStack(b.tls, def)
 	defer defStack.Free()
@@ -61,35 +61,18 @@ func (b World) CreateBody(def BodyDef) (r Body) {
 	r.Id = b2CreateBody(b.tls, b.Id, defStack.Addr)
 	return
 }
-func (b Body) DestroyBody() {
-	b2DestroyBody(b.tls, b.Id)
-}
-func (b Body) GetContactCapacity() (r int32) {
-	r = b2Body_GetContactCapacity(b.tls, b.Id)
-	return
-}
+func (b Body) DestroyBody()                  { b2DestroyBody(b.tls, b.Id) }
+func (b Body) GetContactCapacity() (r int32) { r = b2Body_GetContactCapacity(b.tls, b.Id); return }
 func (b Body) GetContactData(contactData *ContactData, capacity int32) (r int32) {
 	defer runtime.KeepAlive(contactData)
 	escapes(contactData)
 	r = b2Body_GetContactData(b.tls, b.Id, uintptr(unsafe.Pointer(contactData)), capacity)
 	return
 }
-func (b Body) ComputeAABB() (r AABB) {
-	r = b2Body_ComputeAABB(b.tls, b.Id)
-	return
-}
-func (b Body) GetPosition() (r Vec2) {
-	r = b2Body_GetPosition(b.tls, b.Id)
-	return
-}
-func (b Body) GetRotation() (r Rot) {
-	r = b2Body_GetRotation(b.tls, b.Id)
-	return
-}
-func (b Body) GetTransform() (r Transform) {
-	r = b2Body_GetTransform(b.tls, b.Id)
-	return
-}
+func (b Body) ComputeAABB() (r AABB)       { r = b2Body_ComputeAABB(b.tls, b.Id); return }
+func (b Body) GetPosition() (r Vec2)       { r = b2Body_GetPosition(b.tls, b.Id); return }
+func (b Body) GetRotation() (r Rot)        { r = b2Body_GetRotation(b.tls, b.Id); return }
+func (b Body) GetTransform() (r Transform) { r = b2Body_GetTransform(b.tls, b.Id); return }
 func (b Body) GetLocalPoint(worldPoint Vec2) (r Vec2) {
 	r = b2Body_GetLocalPoint(b.tls, b.Id, worldPoint)
 	return
@@ -109,14 +92,8 @@ func (b Body) GetWorldVector(localVector Vec2) (r Vec2) {
 func (b Body) SetTransform(position Vec2, rotation Rot) {
 	b2Body_SetTransform(b.tls, b.Id, position, rotation)
 }
-func (b Body) GetLinearVelocity() (r Vec2) {
-	r = b2Body_GetLinearVelocity(b.tls, b.Id)
-	return
-}
-func (b Body) GetAngularVelocity() (r float32) {
-	r = b2Body_GetAngularVelocity(b.tls, b.Id)
-	return
-}
+func (b Body) GetLinearVelocity() (r Vec2)     { r = b2Body_GetLinearVelocity(b.tls, b.Id); return }
+func (b Body) GetAngularVelocity() (r float32) { r = b2Body_GetAngularVelocity(b.tls, b.Id); return }
 func (b Body) SetLinearVelocity(linearVelocity Vec2) {
 	b2Body_SetLinearVelocity(b.tls, b.Id, linearVelocity)
 }
@@ -140,9 +117,7 @@ func (b Body) ApplyForce(force Vec2, point Vec2, wake uint8) {
 func (b Body) ApplyForceToCenter(force Vec2, wake uint8) {
 	b2Body_ApplyForceToCenter(b.tls, b.Id, force, wake)
 }
-func (b Body) ApplyTorque(torque float32, wake uint8) {
-	b2Body_ApplyTorque(b.tls, b.Id, torque, wake)
-}
+func (b Body) ApplyTorque(torque float32, wake uint8) { b2Body_ApplyTorque(b.tls, b.Id, torque, wake) }
 func (b Body) ApplyLinearImpulse(impulse Vec2, point Vec2, wake uint8) {
 	b2Body_ApplyLinearImpulse(b.tls, b.Id, impulse, point, wake)
 }
@@ -152,150 +127,58 @@ func (b Body) ApplyLinearImpulseToCenter(impulse Vec2, wake uint8) {
 func (b Body) ApplyAngularImpulse(impulse float32, wake uint8) {
 	b2Body_ApplyAngularImpulse(b.tls, b.Id, impulse, wake)
 }
-func (b Body) GetType() (r BodyType) {
-	r = b2Body_GetType(b.tls, b.Id)
-	return
-}
-func (b Body) SetType(type1 BodyType) {
-	b2Body_SetType(b.tls, b.Id, type1)
-}
-func (b Body) SetUserData(userData uintptr) {
-	b2Body_SetUserData(b.tls, b.Id, userData)
-}
-func (b Body) GetUserData() (r uintptr) {
-	r = b2Body_GetUserData(b.tls, b.Id)
-	return
-}
-func (b Body) GetMass() (r float32) {
-	r = b2Body_GetMass(b.tls, b.Id)
-	return
-}
+func (b Body) GetType() (r BodyType)        { r = b2Body_GetType(b.tls, b.Id); return }
+func (b Body) SetType(type1 BodyType)       { b2Body_SetType(b.tls, b.Id, type1) }
+func (b Body) SetUserData(userData uintptr) { b2Body_SetUserData(b.tls, b.Id, userData) }
+func (b Body) GetUserData() (r uintptr)     { r = b2Body_GetUserData(b.tls, b.Id); return }
+func (b Body) GetMass() (r float32)         { r = b2Body_GetMass(b.tls, b.Id); return }
 func (b Body) GetRotationalInertia() (r float32) {
 	r = b2Body_GetRotationalInertia(b.tls, b.Id)
 	return
 }
-func (b Body) GetLocalCenterOfMass() (r Vec2) {
-	r = b2Body_GetLocalCenterOfMass(b.tls, b.Id)
-	return
-}
-func (b Body) GetWorldCenterOfMass() (r Vec2) {
-	r = b2Body_GetWorldCenterOfMass(b.tls, b.Id)
-	return
-}
-func (b Body) SetMassData(massData MassData) {
-	b2Body_SetMassData(b.tls, b.Id, massData)
-}
-func (b Body) GetMassData() (r MassData) {
-	r = b2Body_GetMassData(b.tls, b.Id)
-	return
-}
-func (b Body) ApplyMassFromShapes() {
-	b2Body_ApplyMassFromShapes(b.tls, b.Id)
-}
+func (b Body) GetLocalCenterOfMass() (r Vec2) { r = b2Body_GetLocalCenterOfMass(b.tls, b.Id); return }
+func (b Body) GetWorldCenterOfMass() (r Vec2) { r = b2Body_GetWorldCenterOfMass(b.tls, b.Id); return }
+func (b Body) SetMassData(massData MassData)  { b2Body_SetMassData(b.tls, b.Id, massData) }
+func (b Body) GetMassData() (r MassData)      { r = b2Body_GetMassData(b.tls, b.Id); return }
+func (b Body) ApplyMassFromShapes()           { b2Body_ApplyMassFromShapes(b.tls, b.Id) }
 func (b Body) SetLinearDamping(linearDamping float32) {
 	b2Body_SetLinearDamping(b.tls, b.Id, linearDamping)
 }
-func (b Body) GetLinearDamping() (r float32) {
-	r = b2Body_GetLinearDamping(b.tls, b.Id)
-	return
-}
+func (b Body) GetLinearDamping() (r float32) { r = b2Body_GetLinearDamping(b.tls, b.Id); return }
 func (b Body) SetAngularDamping(angularDamping float32) {
 	b2Body_SetAngularDamping(b.tls, b.Id, angularDamping)
 }
-func (b Body) GetAngularDamping() (r float32) {
-	r = b2Body_GetAngularDamping(b.tls, b.Id)
-	return
-}
+func (b Body) GetAngularDamping() (r float32) { r = b2Body_GetAngularDamping(b.tls, b.Id); return }
 func (b Body) SetGravityScale(gravityScale float32) {
 	b2Body_SetGravityScale(b.tls, b.Id, gravityScale)
 }
-func (b Body) GetGravityScale() (r float32) {
-	r = b2Body_GetGravityScale(b.tls, b.Id)
-	return
-}
-func (b Body) IsAwake() (r uint8) {
-	r = b2Body_IsAwake(b.tls, b.Id)
-	return
-}
-func (b Body) SetAwake(awake uint8) {
-	b2Body_SetAwake(b.tls, b.Id, awake)
-}
-func (b Body) IsEnabled() (r uint8) {
-	r = b2Body_IsEnabled(b.tls, b.Id)
-	return
-}
-func (b Body) IsSleepEnabled() (r uint8) {
-	r = b2Body_IsSleepEnabled(b.tls, b.Id)
-	return
-}
+func (b Body) GetGravityScale() (r float32) { r = b2Body_GetGravityScale(b.tls, b.Id); return }
+func (b Body) IsAwake() (r uint8)           { r = b2Body_IsAwake(b.tls, b.Id); return }
+func (b Body) SetAwake(awake uint8)         { b2Body_SetAwake(b.tls, b.Id, awake) }
+func (b Body) IsEnabled() (r uint8)         { r = b2Body_IsEnabled(b.tls, b.Id); return }
+func (b Body) IsSleepEnabled() (r uint8)    { r = b2Body_IsSleepEnabled(b.tls, b.Id); return }
 func (b Body) SetSleepThreshold(sleepThreshold float32) {
 	b2Body_SetSleepThreshold(b.tls, b.Id, sleepThreshold)
 }
-func (b Body) GetSleepThreshold() (r float32) {
-	r = b2Body_GetSleepThreshold(b.tls, b.Id)
-	return
-}
-func (b Body) EnableSleep(enableSleep uint8) {
-	b2Body_EnableSleep(b.tls, b.Id, enableSleep)
-}
-func (b Body) Disable() {
-	b2Body_Disable(b.tls, b.Id)
-}
-func (b Body) Enable() {
-	b2Body_Enable(b.tls, b.Id)
-}
-func (b Body) SetFixedRotation(flag uint8) {
-	b2Body_SetFixedRotation(b.tls, b.Id, flag)
-}
-func (b Body) IsFixedRotation() (r uint8) {
-	r = b2Body_IsFixedRotation(b.tls, b.Id)
-	return
-}
-func (b Body) SetBullet(flag uint8) {
-	b2Body_SetBullet(b.tls, b.Id, flag)
-}
-func (b Body) IsBullet() (r uint8) {
-	r = b2Body_IsBullet(b.tls, b.Id)
-	return
-}
-func (b Body) EnableContactEvents(flag uint8) {
-	b2Body_EnableContactEvents(b.tls, b.Id, flag)
-}
-func (b Body) EnableHitEvents(flag uint8) {
-	b2Body_EnableHitEvents(b.tls, b.Id, flag)
-}
-func (b Body) GetWorld() (r World) {
-	r.tls = b.tls
-	r.Id = b2Body_GetWorld(b.tls, b.Id)
-	return
-}
-func (b Body) GetShapeCount() (r int32) {
-	r = b2Body_GetShapeCount(b.tls, b.Id)
-	return
-}
-func (b Body) GetJointCount() (r int32) {
-	r = b2Body_GetJointCount(b.tls, b.Id)
-	return
-}
+func (b Body) GetSleepThreshold() (r float32) { r = b2Body_GetSleepThreshold(b.tls, b.Id); return }
+func (b Body) EnableSleep(enableSleep uint8)  { b2Body_EnableSleep(b.tls, b.Id, enableSleep) }
+func (b Body) Disable()                       { b2Body_Disable(b.tls, b.Id) }
+func (b Body) Enable()                        { b2Body_Enable(b.tls, b.Id) }
+func (b Body) SetFixedRotation(flag uint8)    { b2Body_SetFixedRotation(b.tls, b.Id, flag) }
+func (b Body) IsFixedRotation() (r uint8)     { r = b2Body_IsFixedRotation(b.tls, b.Id); return }
+func (b Body) SetBullet(flag uint8)           { b2Body_SetBullet(b.tls, b.Id, flag) }
+func (b Body) IsBullet() (r uint8)            { r = b2Body_IsBullet(b.tls, b.Id); return }
+func (b Body) EnableContactEvents(flag uint8) { b2Body_EnableContactEvents(b.tls, b.Id, flag) }
+func (b Body) EnableHitEvents(flag uint8)     { b2Body_EnableHitEvents(b.tls, b.Id, flag) }
+func (b Body) GetWorld() (r World)            { r.tls = b.tls; r.Id = b2Body_GetWorld(b.tls, b.Id); return }
+func (b Body) GetShapeCount() (r int32)       { r = b2Body_GetShapeCount(b.tls, b.Id); return }
+func (b Body) GetJointCount() (r int32)       { r = b2Body_GetJointCount(b.tls, b.Id); return }
 func (b Box2D) SetLengthUnitsPerMeter(lengthUnits float32) {
 	b2SetLengthUnitsPerMeter(b.tls, lengthUnits)
 }
-func (b Box2D) GetLengthUnitsPerMeter() (r float32) {
-	r = b2GetLengthUnitsPerMeter(b.tls)
-	return
-}
-func (b Box2D) InternalAssertFcn(condition uintptr, fileName uintptr, lineNumber int32) (r int32) {
-	r = b2InternalAssertFcn(b.tls, condition, fileName, lineNumber)
-	return
-}
-func (b Box2D) GetVersion() (r Version) {
-	r = b2GetVersion(b.tls)
-	return
-}
-func (b Box2D) GetByteCount() (r int32) {
-	r = b2GetByteCount(b.tls)
-	return
-}
+func (b Box2D) GetLengthUnitsPerMeter() (r float32) { r = b2GetLengthUnitsPerMeter(b.tls); return }
+func (b Box2D) GetVersion() (r Version)             { r = b2GetVersion(b.tls); return }
+func (b Box2D) GetByteCount() (r int32)             { r = b2GetByteCount(b.tls); return }
 func (b Box2D) GetSweepTransform(sweep Sweep, time float32) (r Transform) {
 	sweepStack := copyToStack(b.tls, sweep)
 	defer sweepStack.Free()
@@ -439,10 +322,7 @@ func (b Box2D) MakeOffsetRoundedPolygon(hull Hull, position Vec2, rotation Rot, 
 	r = b2MakeOffsetRoundedPolygon(b.tls, hullStack.Addr, position, rotation, radius)
 	return
 }
-func (b Box2D) MakeSquare(halfWidth float32) (r Polygon) {
-	r = b2MakeSquare(b.tls, halfWidth)
-	return
-}
+func (b Box2D) MakeSquare(halfWidth float32) (r Polygon) { r = b2MakeSquare(b.tls, halfWidth); return }
 func (b Box2D) MakeBox(halfWidth float32, halfHeight float32) (r Polygon) {
 	r = b2MakeBox(b.tls, halfWidth, halfHeight)
 	return
@@ -605,18 +485,9 @@ func (b Box2D) DefaultDistanceJointDef() (r DistanceJointDef) {
 	r = b2DefaultDistanceJointDef(b.tls)
 	return
 }
-func (b Box2D) DefaultMotorJointDef() (r MotorJointDef) {
-	r = b2DefaultMotorJointDef(b.tls)
-	return
-}
-func (b Box2D) DefaultMouseJointDef() (r MouseJointDef) {
-	r = b2DefaultMouseJointDef(b.tls)
-	return
-}
-func (b Box2D) DefaultFilterJointDef() (r FilterJointDef) {
-	r = b2DefaultFilterJointDef(b.tls)
-	return
-}
+func (b Box2D) DefaultMotorJointDef() (r MotorJointDef)   { r = b2DefaultMotorJointDef(b.tls); return }
+func (b Box2D) DefaultMouseJointDef() (r MouseJointDef)   { r = b2DefaultMouseJointDef(b.tls); return }
+func (b Box2D) DefaultFilterJointDef() (r FilterJointDef) { r = b2DefaultFilterJointDef(b.tls); return }
 func (b Box2D) DefaultPrismaticJointDef() (r PrismaticJointDef) {
 	r = b2DefaultPrismaticJointDef(b.tls)
 	return
@@ -625,18 +496,9 @@ func (b Box2D) DefaultRevoluteJointDef() (r RevoluteJointDef) {
 	r = b2DefaultRevoluteJointDef(b.tls)
 	return
 }
-func (b Box2D) DefaultWeldJointDef() (r WeldJointDef) {
-	r = b2DefaultWeldJointDef(b.tls)
-	return
-}
-func (b Box2D) DefaultWheelJointDef() (r WheelJointDef) {
-	r = b2DefaultWheelJointDef(b.tls)
-	return
-}
-func (b Box2D) DefaultExplosionDef() (r ExplosionDef) {
-	r = b2DefaultExplosionDef(b.tls)
-	return
-}
+func (b Box2D) DefaultWeldJointDef() (r WeldJointDef)   { r = b2DefaultWeldJointDef(b.tls); return }
+func (b Box2D) DefaultWheelJointDef() (r WheelJointDef) { r = b2DefaultWheelJointDef(b.tls); return }
+func (b Box2D) DefaultExplosionDef() (r ExplosionDef)   { r = b2DefaultExplosionDef(b.tls); return }
 func (b World) CreateDistanceJoint(def DistanceJointDef) (r DistanceJoint) {
 	defStack := copyToStack(b.tls, def)
 	defer defStack.Free()
@@ -693,77 +555,29 @@ func (b World) CreateWheelJoint(def WheelJointDef) (r WheelJoint) {
 	r.Id = b2CreateWheelJoint(b.tls, b.Id, defStack.Addr)
 	return
 }
-func (b Joint) DestroyJoint() {
-	b2DestroyJoint(b.tls, b.Id)
-}
-func (b Joint) GetType() (r JointType) {
-	r = b2Joint_GetType(b.tls, b.Id)
-	return
-}
-func (b Joint) GetBodyA() (r Body) {
-	r.tls = b.tls
-	r.Id = b2Joint_GetBodyA(b.tls, b.Id)
-	return
-}
-func (b Joint) GetBodyB() (r Body) {
-	r.tls = b.tls
-	r.Id = b2Joint_GetBodyB(b.tls, b.Id)
-	return
-}
-func (b Joint) GetWorld() (r World) {
-	r.tls = b.tls
-	r.Id = b2Joint_GetWorld(b.tls, b.Id)
-	return
-}
-func (b Joint) SetLocalAnchorA(localAnchor Vec2) {
-	b2Joint_SetLocalAnchorA(b.tls, b.Id, localAnchor)
-}
-func (b Joint) GetLocalAnchorA() (r Vec2) {
-	r = b2Joint_GetLocalAnchorA(b.tls, b.Id)
-	return
-}
-func (b Joint) SetLocalAnchorB(localAnchor Vec2) {
-	b2Joint_SetLocalAnchorB(b.tls, b.Id, localAnchor)
-}
-func (b Joint) GetLocalAnchorB() (r Vec2) {
-	r = b2Joint_GetLocalAnchorB(b.tls, b.Id)
-	return
-}
+func (b Joint) DestroyJoint()                    { b2DestroyJoint(b.tls, b.Id) }
+func (b Joint) GetType() (r JointType)           { r = b2Joint_GetType(b.tls, b.Id); return }
+func (b Joint) GetBodyA() (r Body)               { r.tls = b.tls; r.Id = b2Joint_GetBodyA(b.tls, b.Id); return }
+func (b Joint) GetBodyB() (r Body)               { r.tls = b.tls; r.Id = b2Joint_GetBodyB(b.tls, b.Id); return }
+func (b Joint) GetWorld() (r World)              { r.tls = b.tls; r.Id = b2Joint_GetWorld(b.tls, b.Id); return }
+func (b Joint) SetLocalAnchorA(localAnchor Vec2) { b2Joint_SetLocalAnchorA(b.tls, b.Id, localAnchor) }
+func (b Joint) GetLocalAnchorA() (r Vec2)        { r = b2Joint_GetLocalAnchorA(b.tls, b.Id); return }
+func (b Joint) SetLocalAnchorB(localAnchor Vec2) { b2Joint_SetLocalAnchorB(b.tls, b.Id, localAnchor) }
+func (b Joint) GetLocalAnchorB() (r Vec2)        { r = b2Joint_GetLocalAnchorB(b.tls, b.Id); return }
 func (b Joint) SetReferenceAngle(angleInRadians float32) {
 	b2Joint_SetReferenceAngle(b.tls, b.Id, angleInRadians)
 }
-func (b Joint) GetReferenceAngle() (r float32) {
-	r = b2Joint_GetReferenceAngle(b.tls, b.Id)
-	return
-}
-func (b Joint) SetLocalAxisA(localAxis Vec2) {
-	b2Joint_SetLocalAxisA(b.tls, b.Id, localAxis)
-}
-func (b Joint) GetLocalAxisA() (r Vec2) {
-	r = b2Joint_GetLocalAxisA(b.tls, b.Id)
-	return
-}
+func (b Joint) GetReferenceAngle() (r float32) { r = b2Joint_GetReferenceAngle(b.tls, b.Id); return }
+func (b Joint) SetLocalAxisA(localAxis Vec2)   { b2Joint_SetLocalAxisA(b.tls, b.Id, localAxis) }
+func (b Joint) GetLocalAxisA() (r Vec2)        { r = b2Joint_GetLocalAxisA(b.tls, b.Id); return }
 func (b Joint) SetCollideConnected(shouldCollide uint8) {
 	b2Joint_SetCollideConnected(b.tls, b.Id, shouldCollide)
 }
-func (b Joint) GetCollideConnected() (r uint8) {
-	r = b2Joint_GetCollideConnected(b.tls, b.Id)
-	return
-}
-func (b Joint) SetUserData(userData uintptr) {
-	b2Joint_SetUserData(b.tls, b.Id, userData)
-}
-func (b Joint) GetUserData() (r uintptr) {
-	r = b2Joint_GetUserData(b.tls, b.Id)
-	return
-}
-func (b Joint) WakeBodies() {
-	b2Joint_WakeBodies(b.tls, b.Id)
-}
-func (b Joint) GetConstraintForce() (r Vec2) {
-	r = b2Joint_GetConstraintForce(b.tls, b.Id)
-	return
-}
+func (b Joint) GetCollideConnected() (r uint8) { r = b2Joint_GetCollideConnected(b.tls, b.Id); return }
+func (b Joint) SetUserData(userData uintptr)   { b2Joint_SetUserData(b.tls, b.Id, userData) }
+func (b Joint) GetUserData() (r uintptr)       { r = b2Joint_GetUserData(b.tls, b.Id); return }
+func (b Joint) WakeBodies()                    { b2Joint_WakeBodies(b.tls, b.Id) }
+func (b Joint) GetConstraintForce() (r Vec2)   { r = b2Joint_GetConstraintForce(b.tls, b.Id); return }
 func (b Joint) GetConstraintTorque() (r float32) {
 	r = b2Joint_GetConstraintTorque(b.tls, b.Id)
 	return
@@ -878,26 +692,11 @@ func (b Box2D) CollideChainSegmentAndPolygon(segmentA ChainSegment, xfA Transfor
 	r = b2CollideChainSegmentAndPolygon(b.tls, segmentAStack.Addr, xfA, polygonBStack.Addr, xfB, cache)
 	return
 }
-func (b Box2D) IsValidFloat(a float32) (r uint8) {
-	r = b2IsValidFloat(b.tls, a)
-	return
-}
-func (b Box2D) IsValidVec2(v Vec2) (r uint8) {
-	r = b2IsValidVec2(b.tls, v)
-	return
-}
-func (b Box2D) IsValidRotation(q1 Rot) (r uint8) {
-	r = b2IsValidRotation(b.tls, q1)
-	return
-}
-func (b Box2D) IsValidPlane(a3 Plane) (r uint8) {
-	r = b2IsValidPlane(b.tls, a3)
-	return
-}
-func (b Box2D) Atan2(y float32, x float32) (r1 float32) {
-	r1 = b2Atan2(b.tls, y, x)
-	return
-}
+func (b Box2D) IsValidFloat(a float32) (r uint8)        { r = b2IsValidFloat(b.tls, a); return }
+func (b Box2D) IsValidVec2(v Vec2) (r uint8)            { r = b2IsValidVec2(b.tls, v); return }
+func (b Box2D) IsValidRotation(q1 Rot) (r uint8)        { r = b2IsValidRotation(b.tls, q1); return }
+func (b Box2D) IsValidPlane(a3 Plane) (r uint8)         { r = b2IsValidPlane(b.tls, a3); return }
+func (b Box2D) Atan2(y float32, x float32) (r1 float32) { r1 = b2Atan2(b.tls, y, x); return }
 func (b Box2D) ComputeCosSin(radians1 float32) (r CosSin) {
 	r = b2ComputeCosSin(b.tls, radians1)
 	return
@@ -941,13 +740,8 @@ func (b Joint) MotorJoint_GetCorrectionFactor() (r float32) {
 	r = b2MotorJoint_GetCorrectionFactor(b.tls, b.Id)
 	return
 }
-func (b Joint) MouseJoint_SetTarget(target Vec2) {
-	b2MouseJoint_SetTarget(b.tls, b.Id, target)
-}
-func (b Joint) MouseJoint_GetTarget() (r Vec2) {
-	r = b2MouseJoint_GetTarget(b.tls, b.Id)
-	return
-}
+func (b Joint) MouseJoint_SetTarget(target Vec2) { b2MouseJoint_SetTarget(b.tls, b.Id, target) }
+func (b Joint) MouseJoint_GetTarget() (r Vec2)   { r = b2MouseJoint_GetTarget(b.tls, b.Id); return }
 func (b Joint) MouseJoint_SetSpringHertz(hertz float32) {
 	b2MouseJoint_SetSpringHertz(b.tls, b.Id, hertz)
 }
@@ -1171,9 +965,7 @@ func (b Body) CreateSegmentShape(def ShapeDef, segment Segment) (r Shape) {
 	r.Id = b2CreateSegmentShape(b.tls, b.Id, defStack.Addr, segmentStack.Addr)
 	return
 }
-func (b Shape) DestroyShape(updateBodyMass uint8) {
-	b2DestroyShape(b.tls, b.Id, updateBodyMass)
-}
+func (b Shape) DestroyShape(updateBodyMass uint8) { b2DestroyShape(b.tls, b.Id, updateBodyMass) }
 func (b Body) CreateChain(def ChainDef) (r Chain) {
 	defStack := copyToStack(b.tls, def)
 	defer defStack.Free()
@@ -1181,43 +973,15 @@ func (b Body) CreateChain(def ChainDef) (r Chain) {
 	r.Id = b2CreateChain(b.tls, b.Id, defStack.Addr)
 	return
 }
-func (b Chain) DestroyChain() {
-	b2DestroyChain(b.tls, b.Id)
-}
-func (b Chain) GetWorld() (r World) {
-	r.tls = b.tls
-	r.Id = b2Chain_GetWorld(b.tls, b.Id)
-	return
-}
-func (b Chain) GetSegmentCount() (r int32) {
-	r = b2Chain_GetSegmentCount(b.tls, b.Id)
-	return
-}
-func (b Shape) GetBody() (r Body) {
-	r.tls = b.tls
-	r.Id = b2Shape_GetBody(b.tls, b.Id)
-	return
-}
-func (b Shape) GetWorld() (r World) {
-	r.tls = b.tls
-	r.Id = b2Shape_GetWorld(b.tls, b.Id)
-	return
-}
-func (b Shape) SetUserData(userData uintptr) {
-	b2Shape_SetUserData(b.tls, b.Id, userData)
-}
-func (b Shape) GetUserData() (r uintptr) {
-	r = b2Shape_GetUserData(b.tls, b.Id)
-	return
-}
-func (b Shape) IsSensor() (r uint8) {
-	r = b2Shape_IsSensor(b.tls, b.Id)
-	return
-}
-func (b Shape) TestPoint(point Vec2) (r uint8) {
-	r = b2Shape_TestPoint(b.tls, b.Id, point)
-	return
-}
+func (b Chain) DestroyChain()                  { b2DestroyChain(b.tls, b.Id) }
+func (b Chain) GetWorld() (r World)            { r.tls = b.tls; r.Id = b2Chain_GetWorld(b.tls, b.Id); return }
+func (b Chain) GetSegmentCount() (r int32)     { r = b2Chain_GetSegmentCount(b.tls, b.Id); return }
+func (b Shape) GetBody() (r Body)              { r.tls = b.tls; r.Id = b2Shape_GetBody(b.tls, b.Id); return }
+func (b Shape) GetWorld() (r World)            { r.tls = b.tls; r.Id = b2Shape_GetWorld(b.tls, b.Id); return }
+func (b Shape) SetUserData(userData uintptr)   { b2Shape_SetUserData(b.tls, b.Id, userData) }
+func (b Shape) GetUserData() (r uintptr)       { r = b2Shape_GetUserData(b.tls, b.Id); return }
+func (b Shape) IsSensor() (r uint8)            { r = b2Shape_IsSensor(b.tls, b.Id); return }
+func (b Shape) TestPoint(point Vec2) (r uint8) { r = b2Shape_TestPoint(b.tls, b.Id, point); return }
 func (b Shape) RayCast(input RayCastInput) (r CastOutput) {
 	inputStack := copyToStack(b.tls, input)
 	defer inputStack.Free()
@@ -1227,31 +991,13 @@ func (b Shape) RayCast(input RayCastInput) (r CastOutput) {
 func (b Shape) SetDensity(density float32, updateBodyMass uint8) {
 	b2Shape_SetDensity(b.tls, b.Id, density, updateBodyMass)
 }
-func (b Shape) GetDensity() (r float32) {
-	r = b2Shape_GetDensity(b.tls, b.Id)
-	return
-}
-func (b Shape) SetFriction(friction float32) {
-	b2Shape_SetFriction(b.tls, b.Id, friction)
-}
-func (b Shape) GetFriction() (r float32) {
-	r = b2Shape_GetFriction(b.tls, b.Id)
-	return
-}
-func (b Shape) SetRestitution(restitution float32) {
-	b2Shape_SetRestitution(b.tls, b.Id, restitution)
-}
-func (b Shape) GetRestitution() (r float32) {
-	r = b2Shape_GetRestitution(b.tls, b.Id)
-	return
-}
-func (b Shape) SetMaterial(material int32) {
-	b2Shape_SetMaterial(b.tls, b.Id, material)
-}
-func (b Shape) GetMaterial() (r int32) {
-	r = b2Shape_GetMaterial(b.tls, b.Id)
-	return
-}
+func (b Shape) GetDensity() (r float32)            { r = b2Shape_GetDensity(b.tls, b.Id); return }
+func (b Shape) SetFriction(friction float32)       { b2Shape_SetFriction(b.tls, b.Id, friction) }
+func (b Shape) GetFriction() (r float32)           { r = b2Shape_GetFriction(b.tls, b.Id); return }
+func (b Shape) SetRestitution(restitution float32) { b2Shape_SetRestitution(b.tls, b.Id, restitution) }
+func (b Shape) GetRestitution() (r float32)        { r = b2Shape_GetRestitution(b.tls, b.Id); return }
+func (b Shape) SetMaterial(material int32)         { b2Shape_SetMaterial(b.tls, b.Id, material) }
+func (b Shape) GetMaterial() (r int32)             { r = b2Shape_GetMaterial(b.tls, b.Id); return }
 func (b Shape) GetSurfaceMaterial() (r SurfaceMaterial) {
 	r = b2Shape_GetSurfaceMaterial(b.tls, b.Id)
 	return
@@ -1259,65 +1005,31 @@ func (b Shape) GetSurfaceMaterial() (r SurfaceMaterial) {
 func (b Shape) SetSurfaceMaterial(surfaceMaterial SurfaceMaterial) {
 	b2Shape_SetSurfaceMaterial(b.tls, b.Id, surfaceMaterial)
 }
-func (b Shape) GetFilter() (r Filter) {
-	r = b2Shape_GetFilter(b.tls, b.Id)
-	return
-}
-func (b Shape) SetFilter(filter Filter) {
-	b2Shape_SetFilter(b.tls, b.Id, filter)
-}
-func (b Shape) EnableSensorEvents(flag uint8) {
-	b2Shape_EnableSensorEvents(b.tls, b.Id, flag)
-}
+func (b Shape) GetFilter() (r Filter)         { r = b2Shape_GetFilter(b.tls, b.Id); return }
+func (b Shape) SetFilter(filter Filter)       { b2Shape_SetFilter(b.tls, b.Id, filter) }
+func (b Shape) EnableSensorEvents(flag uint8) { b2Shape_EnableSensorEvents(b.tls, b.Id, flag) }
 func (b Shape) AreSensorEventsEnabled() (r uint8) {
 	r = b2Shape_AreSensorEventsEnabled(b.tls, b.Id)
 	return
 }
-func (b Shape) EnableContactEvents(flag uint8) {
-	b2Shape_EnableContactEvents(b.tls, b.Id, flag)
-}
+func (b Shape) EnableContactEvents(flag uint8) { b2Shape_EnableContactEvents(b.tls, b.Id, flag) }
 func (b Shape) AreContactEventsEnabled() (r uint8) {
 	r = b2Shape_AreContactEventsEnabled(b.tls, b.Id)
 	return
 }
-func (b Shape) EnablePreSolveEvents(flag uint8) {
-	b2Shape_EnablePreSolveEvents(b.tls, b.Id, flag)
-}
+func (b Shape) EnablePreSolveEvents(flag uint8) { b2Shape_EnablePreSolveEvents(b.tls, b.Id, flag) }
 func (b Shape) ArePreSolveEventsEnabled() (r uint8) {
 	r = b2Shape_ArePreSolveEventsEnabled(b.tls, b.Id)
 	return
 }
-func (b Shape) EnableHitEvents(flag uint8) {
-	b2Shape_EnableHitEvents(b.tls, b.Id, flag)
-}
-func (b Shape) AreHitEventsEnabled() (r uint8) {
-	r = b2Shape_AreHitEventsEnabled(b.tls, b.Id)
-	return
-}
-func (b Shape) GetType() (r ShapeType) {
-	r = b2Shape_GetType(b.tls, b.Id)
-	return
-}
-func (b Shape) GetCircle() (r Circle) {
-	r = b2Shape_GetCircle(b.tls, b.Id)
-	return
-}
-func (b Shape) GetSegment() (r Segment) {
-	r = b2Shape_GetSegment(b.tls, b.Id)
-	return
-}
-func (b Shape) GetChainSegment() (r ChainSegment) {
-	r = b2Shape_GetChainSegment(b.tls, b.Id)
-	return
-}
-func (b Shape) GetCapsule() (r Capsule) {
-	r = b2Shape_GetCapsule(b.tls, b.Id)
-	return
-}
-func (b Shape) GetPolygon() (r Polygon) {
-	r = b2Shape_GetPolygon(b.tls, b.Id)
-	return
-}
+func (b Shape) EnableHitEvents(flag uint8)        { b2Shape_EnableHitEvents(b.tls, b.Id, flag) }
+func (b Shape) AreHitEventsEnabled() (r uint8)    { r = b2Shape_AreHitEventsEnabled(b.tls, b.Id); return }
+func (b Shape) GetType() (r ShapeType)            { r = b2Shape_GetType(b.tls, b.Id); return }
+func (b Shape) GetCircle() (r Circle)             { r = b2Shape_GetCircle(b.tls, b.Id); return }
+func (b Shape) GetSegment() (r Segment)           { r = b2Shape_GetSegment(b.tls, b.Id); return }
+func (b Shape) GetChainSegment() (r ChainSegment) { r = b2Shape_GetChainSegment(b.tls, b.Id); return }
+func (b Shape) GetCapsule() (r Capsule)           { r = b2Shape_GetCapsule(b.tls, b.Id); return }
+func (b Shape) GetPolygon() (r Polygon)           { r = b2Shape_GetPolygon(b.tls, b.Id); return }
 func (b Shape) SetCircle(circle Circle) {
 	circleStack := copyToStack(b.tls, circle)
 	defer circleStack.Free()
@@ -1343,104 +1055,48 @@ func (b Shape) GetParentChain() (r Chain) {
 	r.Id = b2Shape_GetParentChain(b.tls, b.Id)
 	return
 }
-func (b Chain) SetFriction(friction float32) {
-	b2Chain_SetFriction(b.tls, b.Id, friction)
-}
-func (b Chain) GetFriction() (r float32) {
-	r = b2Chain_GetFriction(b.tls, b.Id)
-	return
-}
-func (b Chain) SetRestitution(restitution float32) {
-	b2Chain_SetRestitution(b.tls, b.Id, restitution)
-}
-func (b Chain) GetRestitution() (r float32) {
-	r = b2Chain_GetRestitution(b.tls, b.Id)
-	return
-}
-func (b Chain) SetMaterial(material int32) {
-	b2Chain_SetMaterial(b.tls, b.Id, material)
-}
-func (b Chain) GetMaterial() (r int32) {
-	r = b2Chain_GetMaterial(b.tls, b.Id)
-	return
-}
-func (b Shape) GetContactCapacity() (r int32) {
-	r = b2Shape_GetContactCapacity(b.tls, b.Id)
-	return
-}
+func (b Chain) SetFriction(friction float32)       { b2Chain_SetFriction(b.tls, b.Id, friction) }
+func (b Chain) GetFriction() (r float32)           { r = b2Chain_GetFriction(b.tls, b.Id); return }
+func (b Chain) SetRestitution(restitution float32) { b2Chain_SetRestitution(b.tls, b.Id, restitution) }
+func (b Chain) GetRestitution() (r float32)        { r = b2Chain_GetRestitution(b.tls, b.Id); return }
+func (b Chain) SetMaterial(material int32)         { b2Chain_SetMaterial(b.tls, b.Id, material) }
+func (b Chain) GetMaterial() (r int32)             { r = b2Chain_GetMaterial(b.tls, b.Id); return }
+func (b Shape) GetContactCapacity() (r int32)      { r = b2Shape_GetContactCapacity(b.tls, b.Id); return }
 func (b Shape) GetContactData(contactData *ContactData, capacity int32) (r int32) {
 	defer runtime.KeepAlive(contactData)
 	escapes(contactData)
 	r = b2Shape_GetContactData(b.tls, b.Id, uintptr(unsafe.Pointer(contactData)), capacity)
 	return
 }
-func (b Shape) GetSensorCapacity() (r int32) {
-	r = b2Shape_GetSensorCapacity(b.tls, b.Id)
-	return
-}
-func (b Shape) GetAABB() (r AABB) {
-	r = b2Shape_GetAABB(b.tls, b.Id)
-	return
-}
-func (b Shape) GetMassData() (r MassData) {
-	r = b2Shape_GetMassData(b.tls, b.Id)
-	return
-}
+func (b Shape) GetSensorCapacity() (r int32) { r = b2Shape_GetSensorCapacity(b.tls, b.Id); return }
+func (b Shape) GetAABB() (r AABB)            { r = b2Shape_GetAABB(b.tls, b.Id); return }
+func (b Shape) GetMassData() (r MassData)    { r = b2Shape_GetMassData(b.tls, b.Id); return }
 func (b Shape) GetClosestPoint(_target Vec2) (r Vec2) {
 	r = b2Shape_GetClosestPoint(b.tls, b.Id, _target)
 	return
 }
-func (b Box2D) GetTicks() (r uint64) {
-	r = b2GetTicks(b.tls)
-	return
-}
-func (b Box2D) GetMilliseconds(ticks uint64) (r float32) {
-	r = b2GetMilliseconds(b.tls, ticks)
-	return
-}
+func (b Box2D) GetTicks() (r uint64)                     { r = b2GetTicks(b.tls); return }
+func (b Box2D) GetMilliseconds(ticks uint64) (r float32) { r = b2GetMilliseconds(b.tls, ticks); return }
 func (b Box2D) GetMillisecondsAndReset(ticks uintptr) (r float32) {
 	r = b2GetMillisecondsAndReset(b.tls, ticks)
 	return
 }
-func (b Box2D) Yield() {
-	b2Yield(b.tls)
-}
+func (b Box2D) Yield() { b2Yield(b.tls) }
 func (b Box2D) Hash(hash uint32, data uintptr, count int32) (r uint32) {
 	r = b2Hash(b.tls, hash, data, count)
 	return
 }
-func (b Box2D) DefaultWorldDef() (r WorldDef) {
-	r = b2DefaultWorldDef(b.tls)
-	return
-}
-func (b Box2D) DefaultBodyDef() (r BodyDef) {
-	r = b2DefaultBodyDef(b.tls)
-	return
-}
-func (b Box2D) DefaultFilter() (r Filter) {
-	r = b2DefaultFilter(b.tls)
-	return
-}
-func (b Box2D) DefaultQueryFilter() (r QueryFilter) {
-	r = b2DefaultQueryFilter(b.tls)
-	return
-}
-func (b Box2D) DefaultShapeDef() (r ShapeDef) {
-	r = b2DefaultShapeDef(b.tls)
-	return
-}
+func (b Box2D) DefaultWorldDef() (r WorldDef)       { r = b2DefaultWorldDef(b.tls); return }
+func (b Box2D) DefaultBodyDef() (r BodyDef)         { r = b2DefaultBodyDef(b.tls); return }
+func (b Box2D) DefaultFilter() (r Filter)           { r = b2DefaultFilter(b.tls); return }
+func (b Box2D) DefaultQueryFilter() (r QueryFilter) { r = b2DefaultQueryFilter(b.tls); return }
+func (b Box2D) DefaultShapeDef() (r ShapeDef)       { r = b2DefaultShapeDef(b.tls); return }
 func (b Box2D) DefaultSurfaceMaterial() (r SurfaceMaterial) {
 	r = b2DefaultSurfaceMaterial(b.tls)
 	return
 }
-func (b Box2D) DefaultChainDef() (r ChainDef) {
-	r = b2DefaultChainDef(b.tls)
-	return
-}
-func (b Box2D) DefaultDebugDraw() (r DebugDraw) {
-	r = b2DefaultDebugDraw(b.tls)
-	return
-}
+func (b Box2D) DefaultChainDef() (r ChainDef)   { r = b2DefaultChainDef(b.tls); return }
+func (b Box2D) DefaultDebugDraw() (r DebugDraw) { r = b2DefaultDebugDraw(b.tls); return }
 func (b Joint) WeldJoint_SetLinearHertz(hertz float32) {
 	b2WeldJoint_SetLinearHertz(b.tls, b.Id, hertz)
 }
@@ -1540,9 +1196,7 @@ func (b Box2D) CreateWorld(def WorldDef) (r World) {
 	r.Id = b2CreateWorld(b.tls, defStack.Addr)
 	return
 }
-func (b World) DestroyWorld() {
-	b2DestroyWorld(b.tls, b.Id)
-}
+func (b World) DestroyWorld() { b2DestroyWorld(b.tls, b.Id) }
 func (b World) Step(timeStep float32, subStepCount int32) {
 	b2World_Step(b.tls, b.Id, timeStep, subStepCount)
 }
@@ -1551,51 +1205,21 @@ func (b World) Draw(draw *DebugDraw) {
 	escapes(draw)
 	b2World_Draw(b.tls, b.Id, uintptr(unsafe.Pointer(draw)))
 }
-func (b World) IsValid() (r uint8) {
-	r = b2World_IsValid(b.tls, b.Id)
-	return
-}
-func (b Body) IsValid() (r uint8) {
-	r = b2Body_IsValid(b.tls, b.Id)
-	return
-}
-func (b Shape) IsValid() (r uint8) {
-	r = b2Shape_IsValid(b.tls, b.Id)
-	return
-}
-func (b Chain) IsValid() (r uint8) {
-	r = b2Chain_IsValid(b.tls, b.Id)
-	return
-}
-func (b Joint) IsValid() (r uint8) {
-	r = b2Joint_IsValid(b.tls, b.Id)
-	return
-}
-func (b World) EnableSleeping(flag uint8) {
-	b2World_EnableSleeping(b.tls, b.Id, flag)
-}
-func (b World) IsSleepingEnabled() (r uint8) {
-	r = b2World_IsSleepingEnabled(b.tls, b.Id)
-	return
-}
-func (b World) EnableWarmStarting(flag uint8) {
-	b2World_EnableWarmStarting(b.tls, b.Id, flag)
-}
+func (b World) IsValid() (r uint8)            { r = b2World_IsValid(b.tls, b.Id); return }
+func (b Body) IsValid() (r uint8)             { r = b2Body_IsValid(b.tls, b.Id); return }
+func (b Shape) IsValid() (r uint8)            { r = b2Shape_IsValid(b.tls, b.Id); return }
+func (b Chain) IsValid() (r uint8)            { r = b2Chain_IsValid(b.tls, b.Id); return }
+func (b Joint) IsValid() (r uint8)            { r = b2Joint_IsValid(b.tls, b.Id); return }
+func (b World) EnableSleeping(flag uint8)     { b2World_EnableSleeping(b.tls, b.Id, flag) }
+func (b World) IsSleepingEnabled() (r uint8)  { r = b2World_IsSleepingEnabled(b.tls, b.Id); return }
+func (b World) EnableWarmStarting(flag uint8) { b2World_EnableWarmStarting(b.tls, b.Id, flag) }
 func (b World) IsWarmStartingEnabled() (r uint8) {
 	r = b2World_IsWarmStartingEnabled(b.tls, b.Id)
 	return
 }
-func (b World) GetAwakeBodyCount() (r int32) {
-	r = b2World_GetAwakeBodyCount(b.tls, b.Id)
-	return
-}
-func (b World) EnableContinuous(flag uint8) {
-	b2World_EnableContinuous(b.tls, b.Id, flag)
-}
-func (b World) IsContinuousEnabled() (r uint8) {
-	r = b2World_IsContinuousEnabled(b.tls, b.Id)
-	return
-}
+func (b World) GetAwakeBodyCount() (r int32)   { r = b2World_GetAwakeBodyCount(b.tls, b.Id); return }
+func (b World) EnableContinuous(flag uint8)    { b2World_EnableContinuous(b.tls, b.Id, flag) }
+func (b World) IsContinuousEnabled() (r uint8) { r = b2World_IsContinuousEnabled(b.tls, b.Id); return }
 func (b World) SetRestitutionThreshold(value float32) {
 	b2World_SetRestitutionThreshold(b.tls, b.Id, value)
 }
@@ -1603,9 +1227,7 @@ func (b World) GetRestitutionThreshold() (r float32) {
 	r = b2World_GetRestitutionThreshold(b.tls, b.Id)
 	return
 }
-func (b World) SetHitEventThreshold(value float32) {
-	b2World_SetHitEventThreshold(b.tls, b.Id, value)
-}
+func (b World) SetHitEventThreshold(value float32) { b2World_SetHitEventThreshold(b.tls, b.Id, value) }
 func (b World) GetHitEventThreshold() (r float32) {
 	r = b2World_GetHitEventThreshold(b.tls, b.Id)
 	return
@@ -1620,24 +1242,11 @@ func (b World) GetMaximumLinearSpeed() (r float32) {
 	r = b2World_GetMaximumLinearSpeed(b.tls, b.Id)
 	return
 }
-func (b World) GetProfile() (r Profile) {
-	r = b2World_GetProfile(b.tls, b.Id)
-	return
-}
-func (b World) GetCounters() (r Counters) {
-	r = b2World_GetCounters(b.tls, b.Id)
-	return
-}
-func (b World) SetUserData(userData uintptr) {
-	b2World_SetUserData(b.tls, b.Id, userData)
-}
-func (b World) GetUserData() (r uintptr) {
-	r = b2World_GetUserData(b.tls, b.Id)
-	return
-}
-func (b World) DumpMemoryStats() {
-	b2World_DumpMemoryStats(b.tls, b.Id)
-}
+func (b World) GetProfile() (r Profile)      { r = b2World_GetProfile(b.tls, b.Id); return }
+func (b World) GetCounters() (r Counters)    { r = b2World_GetCounters(b.tls, b.Id); return }
+func (b World) SetUserData(userData uintptr) { b2World_SetUserData(b.tls, b.Id, userData) }
+func (b World) GetUserData() (r uintptr)     { r = b2World_GetUserData(b.tls, b.Id); return }
+func (b World) DumpMemoryStats()             { b2World_DumpMemoryStats(b.tls, b.Id) }
 func (b World) OverlapShape(proxy ShapeProxy, filter QueryFilter, fcn uintptr, context uintptr) (r1 TreeStats) {
 	proxyStack := copyToStack(b.tls, proxy)
 	defer proxyStack.Free()
@@ -1664,24 +1273,15 @@ func (b World) CastMover(mover Capsule, translation Vec2, filter QueryFilter) (r
 	r = b2World_CastMover(b.tls, b.Id, moverStack.Addr, translation, filter)
 	return
 }
-func (b World) SetGravity(gravity Vec2) {
-	b2World_SetGravity(b.tls, b.Id, gravity)
-}
-func (b World) GetGravity() (r Vec2) {
-	r = b2World_GetGravity(b.tls, b.Id)
-	return
-}
+func (b World) SetGravity(gravity Vec2) { b2World_SetGravity(b.tls, b.Id, gravity) }
+func (b World) GetGravity() (r Vec2)    { r = b2World_GetGravity(b.tls, b.Id); return }
 func (b World) Explode(explosionDef ExplosionDef) {
 	explosionDefStack := copyToStack(b.tls, explosionDef)
 	defer explosionDefStack.Free()
 	b2World_Explode(b.tls, b.Id, explosionDefStack.Addr)
 }
-func (b World) RebuildStaticTree() {
-	b2World_RebuildStaticTree(b.tls, b.Id)
-}
-func (b World) EnableSpeculative(flag uint8) {
-	b2World_EnableSpeculative(b.tls, b.Id, flag)
-}
+func (b World) RebuildStaticTree()           { b2World_RebuildStaticTree(b.tls, b.Id) }
+func (b World) EnableSpeculative(flag uint8) { b2World_EnableSpeculative(b.tls, b.Id, flag) }
 
 const ToiStateUnknown TOIState = b2_toiStateUnknown
 const ToiStateFailed TOIState = b2_toiStateFailed

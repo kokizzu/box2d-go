@@ -8,6 +8,7 @@ require (
 )
 
 require (
+	github.com/dave/dst v0.27.3 // indirect
 	github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec // indirect
 	golang.org/x/mod v0.27.0 // indirect
 	golang.org/x/sync v0.16.0 // indirect

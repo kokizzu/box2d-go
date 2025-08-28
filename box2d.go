@@ -9,8 +9,13 @@ import (
 type RestitutionCallback = func(restitutionA float32, userMaterialIdA int32, restitutionB float32, userMaterialIdB int32) float32
 type FrictionCallback = func(frictionA float32, userMaterialIdA int32, frictionB float32, userMaterialIdB int32) float32
 
+var ZeroVec2 = Vec2{}
+var IdentityRot = Rot{C: 1.0, S: 0.0}
+var IdentityTransform = Transform{Q: IdentityRot}
+var ZeroMat = Mat22{}
+
 type Box2D struct {
-	tls *TLS
+	tls *_Stack
 }
 
 func NewBox2D() *Box2D {
@@ -219,7 +224,7 @@ func copySlice[T any](data uintptr, n int32) []T {
 	return slices.Clone(bodyMoveEvents)
 }
 
-func b2DefaultAssertFcnGo(tls *TLS, condition uintptr, fileName uintptr, lineNumber int32) (r int32) {
+func b2DefaultAssertFcnGo(tls *_Stack, condition uintptr, fileName uintptr, lineNumber int32) (r int32) {
 	err := fmt.Errorf("%s:%d: %s", toString(fileName), lineNumber, toString(condition))
 	panic(err)
 }
