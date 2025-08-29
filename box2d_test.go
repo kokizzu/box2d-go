@@ -1,4 +1,4 @@
-package box2d
+package b2
 
 import (
 	"fmt"

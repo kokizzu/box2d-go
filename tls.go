@@ -1,7 +1,11 @@
-package box2d
+package b2
 
 import (
+	"errors"
+	"fmt"
+	"reflect"
 	"runtime"
+	"sync"
 	"unsafe"
 )
 
@@ -12,60 +16,133 @@ type _Stack struct {
 	allocs []int
 	pos    int
 
-	heap map[uintptr]unsafe.Pointer
+	heap    map[uintptr]unsafe.Pointer
+	objects map[uintptr]any
 }
 
 //go:noinline
 func newStack(stackSize int) *_Stack {
-	return &_Stack{
-		Stack: make([]byte, stackSize),
-		heap:  make(map[uintptr]unsafe.Pointer, 4096),
+	stack := &_Stack{
+		Stack:   make([]byte, stackSize),
+		heap:    make(map[uintptr]unsafe.Pointer, 4096),
+		objects: make(map[uintptr]any),
+	}
+
+	escapes(stack)
+
+	return stack
+}
+
+func (s *_Stack) CheckEmpty() {
+	if s.pos != 0 || len(s.allocs) > 0 {
+		panic("stack is not empty")
 	}
 }
 
-func (tls *_Stack) Alloc(n int) uintptr {
+func (s *_Stack) Alloc(n int) uintptr {
 	if n%8 > 0 {
 		// round up to a multiple of 8
 		n += 8 - n%8
 	}
 
-	if tls.pos+n > len(tls.Stack) {
+	if s.pos+n > len(s.Stack) {
 		panic("out of stack space")
 	}
 
-	buf := uintptr(unsafe.Pointer(unsafe.SliceData(tls.Stack[tls.pos:])))
-	tls.pos += n
-	tls.allocs = append(tls.allocs, n)
+	buf := uintptr(unsafe.Pointer(unsafe.SliceData(s.Stack[s.pos:])))
+	s.pos += n
+	s.allocs = append(s.allocs, n)
 
 	return buf
 }
 
-func (tls *_Stack) Free(n int) uintptr {
+func (s *_Stack) Free(n int) uintptr {
 	if n%8 > 0 {
 		// round up to a multiple of 8
 		n += 8 - n%8
 	}
 
-	lastAlloc := tls.allocs[len(tls.allocs)-1]
+	lastAlloc := s.allocs[len(s.allocs)-1]
 	if lastAlloc != n {
 		panic("alloc/free is not paired")
 	}
 
-	tls.allocs = tls.allocs[:len(tls.allocs)-1]
-	tls.pos -= n
+	s.allocs = s.allocs[:len(s.allocs)-1]
+	s.pos -= n
 
 	return 0
 }
 
-func (tls *_Stack) toCString(src string) alloc {
+func (s *_Stack) RegisterObject(obj any) uintptr {
+	escapes(obj)
+
+	rObj := reflect.ValueOf(obj)
+	if rObj.Kind() != reflect.Pointer {
+		panic(errors.New("not a pointer"))
+	}
+
+	addr := rObj.Elem().UnsafeAddr()
+	s.objects[addr] = obj
+	return addr
+}
+
+func (s *_Stack) GetObject(addr uintptr) any {
+	obj, ok := s.objects[addr]
+	if !ok {
+		err := fmt.Errorf("no object at addr %#x", addr)
+		panic(err)
+	}
+
+	return obj
+}
+
+func (s *_Stack) ForgetObject(addr uintptr) {
+	if _, ok := s.objects[addr]; !ok {
+		err := fmt.Errorf("no object at addr %#x", addr)
+		panic(err)
+	}
+
+	delete(s.objects, addr)
+}
+
+func (s *_Stack) toCString(src string) alloc {
 	n := len(src) + 1
-	mem := tls.Alloc(n)
+	mem := s.Alloc(n)
 
 	buf := sliceOf(mem, size_t(n))
 	copy(buf, src)
 	buf[n-1] = 0
 
-	return alloc{Addr: mem, tls: tls, size: n}
+	return alloc{Addr: mem, tls: s, size: n}
+}
+
+var heaps sync.Map
+
+//go:noescape
+//go:linkname checkptrBase runtime.checkptrBase
+func checkptrBase(p unsafe.Pointer) uintptr
+
+func (s *_Stack) RequireInHeap(ptr uintptr) {
+	return
+	if ptr < 0x1000000 {
+		return
+	}
+
+	base := checkptrBase(unsafe.Pointer(ptr))
+
+	if base == uintptr(unsafe.Pointer(unsafe.SliceData(s.Stack))) {
+		return
+	}
+
+	if base == uintptr(unsafe.Pointer(unsafe.SliceData(theStack.Stack))) {
+		return
+	}
+
+	if _, ok := s.heap[base]; ok {
+		return
+	}
+
+	fmt.Printf("pointer at %#x not in heap, base: %#x\n", ptr, base)
 }
 
 type alloc struct {

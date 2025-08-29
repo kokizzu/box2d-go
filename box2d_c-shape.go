@@ -1,4 +1,4 @@
-package box2d
+package b2
 
 import (
 	"unsafe"
@@ -1031,7 +1031,7 @@ func b2CreateShape(tls *_Stack, bodyId BodyId, def uintptr, geometry uintptr, sh
 	var id ShapeId
 	var transform Transform
 	_, _, _, _, _ = body, id, shape, transform, world
-	if !((*ShapeDef)(unsafe.Pointer(def)).InternalValue == int32FromInt32(B2_SECRET_COOKIE)) && b2InternalAssertFcn(tls, __ccgo_ts+730, __ccgo_ts+11037, int32FromInt32(165)) != 0 {
+	if !((*ShapeDef)(unsafe.Pointer(def)).InternalValue == int32FromInt32(_B2_SECRET_COOKIE)) && b2InternalAssertFcn(tls, __ccgo_ts+730, __ccgo_ts+11037, int32FromInt32(165)) != 0 {
 		__builtin_trap(tls)
 	}
 	if !(b2IsValidFloat(tls, (*ShapeDef)(unsafe.Pointer(def)).Density) != 0 && (*ShapeDef)(unsafe.Pointer(def)).Density >= float32FromFloat32(0)) && b2InternalAssertFcn(tls, __ccgo_ts+11167, __ccgo_ts+11037, int32FromInt32(166)) != 0 {
@@ -2878,7 +2878,7 @@ func b2DefaultShapeDef(tls *_Stack) (r ShapeDef) {
 	def.Filter = b2DefaultFilter(tls)
 	def.UpdateBodyMass = uint8(true1)
 	def.InvokeContactCreation = uint8(true1)
-	def.InternalValue = int32(B2_SECRET_COOKIE)
+	def.InternalValue = int32(_B2_SECRET_COOKIE)
 	return def
 }
 
@@ -3001,7 +3001,7 @@ func b2Shape_IsValid(tls *_Stack, id ShapeId) (r uint8) {
 	var shape, world uintptr
 	var shapeId int32
 	_, _, _ = shape, shapeId, world
-	if int32(B2_MAX_WORLDS) <= int32FromUint16(id.World0) {
+	if int32(_B2_MAX_WORLDS) <= int32FromUint16(id.World0) {
 		return uint8(false1)
 	}
 	world = uintptr(unsafe.Pointer(&b2_worlds)) + uintptr(id.World0)*1792

@@ -1,4 +1,4 @@
-package box2d
+package b2
 
 import (
 	"unsafe"
@@ -20,7 +20,7 @@ func b2SolveOverflowContacts(tls *_Stack, context uintptr, useBias uint8) {
 	var _ /* dummyState at bp+0 */ b2BodyState
 	_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ = P, P1, awakeSet, color, constraint, constraints, contactCount, cp, cp1, deltaLambda, dp, dqA, dqB, ds, friction, graph, i, iA, iB, impulse, impulse1, impulseScale, inv_h, j, j1, lambda, mA, mB, massScale, maxFriction, maxLambda, newImpulse, newImpulse1, normal, pointCount, pushout, rA, rA1, rB, rB1, s4, softness, stateA, stateB, states, tangent, totalNormalImpulse, vA, vB, velocityBias, vn, vrA, vrA1, vrB, vrB1, vt, wA, wB, world, v1, v10, v101, v102, v103, v105, v106, v107, v109, v110, v111, v113, v114, v115, v117, v118, v119, v12, v120, v122, v123, v124, v125, v126, v128, v129, v13, v130, v131, v133, v134, v135, v137, v138, v139, v140, v142, v143, v144, v146, v147, v148, v149, v151, v152, v16, v17, v18, v2, v20, v21, v22, v24, v25, v26, v28, v29, v3, v30, v32, v33, v34, v36, v37, v38, v40, v41, v42, v43, v45, v46, v47, v49, v50, v51, v53, v54, v55, v57, v58, v59, v6, v61, v62, v63, v65, v66, v67, v69, v7, v70, v71, v72, v74, v75, v76, v77, v79, v8, v80, v81, v83, v84, v85, v86, v88, v89, v9, v90, v93, v94, v95, v97, v98, v99
 	graph = (*b2StepContext)(unsafe.Pointer(context)).Graph
-	color = graph + uintptr(int32FromInt32(B2_GRAPH_COLOR_COUNT)-int32FromInt32(1))*56
+	color = graph + uintptr(int32FromInt32(_B2_GRAPH_COLOR_COUNT)-int32FromInt32(1))*56
 	constraints = *(*uintptr)(unsafe.Add(unsafe.Pointer(color), 48))
 	contactCount = (*b2GraphColor)(unsafe.Pointer(color)).ContactSims.Count
 	world = (*b2StepContext)(unsafe.Pointer(context)).World
@@ -1576,7 +1576,7 @@ func b2SolverTask(tls *_Stack, startIndex int32, endIndex int32, threadIndexIgno
 			useBias = uint8(true1)
 			j = 0
 			for {
-				if !(j < int32(ITERATIONS)) {
+				if !(j < int32(_ITERATIONS)) {
 					break
 				}
 				b2SolveOverflowJoints(tls, context, useBias)
@@ -1617,7 +1617,7 @@ func b2SolverTask(tls *_Stack, startIndex int32, endIndex int32, threadIndexIgno
 			useBias = uint8(false1)
 			j1 = 0
 			for {
-				if !(j1 < int32(RELAX_ITERATIONS)) {
+				if !(j1 < int32(_RELAX_ITERATIONS)) {
 					break
 				}
 				b2SolveOverflowJoints(tls, context, useBias)
@@ -1652,7 +1652,7 @@ func b2SolverTask(tls *_Stack, startIndex int32, endIndex int32, threadIndexIgno
 		}
 		// advance the stage according to the sub-stepping tasks just completed
 		// integrate velocities / warm start / solve / integrate positions / relax
-		stageIndex += int32(1) + activeColorCount + int32(ITERATIONS)*activeColorCount + int32(1) + int32(RELAX_ITERATIONS)*activeColorCount
+		stageIndex += int32(1) + activeColorCount + int32(_ITERATIONS)*activeColorCount + int32(1) + int32(_RELAX_ITERATIONS)*activeColorCount
 		// Restitution
 		b2ApplyOverflowRestitution(tls, context)
 		iterStageIndex1 = stageIndex
@@ -1799,7 +1799,7 @@ _4:
 	activeColorCount = 0
 	i = 0
 	for {
-		if !(i < int32FromInt32(B2_GRAPH_COLOR_COUNT)-int32FromInt32(1)) {
+		if !(i < int32FromInt32(_B2_GRAPH_COLOR_COUNT)-int32FromInt32(1)) {
 			break
 		}
 		perColorContactCount = (*(*b2GraphColor)(unsafe.Pointer(colors + uintptr(i)*56))).ContactSims.Count
@@ -1847,7 +1847,7 @@ _4:
 	c = 0
 	i1 = 0
 	for {
-		if !(i1 < int32FromInt32(B2_GRAPH_COLOR_COUNT)-int32FromInt32(1)) {
+		if !(i1 < int32FromInt32(_B2_GRAPH_COLOR_COUNT)-int32FromInt32(1)) {
 			break
 		}
 		colorContactCount = (*(*b2GraphColor)(unsafe.Pointer(colors + uintptr(i1)*56))).ContactSims.Count
@@ -1855,7 +1855,7 @@ _4:
 		if colorContactCount+colorJointCount > 0 {
 			activeColorIndices[c] = i1
 			if colorContactCount > 0 {
-				v10 = (colorContactCount-int32(1))>>int32(B2_SIMD_SHIFT) + int32(1)
+				v10 = (colorContactCount-int32(1))>>int32(_B2_SIMD_SHIFT) + int32(1)
 			} else {
 				v10 = 0
 			}
@@ -1905,14 +1905,14 @@ _4:
 	}
 	activeColorCount = c
 	// Gather contact pointers for easy parallel-for traversal. Some may be NULL due to SIMD remainders.
-	contacts = b2AllocateArenaItem(tls, world, int32FromUint64(uint64FromInt32(int32(B2_SIMD_WIDTH)*simdContactCount)*uint64(8)), __ccgo_ts+13454)
+	contacts = b2AllocateArenaItem(tls, world, int32FromUint64(uint64FromInt32(int32(_B2_SIMD_WIDTH)*simdContactCount)*uint64(8)), __ccgo_ts+13454)
 	// Gather joint pointers for easy parallel-for traversal.
 	joints = b2AllocateArenaItem(tls, world, int32FromUint64(uint64FromInt32(awakeJointCount)*uint64(8)), __ccgo_ts+13471)
 	simdConstraintSize = b2GetContactConstraintSIMDByteCount(tls)
 	simdContactConstraints = b2AllocateArenaItem(tls, world, simdContactCount*simdConstraintSize, __ccgo_ts+13486)
-	overflowContactCount = (*(*b2GraphColor)(unsafe.Pointer(colors + uintptr(int32FromInt32(B2_GRAPH_COLOR_COUNT)-int32FromInt32(1))*56))).ContactSims.Count
+	overflowContactCount = (*(*b2GraphColor)(unsafe.Pointer(colors + uintptr(int32FromInt32(_B2_GRAPH_COLOR_COUNT)-int32FromInt32(1))*56))).ContactSims.Count
 	overflowContactConstraints = b2AllocateArenaItem(tls, world, int32FromUint64(uint64FromInt32(overflowContactCount)*uint64(160)), __ccgo_ts+13505)
-	*(*uintptr)(unsafe.Add(unsafe.Pointer(&*(*b2GraphColor)(unsafe.Pointer(graph + uintptr(int32FromInt32(B2_GRAPH_COLOR_COUNT)-int32FromInt32(1))*56))), 48)) = overflowContactConstraints
+	*(*uintptr)(unsafe.Add(unsafe.Pointer(&*(*b2GraphColor)(unsafe.Pointer(graph + uintptr(int32FromInt32(_B2_GRAPH_COLOR_COUNT)-int32FromInt32(1))*56))), 48)) = overflowContactConstraints
 	// Distribute transient constraints to each graph color and build flat arrays of contact and joint pointers
 	contactBase = 0
 	jointBase = 0
@@ -1933,20 +1933,20 @@ _4:
 				if !(k < colorContactCount1) {
 					break
 				}
-				*(*uintptr)(unsafe.Pointer(contacts + uintptr(int32(B2_SIMD_WIDTH)*contactBase+k)*8)) = (*b2GraphColor)(unsafe.Pointer(color)).ContactSims.Data + uintptr(k)*176
+				*(*uintptr)(unsafe.Pointer(contacts + uintptr(int32(_B2_SIMD_WIDTH)*contactBase+k)*8)) = (*b2GraphColor)(unsafe.Pointer(color)).ContactSims.Data + uintptr(k)*176
 				goto _12
 			_12:
 				;
 				k++
 			}
 			// remainder
-			colorContactCountSIMD1 = (colorContactCount1-int32(1))>>int32(B2_SIMD_SHIFT) + int32(1)
+			colorContactCountSIMD1 = (colorContactCount1-int32(1))>>int32(_B2_SIMD_SHIFT) + int32(1)
 			k1 = colorContactCount1
 			for {
-				if !(k1 < int32(B2_SIMD_WIDTH)*colorContactCountSIMD1) {
+				if !(k1 < int32(_B2_SIMD_WIDTH)*colorContactCountSIMD1) {
 					break
 				}
-				*(*uintptr)(unsafe.Pointer(contacts + uintptr(int32(B2_SIMD_WIDTH)*contactBase+k1)*8)) = uintptrFromInt32(0)
+				*(*uintptr)(unsafe.Pointer(contacts + uintptr(int32(_B2_SIMD_WIDTH)*contactBase+k1)*8)) = uintptrFromInt32(0)
 				goto _13
 			_13:
 				;
@@ -2014,11 +2014,11 @@ _4:
 	// b2_stageWarmStart
 	stageCount += activeColorCount
 	// b2_stageSolve
-	stageCount += int32(ITERATIONS) * activeColorCount
+	stageCount += int32(_ITERATIONS) * activeColorCount
 	// b2_stageIntegratePositions
 	stageCount += int32(1)
 	// b2_stageRelax
-	stageCount += int32(RELAX_ITERATIONS) * activeColorCount
+	stageCount += int32(_RELAX_ITERATIONS) * activeColorCount
 	// b2_stageRestitution
 	stageCount += activeColorCount
 	// b2_stageStoreImpulses
@@ -2199,7 +2199,7 @@ _4:
 	// Solve graph
 	j3 = 0
 	for {
-		if !(j3 < int32(ITERATIONS)) {
+		if !(j3 < int32(_ITERATIONS)) {
 			break
 		}
 		i8 = 0
@@ -2233,7 +2233,7 @@ _4:
 	// Relax constraints
 	j4 = 0
 	for {
-		if !(j4 < int32(RELAX_ITERATIONS)) {
+		if !(j4 < int32(_RELAX_ITERATIONS)) {
 			break
 		}
 		i9 = 0
@@ -2285,7 +2285,7 @@ _4:
 	if !(int32((int64(stage)-int64(stages))/32) == stageCount) && b2InternalAssertFcn(tls, __ccgo_ts+13715, __ccgo_ts+12460, int32FromInt32(1676)) != 0 {
 		__builtin_trap(tls)
 	}
-	if !(workerCount <= int32FromInt32(B2_MAX_WORKERS)) && b2InternalAssertFcn(tls, __ccgo_ts+13753, __ccgo_ts+12460, int32FromInt32(1678)) != 0 {
+	if !(workerCount <= int32FromInt32(_B2_MAX_WORKERS)) && b2InternalAssertFcn(tls, __ccgo_ts+13753, __ccgo_ts+12460, int32FromInt32(1678)) != 0 {
 		__builtin_trap(tls)
 	}
 	(*b2StepContext)(unsafe.Pointer(stepContext)).Graph = graph
@@ -2387,7 +2387,7 @@ _4:
 	colors1 = world + 328
 	i14 = 0
 	for {
-		if !(i14 < int32(B2_GRAPH_COLOR_COUNT)) {
+		if !(i14 < int32(_B2_GRAPH_COLOR_COUNT)) {
 			break
 		}
 		color1 = colors1 + uintptr(i14)*56

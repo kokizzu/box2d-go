@@ -1,10 +1,9 @@
-package box2d
+package b2
 
 import (
 	"fmt"
 	"math"
 	"math/bits"
-	"runtime"
 	"sort"
 	"strings"
 	"sync/atomic"
@@ -20,10 +19,12 @@ func sliceOf(p uintptr, n size_t) []byte {
 func __atomic_fetch_addInt32(tls *_Stack, addr uintptr, inc int32, mode int32) int32 {
 	value := (*int32)(unsafe.Pointer(addr))
 
-	prev := *value
-	*value += inc
-
-	return prev
+	for {
+		old := atomic.LoadInt32(value)
+		if atomic.CompareAndSwapInt32(value, old, old+inc) {
+			return old
+		}
+	}
 }
 
 func __builtin___atomic_compare_exchange_n(tls *_Stack, addr, expected uintptr, desired int32, weak uint8, success_memorder, failure_memorder int32) uint8 {
@@ -164,12 +165,12 @@ func clock_gettime(tls *_Stack, clk clockid_t, ts uintptr) (r int32) {
 }
 
 func sched_yield(tls *_Stack) int32 {
-	runtime.Gosched()
+	time.Sleep(20 * time.Microsecond)
 	return 0
 }
 
 func __builtin_Gosched(tls *_Stack) {
-	runtime.Gosched()
+	pause()
 }
 
 func printf(tls *_Stack, fmt uintptr, va uintptr) (r int32) {

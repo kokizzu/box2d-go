@@ -35,6 +35,8 @@ var PREDEF_ALLOC = `
 extern void* __builtin_aligned_alloc(size_t align, size_t size);
 `
 
+const PKGNAME = "b2"
+
 func main() {
 	// defer profile.Start(profile.CPUProfile).Stop()
 
@@ -52,7 +54,7 @@ func main() {
 	args := []string{
 		"ccgo",
 		"-verify-types",
-		"--package-name", "box2d",
+		"--package-name", PKGNAME,
 		"-D", "BOX2D_DISABLE_SIMD",
 		// "-D", "NDEBUG",
 		"--predef", PREDEF_ATOMIC,
@@ -108,6 +110,9 @@ func main() {
 	root = dstutil.Apply(root, nil, useApiTypes(api.ExposedTypes))
 	dst.Inspect(root, renameApiTypes(api.ExposedTypes))
 	dst.Inspect(root, removeTypeAliases())
+	hideConsts(root)
+
+	// dst.Inspect(root, injectCheckptr())
 
 	var decls []dst.Decl
 
@@ -118,7 +123,7 @@ func main() {
 	dst.Inspect(root, exportVars(&decls, api.Exposed))
 
 	writeSource("../box2d_api.go", &dst.File{
-		Name:  dst.NewIdent("box2d"),
+		Name:  dst.NewIdent(PKGNAME),
 		Decls: withImport(decls, "unsafe", "runtime"),
 	})
 
@@ -130,9 +135,84 @@ func main() {
 
 	for _, ex := range extracted {
 		writeSource("../"+ex.Name, &dst.File{
-			Name:  dst.NewIdent("box2d"),
+			Name:  dst.NewIdent(PKGNAME),
 			Decls: withImport(ex.Decls, "unsafe", "reflect"),
 		})
+	}
+}
+
+func hideConsts(root dst.Node) {
+	allConsts := map[string]bool{}
+
+	dst.Inspect(root, func(node dst.Node) bool {
+		if decl, ok := node.(*dst.GenDecl); ok {
+			return decl.Tok == token.CONST
+		}
+
+		if n, ok := node.(*dst.ValueSpec); ok {
+			for _, name := range n.Names {
+				if name.IsExported() {
+					allConsts[name.Name] = true
+				}
+			}
+		}
+
+		return true
+	})
+
+	dst.Inspect(root, func(node dst.Node) bool {
+		if ident, ok := node.(*dst.Ident); ok {
+			if allConsts[ident.Name] {
+				ident.Name = "_" + ident.Name
+			}
+		}
+
+		return true
+	})
+}
+
+func injectCheckptr() Visitor {
+	var injectCheckptrInner Visitor = func(node dst.Node) bool {
+		// unsafe.Pointer(...)
+		ptrCall, ok := node.(*dst.CallExpr)
+		if !ok {
+			return true
+		}
+
+		// unsafe.Pointer
+		fnName, ok := ptrCall.Fun.(*dst.SelectorExpr)
+		if !ok {
+			return true
+		}
+
+		if !(identOf(fnName.X) == "unsafe" && fnName.Sel.Name == "Pointer") {
+			return true
+		}
+
+		// found the pointer, wrap with call to checkAddr
+		wrapArg := &dst.CallExpr{
+			Fun:  dst.NewIdent("checkAddr"),
+			Args: []dst.Expr{dst.NewIdent("tls"), ptrCall.Args[0]},
+		}
+
+		ptrCall.Args[0] = wrapArg
+
+		return true
+	}
+
+	return func(node dst.Node) bool {
+		fn, ok := node.(*dst.FuncDecl)
+		if ok && fn.Type.Params != nil && len(fn.Type.Params.List) > 0 {
+			if star, ok := fn.Type.Params.List[0].Type.(*dst.StarExpr); ok {
+				if identOf(star.X) == "_Stack" {
+					dst.Inspect(node, injectCheckptrInner)
+				}
+
+				return false
+			}
+		}
+
+		return true
 	}
 }
 

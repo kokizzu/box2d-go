@@ -1,4 +1,4 @@
-package box2d
+package b2
 
 import (
 	"unsafe"
@@ -4172,7 +4172,7 @@ func b2Collide(tls *_Stack, context uintptr) {
 	graphColors = world + 328
 	i = 0
 	for {
-		if !(i < int32(B2_GRAPH_COLOR_COUNT)) {
+		if !(i < int32(_B2_GRAPH_COLOR_COUNT)) {
 			break
 		}
 		contactCount += (*(*b2GraphColor)(unsafe.Pointer(graphColors + uintptr(i)*56))).ContactSims.Count
@@ -4190,7 +4190,7 @@ func b2Collide(tls *_Stack, context uintptr) {
 	contactIndex = 0
 	i1 = 0
 	for {
-		if !(i1 < int32(B2_GRAPH_COLOR_COUNT)) {
+		if !(i1 < int32(_B2_GRAPH_COLOR_COUNT)) {
 			break
 		}
 		color = graphColors + uintptr(i1)*56
@@ -4313,7 +4313,7 @@ _13:
 			contactSim = uintptrFromInt32(0)
 			if colorIndex != -int32(1) {
 				// contact lives in constraint graph
-				if !(0 <= colorIndex && colorIndex < int32(B2_GRAPH_COLOR_COUNT)) && b2InternalAssertFcn(tls, __ccgo_ts+3038, __ccgo_ts+15342, int32FromInt32(605)) != 0 {
+				if !(0 <= colorIndex && colorIndex < int32(_B2_GRAPH_COLOR_COUNT)) && b2InternalAssertFcn(tls, __ccgo_ts+3038, __ccgo_ts+15342, int32FromInt32(605)) != 0 {
 					__builtin_trap(tls)
 				}
 				color1 = graphColors + uintptr(colorIndex)*56

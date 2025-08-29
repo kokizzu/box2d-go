@@ -1,4 +1,4 @@
-package box2d
+package b2
 
 import (
 	"unsafe"
@@ -805,12 +805,12 @@ func b2ComputeHull(tls *_Stack, points uintptr, count int32) (r1 Hull) {
 	var _ /* rightPoints at bp+68 */ [6]Vec2
 	_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ = aabb, b8, c, c1, c2, c3, d, distSqr, distance, dsq, dsq1, dsq11, dsq2, e, f1, f2, i, i1, i11, i2, i21, i3, i31, i4, i5, i6, invLength, j, j1, leftCount, length, linearSlop, n, n1, p1, p2, ps, r, rightCount, s1, s2, s3, searching, tolSqr, unique, vi, vj, v1, v10, v100, v102, v103, v104, v11, v13, v14, v15, v16, v18, v19, v2, v21, v22, v23, v24, v25, v27, v28, v29, v3, v30, v32, v33, v36, v37, v38, v40, v41, v42, v44, v45, v46, v49, v5, v50, v51, v53, v54, v55, v58, v59, v60, v62, v63, v64, v66, v67, v7, v70, v71, v72, v74, v75, v76, v78, v79, v8, v80, v81, v83, v84, v85, v86, v88, v89, v9, v91, v92, v93, v95, v96, v98, v99
 	(*(*Hull)(unsafe.Pointer(bp))).Count = 0
-	if count < int32(3) || count > int32(B2_MAX_POLYGON_VERTICES) {
+	if count < int32(3) || count > int32(_B2_MAX_POLYGON_VERTICES) {
 		// check your data
 		return *(*Hull)(unsafe.Pointer(bp))
 	}
 	v1 = count
-	v2 = int32(B2_MAX_POLYGON_VERTICES)
+	v2 = int32(_B2_MAX_POLYGON_VERTICES)
 	if v1 < v2 {
 		v5 = v1
 	} else {
@@ -1128,7 +1128,7 @@ _68:
 		;
 		i5++
 	}
-	if !((*(*Hull)(unsafe.Pointer(bp))).Count <= int32FromInt32(B2_MAX_POLYGON_VERTICES)) && b2InternalAssertFcn(tls, __ccgo_ts+6905, __ccgo_ts+6883, int32FromInt32(225)) != 0 {
+	if !((*(*Hull)(unsafe.Pointer(bp))).Count <= int32FromInt32(_B2_MAX_POLYGON_VERTICES)) && b2InternalAssertFcn(tls, __ccgo_ts+6905, __ccgo_ts+6883, int32FromInt32(225)) != 0 {
 		__builtin_trap(tls)
 	}
 	// merge collinear

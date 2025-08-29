@@ -1,4 +1,4 @@
-package box2d
+package b2
 
 import (
 	"unsafe"
@@ -21,7 +21,7 @@ func b2AssignJointColor(tls *_Stack, graph uintptr, bodyIdA int32, bodyIdB int32
 	if int32FromUint8(staticA) == false1 && int32FromUint8(staticB) == false1 {
 		i = 0
 		for {
-			if !(i < int32FromInt32(B2_GRAPH_COLOR_COUNT)-int32FromInt32(1)) {
+			if !(i < int32FromInt32(_B2_GRAPH_COLOR_COUNT)-int32FromInt32(1)) {
 				break
 			}
 			color = graph + uintptr(i)*56
@@ -75,7 +75,7 @@ func b2AssignJointColor(tls *_Stack, graph uintptr, bodyIdA int32, bodyIdB int32
 		if int32FromUint8(staticA) == false1 {
 			i1 = 0
 			for {
-				if !(i1 < int32FromInt32(B2_GRAPH_COLOR_COUNT)-int32FromInt32(1)) {
+				if !(i1 < int32FromInt32(_B2_GRAPH_COLOR_COUNT)-int32FromInt32(1)) {
 					break
 				}
 				color1 = graph + uintptr(i1)*56
@@ -109,7 +109,7 @@ func b2AssignJointColor(tls *_Stack, graph uintptr, bodyIdA int32, bodyIdB int32
 			if int32FromUint8(staticB) == false1 {
 				i2 = 0
 				for {
-					if !(i2 < int32FromInt32(B2_GRAPH_COLOR_COUNT)-int32FromInt32(1)) {
+					if !(i2 < int32FromInt32(_B2_GRAPH_COLOR_COUNT)-int32FromInt32(1)) {
 						break
 					}
 					color2 = graph + uintptr(i2)*56
@@ -142,7 +142,7 @@ func b2AssignJointColor(tls *_Stack, graph uintptr, bodyIdA int32, bodyIdB int32
 			}
 		}
 	}
-	return int32FromInt32(B2_GRAPH_COLOR_COUNT) - int32FromInt32(1)
+	return int32FromInt32(_B2_GRAPH_COLOR_COUNT) - int32FromInt32(1)
 }
 
 func b2CreateJointInGraph(tls *_Stack, world uintptr, joint uintptr) (r uintptr) {
@@ -208,11 +208,11 @@ func b2RemoveJointFromGraph(tls *_Stack, world uintptr, bodyIdA int32, bodyIdB i
 	var movedId, movedIndex, movedIndex1, v12, v8, v9 int32
 	_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ = blockIndex, color, graph, movedId, movedIndex, movedIndex1, movedJoint, movedJointSim, v1, v11, v12, v13, v2, v4, v5, v7, v8, v9
 	graph = world + 328
-	if !(0 <= colorIndex && colorIndex < int32(B2_GRAPH_COLOR_COUNT)) && b2InternalAssertFcn(tls, __ccgo_ts+3038, __ccgo_ts+2787, int32FromInt32(300)) != 0 {
+	if !(0 <= colorIndex && colorIndex < int32(_B2_GRAPH_COLOR_COUNT)) && b2InternalAssertFcn(tls, __ccgo_ts+3038, __ccgo_ts+2787, int32FromInt32(300)) != 0 {
 		__builtin_trap(tls)
 	}
 	color = graph + uintptr(colorIndex)*56
-	if colorIndex != int32FromInt32(B2_GRAPH_COLOR_COUNT)-int32FromInt32(1) {
+	if colorIndex != int32FromInt32(_B2_GRAPH_COLOR_COUNT)-int32FromInt32(1) {
 		// May clear static bodies, no effect
 		v1 = color
 		v2 = uint32FromInt32(bodyIdA)
@@ -2118,7 +2118,7 @@ func b2DefaultDistanceJointDef(tls *_Stack) (r DistanceJointDef) {
 	def = DistanceJointDef{}
 	def.Length = float32FromFloat32(1)
 	def.MaxLength = float32(float32FromFloat32(100000) * b2_lengthUnitsPerMeter)
-	def.InternalValue = int32(B2_SECRET_COOKIE)
+	def.InternalValue = int32(_B2_SECRET_COOKIE)
 	return def
 }
 
@@ -2129,7 +2129,7 @@ func b2DefaultMotorJointDef(tls *_Stack) (r MotorJointDef) {
 	def.MaxForce = float32FromFloat32(1)
 	def.MaxTorque = float32FromFloat32(1)
 	def.CorrectionFactor = float32FromFloat32(0.3)
-	def.InternalValue = int32(B2_SECRET_COOKIE)
+	def.InternalValue = int32(_B2_SECRET_COOKIE)
 	return def
 }
 
@@ -2140,7 +2140,7 @@ func b2DefaultMouseJointDef(tls *_Stack) (r MouseJointDef) {
 	def.Hertz = float32FromFloat32(4)
 	def.DampingRatio = float32FromFloat32(1)
 	def.MaxForce = float32FromFloat32(1)
-	def.InternalValue = int32(B2_SECRET_COOKIE)
+	def.InternalValue = int32(_B2_SECRET_COOKIE)
 	return def
 }
 
@@ -2148,7 +2148,7 @@ func b2DefaultFilterJointDef(tls *_Stack) (r FilterJointDef) {
 	var def FilterJointDef
 	_ = def
 	def = FilterJointDef{}
-	def.InternalValue = int32(B2_SECRET_COOKIE)
+	def.InternalValue = int32(_B2_SECRET_COOKIE)
 	return def
 }
 
@@ -2159,7 +2159,7 @@ func b2DefaultPrismaticJointDef(tls *_Stack) (r PrismaticJointDef) {
 	def.LocalAxisA = Vec2{
 		X: float32FromFloat32(1),
 	}
-	def.InternalValue = int32(B2_SECRET_COOKIE)
+	def.InternalValue = int32(_B2_SECRET_COOKIE)
 	return def
 }
 
@@ -2168,7 +2168,7 @@ func b2DefaultRevoluteJointDef(tls *_Stack) (r RevoluteJointDef) {
 	_ = def
 	def = RevoluteJointDef{}
 	def.DrawSize = float32FromFloat32(0.25)
-	def.InternalValue = int32(B2_SECRET_COOKIE)
+	def.InternalValue = int32(_B2_SECRET_COOKIE)
 	return def
 }
 
@@ -2176,7 +2176,7 @@ func b2DefaultWeldJointDef(tls *_Stack) (r WeldJointDef) {
 	var def WeldJointDef
 	_ = def
 	def = WeldJointDef{}
-	def.InternalValue = int32(B2_SECRET_COOKIE)
+	def.InternalValue = int32(_B2_SECRET_COOKIE)
 	return def
 }
 
@@ -2188,7 +2188,7 @@ func b2DefaultWheelJointDef(tls *_Stack) (r WheelJointDef) {
 	def.EnableSpring = uint8(true1)
 	def.Hertz = float32FromFloat32(1)
 	def.DampingRatio = float32FromFloat32(0.7)
-	def.InternalValue = int32(B2_SECRET_COOKIE)
+	def.InternalValue = int32(_B2_SECRET_COOKIE)
 	return def
 }
 
@@ -2217,7 +2217,7 @@ func b2GetJointSim(tls *_Stack, world uintptr, joint uintptr) (r uintptr) {
 	var v10, v2, v6 int32
 	_, _, _, _, _, _, _, _, _, _, _ = color, set, v1, v10, v11, v2, v3, v5, v6, v7, v9
 	if (*b2Joint)(unsafe.Pointer(joint)).SetIndex == int32(b2_awakeSet) {
-		if !(0 <= (*b2Joint)(unsafe.Pointer(joint)).ColorIndex && (*b2Joint)(unsafe.Pointer(joint)).ColorIndex < int32(B2_GRAPH_COLOR_COUNT)) && b2InternalAssertFcn(tls, __ccgo_ts+1796, __ccgo_ts+9061, int32FromInt32(113)) != 0 {
+		if !(0 <= (*b2Joint)(unsafe.Pointer(joint)).ColorIndex && (*b2Joint)(unsafe.Pointer(joint)).ColorIndex < int32(_B2_GRAPH_COLOR_COUNT)) && b2InternalAssertFcn(tls, __ccgo_ts+1796, __ccgo_ts+9061, int32FromInt32(113)) != 0 {
 			__builtin_trap(tls)
 		}
 		color = world + 328 + uintptr((*b2Joint)(unsafe.Pointer(joint)).ColorIndex)*56
@@ -2553,7 +2553,7 @@ func b2CreateDistanceJoint(tls *_Stack, worldId WorldId, def uintptr) (r JointId
 	var pair b2JointPair
 	var v1, v10, v11, v12, v13, v15, v2, v3, v5, v6, v7, v8 float32
 	_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ = bodyA, bodyB, empty, joint, jointId, pair, world, v1, v10, v11, v12, v13, v15, v2, v3, v5, v6, v7, v8
-	if !((*DistanceJointDef)(unsafe.Pointer(def)).InternalValue == int32FromInt32(B2_SECRET_COOKIE)) && b2InternalAssertFcn(tls, __ccgo_ts+730, __ccgo_ts+9061, int32FromInt32(355)) != 0 {
+	if !((*DistanceJointDef)(unsafe.Pointer(def)).InternalValue == int32FromInt32(_B2_SECRET_COOKIE)) && b2InternalAssertFcn(tls, __ccgo_ts+730, __ccgo_ts+9061, int32FromInt32(355)) != 0 {
 		__builtin_trap(tls)
 	}
 	world = b2GetWorldFromId(tls, worldId)
@@ -2643,7 +2643,7 @@ func b2CreateMotorJoint(tls *_Stack, worldId WorldId, def uintptr) (r JointId) {
 	var pair b2JointPair
 	var v1, v2, v3, v4, v6, v7 float32
 	_, _, _, _, _, _, _, _, _, _, _, _ = bodyA, bodyB, joint, jointId, pair, world, v1, v2, v3, v4, v6, v7
-	if !((*MotorJointDef)(unsafe.Pointer(def)).InternalValue == int32FromInt32(B2_SECRET_COOKIE)) && b2InternalAssertFcn(tls, __ccgo_ts+730, __ccgo_ts+9061, int32FromInt32(408)) != 0 {
+	if !((*MotorJointDef)(unsafe.Pointer(def)).InternalValue == int32FromInt32(_B2_SECRET_COOKIE)) && b2InternalAssertFcn(tls, __ccgo_ts+730, __ccgo_ts+9061, int32FromInt32(408)) != 0 {
 		__builtin_trap(tls)
 	}
 	world = b2GetWorldFromId(tls, worldId)
@@ -2703,7 +2703,7 @@ func b2CreateMouseJoint(tls *_Stack, worldId WorldId, def uintptr) (r JointId) {
 	var vx, vy float32
 	var v2, v3, v6, v7 Vec2
 	_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ = bodyA, bodyB, empty, joint, jointId, pair, transformA, transformB, vx, vy, world, v1, v2, v3, v5, v6, v7
-	if !((*MouseJointDef)(unsafe.Pointer(def)).InternalValue == int32FromInt32(B2_SECRET_COOKIE)) && b2InternalAssertFcn(tls, __ccgo_ts+730, __ccgo_ts+9061, int32FromInt32(446)) != 0 {
+	if !((*MouseJointDef)(unsafe.Pointer(def)).InternalValue == int32FromInt32(_B2_SECRET_COOKIE)) && b2InternalAssertFcn(tls, __ccgo_ts+730, __ccgo_ts+9061, int32FromInt32(446)) != 0 {
 		__builtin_trap(tls)
 	}
 	world = b2GetWorldFromId(tls, worldId)
@@ -2762,7 +2762,7 @@ func b2CreateFilterJoint(tls *_Stack, worldId WorldId, def uintptr) (r JointId) 
 	var jointId JointId
 	var pair b2JointPair
 	_, _, _, _, _, _, _ = bodyA, bodyB, collideConnected, joint, jointId, pair, world
-	if !((*FilterJointDef)(unsafe.Pointer(def)).InternalValue == int32FromInt32(B2_SECRET_COOKIE)) && b2InternalAssertFcn(tls, __ccgo_ts+730, __ccgo_ts+9061, int32FromInt32(482)) != 0 {
+	if !((*FilterJointDef)(unsafe.Pointer(def)).InternalValue == int32FromInt32(_B2_SECRET_COOKIE)) && b2InternalAssertFcn(tls, __ccgo_ts+730, __ccgo_ts+9061, int32FromInt32(482)) != 0 {
 		__builtin_trap(tls)
 	}
 	world = b2GetWorldFromId(tls, worldId)
@@ -2795,7 +2795,7 @@ func b2CreateRevoluteJoint(tls *_Stack, worldId WorldId, def uintptr) (r JointId
 	var pair b2JointPair
 	var v1, v10, v11, v13, v14, v2, v3, v4, v6, v7, v8, v9 float32
 	_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ = bodyA, bodyB, empty, joint, jointId, pair, world, v1, v10, v11, v13, v14, v2, v3, v4, v6, v7, v8, v9
-	if !((*RevoluteJointDef)(unsafe.Pointer(def)).InternalValue == int32FromInt32(B2_SECRET_COOKIE)) && b2InternalAssertFcn(tls, __ccgo_ts+730, __ccgo_ts+9061, int32FromInt32(509)) != 0 {
+	if !((*RevoluteJointDef)(unsafe.Pointer(def)).InternalValue == int32FromInt32(_B2_SECRET_COOKIE)) && b2InternalAssertFcn(tls, __ccgo_ts+730, __ccgo_ts+9061, int32FromInt32(509)) != 0 {
 		__builtin_trap(tls)
 	}
 	if !((*RevoluteJointDef)(unsafe.Pointer(def)).LowerAngle <= (*RevoluteJointDef)(unsafe.Pointer(def)).UpperAngle) && b2InternalAssertFcn(tls, __ccgo_ts+9472, __ccgo_ts+9061, int32FromInt32(510)) != 0 {
@@ -2886,7 +2886,7 @@ func b2CreatePrismaticJoint(tls *_Stack, worldId WorldId, def uintptr) (r JointI
 	var n, v1, v2 Vec2
 	var pair b2JointPair
 	_, _, _, _, _, _, _, _, _, _, _, _ = bodyA, bodyB, empty, invLength, joint, jointId, length, n, pair, world, v1, v2
-	if !((*PrismaticJointDef)(unsafe.Pointer(def)).InternalValue == int32FromInt32(B2_SECRET_COOKIE)) && b2InternalAssertFcn(tls, __ccgo_ts+730, __ccgo_ts+9061, int32FromInt32(561)) != 0 {
+	if !((*PrismaticJointDef)(unsafe.Pointer(def)).InternalValue == int32FromInt32(_B2_SECRET_COOKIE)) && b2InternalAssertFcn(tls, __ccgo_ts+730, __ccgo_ts+9061, int32FromInt32(561)) != 0 {
 		__builtin_trap(tls)
 	}
 	if !((*PrismaticJointDef)(unsafe.Pointer(def)).LowerTranslation <= (*PrismaticJointDef)(unsafe.Pointer(def)).UpperTranslation) && b2InternalAssertFcn(tls, __ccgo_ts+9574, __ccgo_ts+9061, int32FromInt32(562)) != 0 {
@@ -2952,7 +2952,7 @@ func b2CreateWeldJoint(tls *_Stack, worldId WorldId, def uintptr) (r JointId) {
 	var jointId JointId
 	var pair b2JointPair
 	_, _, _, _, _, _, _ = bodyA, bodyB, empty, joint, jointId, pair, world
-	if !((*WeldJointDef)(unsafe.Pointer(def)).InternalValue == int32FromInt32(B2_SECRET_COOKIE)) && b2InternalAssertFcn(tls, __ccgo_ts+730, __ccgo_ts+9061, int32FromInt32(611)) != 0 {
+	if !((*WeldJointDef)(unsafe.Pointer(def)).InternalValue == int32FromInt32(_B2_SECRET_COOKIE)) && b2InternalAssertFcn(tls, __ccgo_ts+730, __ccgo_ts+9061, int32FromInt32(611)) != 0 {
 		__builtin_trap(tls)
 	}
 	world = b2GetWorldFromId(tls, worldId)
@@ -2997,7 +2997,7 @@ func b2CreateWheelJoint(tls *_Stack, worldId WorldId, def uintptr) (r JointId) {
 	var n, v1, v2 Vec2
 	var pair b2JointPair
 	_, _, _, _, _, _, _, _, _, _, _ = bodyA, bodyB, invLength, joint, jointId, length, n, pair, world, v1, v2
-	if !((*WheelJointDef)(unsafe.Pointer(def)).InternalValue == int32FromInt32(B2_SECRET_COOKIE)) && b2InternalAssertFcn(tls, __ccgo_ts+730, __ccgo_ts+9061, int32FromInt32(653)) != 0 {
+	if !((*WheelJointDef)(unsafe.Pointer(def)).InternalValue == int32FromInt32(_B2_SECRET_COOKIE)) && b2InternalAssertFcn(tls, __ccgo_ts+730, __ccgo_ts+9061, int32FromInt32(653)) != 0 {
 		__builtin_trap(tls)
 	}
 	if !((*WheelJointDef)(unsafe.Pointer(def)).LowerTranslation <= (*WheelJointDef)(unsafe.Pointer(def)).UpperTranslation) && b2InternalAssertFcn(tls, __ccgo_ts+9574, __ccgo_ts+9061, int32FromInt32(654)) != 0 {
@@ -4330,8 +4330,8 @@ func b2PrepareOverflowJoints(tls *_Stack, context uintptr) {
 	var i, jointCount int32
 	_, _, _, _, _ = graph, i, joint, jointCount, joints
 	graph = (*b2StepContext)(unsafe.Pointer(context)).Graph
-	joints = (*(*b2GraphColor)(unsafe.Pointer(graph + uintptr(int32FromInt32(B2_GRAPH_COLOR_COUNT)-int32FromInt32(1))*56))).JointSims.Data
-	jointCount = (*(*b2GraphColor)(unsafe.Pointer(graph + uintptr(int32FromInt32(B2_GRAPH_COLOR_COUNT)-int32FromInt32(1))*56))).JointSims.Count
+	joints = (*(*b2GraphColor)(unsafe.Pointer(graph + uintptr(int32FromInt32(_B2_GRAPH_COLOR_COUNT)-int32FromInt32(1))*56))).JointSims.Data
+	jointCount = (*(*b2GraphColor)(unsafe.Pointer(graph + uintptr(int32FromInt32(_B2_GRAPH_COLOR_COUNT)-int32FromInt32(1))*56))).JointSims.Count
 	i = 0
 	for {
 		if !(i < jointCount) {
@@ -4351,8 +4351,8 @@ func b2WarmStartOverflowJoints(tls *_Stack, context uintptr) {
 	var i, jointCount int32
 	_, _, _, _, _ = graph, i, joint, jointCount, joints
 	graph = (*b2StepContext)(unsafe.Pointer(context)).Graph
-	joints = (*(*b2GraphColor)(unsafe.Pointer(graph + uintptr(int32FromInt32(B2_GRAPH_COLOR_COUNT)-int32FromInt32(1))*56))).JointSims.Data
-	jointCount = (*(*b2GraphColor)(unsafe.Pointer(graph + uintptr(int32FromInt32(B2_GRAPH_COLOR_COUNT)-int32FromInt32(1))*56))).JointSims.Count
+	joints = (*(*b2GraphColor)(unsafe.Pointer(graph + uintptr(int32FromInt32(_B2_GRAPH_COLOR_COUNT)-int32FromInt32(1))*56))).JointSims.Data
+	jointCount = (*(*b2GraphColor)(unsafe.Pointer(graph + uintptr(int32FromInt32(_B2_GRAPH_COLOR_COUNT)-int32FromInt32(1))*56))).JointSims.Count
 	i = 0
 	for {
 		if !(i < jointCount) {
@@ -4372,8 +4372,8 @@ func b2SolveOverflowJoints(tls *_Stack, context uintptr, useBias uint8) {
 	var i, jointCount int32
 	_, _, _, _, _ = graph, i, joint, jointCount, joints
 	graph = (*b2StepContext)(unsafe.Pointer(context)).Graph
-	joints = (*(*b2GraphColor)(unsafe.Pointer(graph + uintptr(int32FromInt32(B2_GRAPH_COLOR_COUNT)-int32FromInt32(1))*56))).JointSims.Data
-	jointCount = (*(*b2GraphColor)(unsafe.Pointer(graph + uintptr(int32FromInt32(B2_GRAPH_COLOR_COUNT)-int32FromInt32(1))*56))).JointSims.Count
+	joints = (*(*b2GraphColor)(unsafe.Pointer(graph + uintptr(int32FromInt32(_B2_GRAPH_COLOR_COUNT)-int32FromInt32(1))*56))).JointSims.Data
+	jointCount = (*(*b2GraphColor)(unsafe.Pointer(graph + uintptr(int32FromInt32(_B2_GRAPH_COLOR_COUNT)-int32FromInt32(1))*56))).JointSims.Count
 	i = 0
 	for {
 		if !(i < jointCount) {
@@ -8457,7 +8457,7 @@ func b2TransferJoint(tls *_Stack, world uintptr, targetSet uintptr, sourceSet ui
 	localIndex = (*b2Joint)(unsafe.Pointer(joint)).LocalIndex
 	colorIndex = (*b2Joint)(unsafe.Pointer(joint)).ColorIndex
 	if (*b2SolverSet)(unsafe.Pointer(sourceSet)).SetIndex == int32(b2_awakeSet) {
-		if !(0 <= colorIndex && colorIndex < int32(B2_GRAPH_COLOR_COUNT)) && b2InternalAssertFcn(tls, __ccgo_ts+3038, __ccgo_ts+14063, int32FromInt32(569)) != 0 {
+		if !(0 <= colorIndex && colorIndex < int32(_B2_GRAPH_COLOR_COUNT)) && b2InternalAssertFcn(tls, __ccgo_ts+3038, __ccgo_ts+14063, int32FromInt32(569)) != 0 {
 			__builtin_trap(tls)
 		}
 		color = world + 328 + uintptr(colorIndex)*56
@@ -10492,7 +10492,7 @@ func b2Joint_IsValid(tls *_Stack, id JointId) (r uint8) {
 	var joint, world uintptr
 	var jointId int32
 	_, _, _ = joint, jointId, world
-	if int32(B2_MAX_WORLDS) <= int32FromUint16(id.World0) {
+	if int32(_B2_MAX_WORLDS) <= int32FromUint16(id.World0) {
 		return uint8(false1)
 	}
 	world = uintptr(unsafe.Pointer(&b2_worlds)) + uintptr(id.World0)*1792

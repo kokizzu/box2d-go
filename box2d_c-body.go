@@ -1,4 +1,4 @@
-package box2d
+package b2
 
 import (
 	"unsafe"
@@ -372,7 +372,7 @@ func b2CreateBody(tls *_Stack, worldId WorldId, def uintptr) (r BodyId) {
 	var id BodyId
 	var isAwake uint8
 	_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ = body, bodyId, bodySim, bodyState, i, id, isAwake, newCapacity, newCapacity1, newCapacity2, newCapacity3, set, setId, world, v1, v11, v12, v13, v15, v16, v17, v18, v19, v2, v3, v4, v5, v7, v8, v9, p21
-	if !((*BodyDef)(unsafe.Pointer(def)).InternalValue == int32FromInt32(B2_SECRET_COOKIE)) && b2InternalAssertFcn(tls, __ccgo_ts+730, __ccgo_ts+327, int32FromInt32(179)) != 0 {
+	if !((*BodyDef)(unsafe.Pointer(def)).InternalValue == int32FromInt32(_B2_SECRET_COOKIE)) && b2InternalAssertFcn(tls, __ccgo_ts+730, __ccgo_ts+327, int32FromInt32(179)) != 0 {
 		__builtin_trap(tls)
 	}
 	if !(b2IsValidVec2(tls, (*BodyDef)(unsafe.Pointer(def)).Position) != 0) && b2InternalAssertFcn(tls, __ccgo_ts+769, __ccgo_ts+327, int32FromInt32(180)) != 0 {
@@ -2102,7 +2102,7 @@ func b2Body_SetType(tls *_Stack, bodyId BodyId, type1 BodyType) {
 						__builtin_trap(tls)
 					}
 					// The joint must live in a graph color.
-					if !(0 <= (*b2Joint)(unsafe.Pointer(joint2)).ColorIndex && (*b2Joint)(unsafe.Pointer(joint2)).ColorIndex < int32(B2_GRAPH_COLOR_COUNT)) && b2InternalAssertFcn(tls, __ccgo_ts+1796, __ccgo_ts+327, int32FromInt32(1205)) != 0 {
+					if !(0 <= (*b2Joint)(unsafe.Pointer(joint2)).ColorIndex && (*b2Joint)(unsafe.Pointer(joint2)).ColorIndex < int32(_B2_GRAPH_COLOR_COUNT)) && b2InternalAssertFcn(tls, __ccgo_ts+1796, __ccgo_ts+327, int32FromInt32(1205)) != 0 {
 						__builtin_trap(tls)
 					}
 					// In this case the joint must be re-inserted into the constraint graph to ensure the correct
@@ -3079,7 +3079,7 @@ func b2DefaultBodyDef(tls *_Stack) (r BodyDef) {
 	def.EnableSleep = uint8(true1)
 	def.IsAwake = uint8(true1)
 	def.IsEnabled = uint8(true1)
-	def.InternalValue = int32(B2_SECRET_COOKIE)
+	def.InternalValue = int32(_B2_SECRET_COOKIE)
 	return def
 }
 
@@ -3114,7 +3114,7 @@ func b2BodyMoveEventArray_Destroy(tls *_Stack, a uintptr) {
 func b2Body_IsValid(tls *_Stack, id BodyId) (r uint8) {
 	var body, world uintptr
 	_, _ = body, world
-	if int32(B2_MAX_WORLDS) <= int32FromUint16(id.World0) {
+	if int32(_B2_MAX_WORLDS) <= int32FromUint16(id.World0) {
 		// invalid world
 		return uint8(false1)
 	}

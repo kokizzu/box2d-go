@@ -1,4 +1,4 @@
-package box2d
+package b2
 
 import (
 	"unsafe"
@@ -23,14 +23,14 @@ func b2DefaultWorldDef(tls *_Stack) (r WorldDef) {
 	def.MaximumLinearSpeed = float32(float32FromFloat32(400) * b2_lengthUnitsPerMeter)
 	def.EnableSleep = uint8(true1)
 	def.EnableContinuous = uint8(true1)
-	def.InternalValue = int32(B2_SECRET_COOKIE)
+	def.InternalValue = int32(_B2_SECRET_COOKIE)
 	return def
 }
 
 func b2GetWorldFromId(tls *_Stack, id WorldId) (r uintptr) {
 	var world uintptr
 	_ = world
-	if !(int32(1) <= int32FromUint16(id.Index1) && int32FromUint16(id.Index1) <= int32(B2_MAX_WORLDS)) && b2InternalAssertFcn(tls, __ccgo_ts+15297, __ccgo_ts+15342, int32FromInt32(47)) != 0 {
+	if !(int32(1) <= int32FromUint16(id.Index1) && int32FromUint16(id.Index1) <= int32(_B2_MAX_WORLDS)) && b2InternalAssertFcn(tls, __ccgo_ts+15297, __ccgo_ts+15342, int32FromInt32(47)) != 0 {
 		__builtin_trap(tls)
 	}
 	world = uintptr(unsafe.Pointer(&b2_worlds)) + uintptr(int32FromUint16(id.Index1)-int32FromInt32(1))*1792
@@ -46,7 +46,7 @@ func b2GetWorldFromId(tls *_Stack, id WorldId) (r uintptr) {
 func b2GetWorld(tls *_Stack, index int32) (r uintptr) {
 	var world uintptr
 	_ = world
-	if !(0 <= index && index < int32(B2_MAX_WORLDS)) && b2InternalAssertFcn(tls, __ccgo_ts+15432, __ccgo_ts+15342, int32FromInt32(56)) != 0 {
+	if !(0 <= index && index < int32(_B2_MAX_WORLDS)) && b2InternalAssertFcn(tls, __ccgo_ts+15432, __ccgo_ts+15342, int32FromInt32(56)) != 0 {
 		__builtin_trap(tls)
 	}
 	world = uintptr(unsafe.Pointer(&b2_worlds)) + uintptr(index)*1792
@@ -59,7 +59,7 @@ func b2GetWorld(tls *_Stack, index int32) (r uintptr) {
 func b2GetWorldLocked(tls *_Stack, index int32) (r uintptr) {
 	var world uintptr
 	_ = world
-	if !(0 <= index && index < int32(B2_MAX_WORLDS)) && b2InternalAssertFcn(tls, __ccgo_ts+15432, __ccgo_ts+15342, int32FromInt32(64)) != 0 {
+	if !(0 <= index && index < int32(_B2_MAX_WORLDS)) && b2InternalAssertFcn(tls, __ccgo_ts+15432, __ccgo_ts+15342, int32FromInt32(64)) != 0 {
 		__builtin_trap(tls)
 	}
 	world = uintptr(unsafe.Pointer(&b2_worlds)) + uintptr(index)*1792
@@ -81,13 +81,13 @@ func b2CreateWorld(tls *_Stack, def uintptr) (r WorldId) {
 	var set b2SolverSet
 	var world, v13, v15, v2, v4, v6 uintptr
 	_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ = generation, i, i1, newCapacity, set, world, worldId, v10, v12, v13, v14, v15, v16, v2, v3, v4, v5, v6, v7, v8, v9
-	if !((*WorldDef)(unsafe.Pointer(def)).InternalValue == int32FromInt32(B2_SECRET_COOKIE)) && b2InternalAssertFcn(tls, __ccgo_ts+730, __ccgo_ts+15342, int32FromInt32(103)) != 0 {
+	if !((*WorldDef)(unsafe.Pointer(def)).InternalValue == int32FromInt32(_B2_SECRET_COOKIE)) && b2InternalAssertFcn(tls, __ccgo_ts+730, __ccgo_ts+15342, int32FromInt32(103)) != 0 {
 		__builtin_trap(tls)
 	}
 	worldId = -int32(1)
 	i = 0
 	for {
-		if !(i < int32(B2_MAX_WORLDS)) {
+		if !(i < int32(_B2_MAX_WORLDS)) {
 			break
 		}
 		if int32FromUint8(b2_worlds[i].InUse) == false1 {
@@ -220,7 +220,7 @@ func b2CreateWorld(tls *_Stack, def uintptr) (r WorldId) {
 	(*b2World)(unsafe.Pointer(world)).UserData = (*WorldDef)(unsafe.Pointer(def)).UserData
 	if (*WorldDef)(unsafe.Pointer(def)).WorkerCount > 0 && (*WorldDef)(unsafe.Pointer(def)).EnqueueTask != uintptrFromInt32(0) && (*WorldDef)(unsafe.Pointer(def)).FinishTask != uintptrFromInt32(0) {
 		v8 = (*WorldDef)(unsafe.Pointer(def)).WorkerCount
-		v9 = int32(B2_MAX_WORKERS)
+		v9 = int32(_B2_MAX_WORKERS)
 		if v8 < v9 {
 			v12 = v8
 		} else {
@@ -881,7 +881,7 @@ func b2World_Draw(tls *_Stack, worldId WorldId, draw uintptr) {
 		}
 		colorIndex = 0
 		for {
-			if !(colorIndex < int32(B2_GRAPH_COLOR_COUNT)) {
+			if !(colorIndex < int32(_B2_GRAPH_COLOR_COUNT)) {
 				break
 			}
 			graphColor = world + 328 + uintptr(colorIndex)*56
@@ -900,8 +900,8 @@ func b2World_Draw(tls *_Stack, worldId WorldId, draw uintptr) {
 						break
 					}
 					point = contact + 36 + 12 + uintptr(j)*48
-					if (*DebugDraw)(unsafe.Pointer(draw)).DrawGraphColors != 0 && 0 <= colorIndex && colorIndex <= int32(B2_GRAPH_COLOR_COUNT) {
-						if colorIndex == int32FromInt32(B2_GRAPH_COLOR_COUNT)-int32FromInt32(1) {
+					if (*DebugDraw)(unsafe.Pointer(draw)).DrawGraphColors != 0 && 0 <= colorIndex && colorIndex <= int32(_B2_GRAPH_COLOR_COUNT) {
+						if colorIndex == int32FromInt32(_B2_GRAPH_COLOR_COUNT)-int32FromInt32(1) {
 							v41 = float32FromFloat32(7.5)
 						} else {
 							v41 = float32FromFloat32(5)
@@ -1205,7 +1205,7 @@ func b2World_GetContactEvents(tls *_Stack, worldId WorldId) (r b2ContactEvents) 
 func b2World_IsValid(tls *_Stack, id WorldId) (r uint8) {
 	var world uintptr
 	_ = world
-	if int32FromUint16(id.Index1) < int32(1) || int32(B2_MAX_WORLDS) < int32FromUint16(id.Index1) {
+	if int32FromUint16(id.Index1) < int32(1) || int32(_B2_MAX_WORLDS) < int32FromUint16(id.Index1) {
 		return uint8(false1)
 	}
 	world = uintptr(unsafe.Pointer(&b2_worlds)) + uintptr(int32FromUint16(id.Index1)-int32FromInt32(1))*1792
@@ -1544,7 +1544,7 @@ _19:
 	(*(*Counters)(unsafe.Pointer(bp))).TaskCount = (*b2World)(unsafe.Pointer(world)).TaskCount
 	i = 0
 	for {
-		if !(i < int32(B2_GRAPH_COLOR_COUNT)) {
+		if !(i < int32(_B2_GRAPH_COLOR_COUNT)) {
 			break
 		}
 		*(*int32)(unsafe.Pointer(bp + 40 + uintptr(i)*4)) = (*(*b2GraphColor)(unsafe.Pointer(world + 328 + uintptr(i)*56))).ContactSims.Count + (*(*b2GraphColor)(unsafe.Pointer(world + 328 + uintptr(i)*56))).JointSims.Count
@@ -1745,7 +1745,7 @@ _44:
 	jointSimCapacity = 0
 	i1 = 0
 	for {
-		if !(i1 < int32(B2_GRAPH_COLOR_COUNT)) {
+		if !(i1 < int32(_B2_GRAPH_COLOR_COUNT)) {
 			break
 		}
 		c = world + 328 + uintptr(i1)*56

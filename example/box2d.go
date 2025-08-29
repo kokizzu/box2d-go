@@ -8,57 +8,59 @@ import (
 )
 
 func b2New(gravity float64) Physics {
-	def := box2d.DefaultWorldDef()
-	def.Gravity = box2d.Vec2{Y: float32(gravity)}
+	def := b2.DefaultWorldDef()
+	def.Gravity = b2.Vec2{Y: float32(gravity)}
+
+	b2.EnableConcurrency(&def)
 
 	return &Box2D{
-		World: box2d.CreateWorld(def),
+		World: b2.CreateWorld(def),
 	}
 }
 
 type Box2D struct {
-	World box2d.World
+	World b2.World
 }
 
 func (ph Box2D) Step(dt float64, subSteps int) {
 	ph.World.Step(float32(dt), int32(subSteps))
 }
 
-func (ph Box2D) CreateSquare(halfSize float64, centerX, centerY float64) Body {
+func (ph Box2D) CreateSquare(halfSize, centerX, centerY, density float64) Body {
 	p := pathSquare(halfSize)
 
-	var tr box2d.Transform
+	var tr b2.Transform
 	tr.P.X = float32(centerX)
 	tr.P.Y = float32(centerY)
 	tr.Q.C = 1
 
-	def := box2d.DefaultBodyDef()
-	def.Type1 = box2d.DynamicBody
+	def := b2.DefaultBodyDef()
+	def.Type1 = b2.DynamicBody
 	body := ph.World.CreateBody(def)
 	body.SetTransform(tr.P, tr.Q)
 
-	shape := box2d.DefaultShapeDef()
-	shape.Density = 1
+	shape := b2.DefaultShapeDef()
+	shape.Density = float32(density)
 	shape.Material.Restitution = 0
 	shape.Material.Friction = 1
-	body.CreatePolygonShape(shape, box2d.MakeSquare(float32(halfSize)))
+	body.CreatePolygonShape(shape, b2.MakeSquare(float32(halfSize)))
 
 	return &b2Body{shape: p, body: body}
 }
 
 func (ph Box2D) CreateStaticLine(x0, y0, x1, y1 float64) Body {
-	def := box2d.DefaultBodyDef()
-	def.Type1 = box2d.StaticBody
+	def := b2.DefaultBodyDef()
+	def.Type1 = b2.StaticBody
 
-	shape := box2d.DefaultShapeDef()
+	shape := b2.DefaultShapeDef()
 	shape.Density = 1
 	shape.Material.Restitution = 0
 	shape.Material.Friction = 1
 
 	body := ph.World.CreateBody(def)
-	body.CreateSegmentShape(shape, box2d.Segment{
-		Point1: box2d.Vec2{X: float32(x0), Y: float32(y0)},
-		Point2: box2d.Vec2{X: float32(x1), Y: float32(y1)},
+	body.CreateSegmentShape(shape, b2.Segment{
+		Point1: b2.Vec2{X: float32(x0), Y: float32(y0)},
+		Point2: b2.Vec2{X: float32(x1), Y: float32(y1)},
 	})
 
 	return &b2Body{
@@ -69,7 +71,7 @@ func (ph Box2D) CreateStaticLine(x0, y0, x1, y1 float64) Body {
 
 type b2Body struct {
 	shape vector.Path
-	body  box2d.Body
+	body  b2.Body
 }
 
 func (b *b2Body) Shape() vector.Path {
@@ -84,4 +86,8 @@ func (b *b2Body) Position() (float64, float64) {
 func (b *b2Body) Rotation() float64 {
 	rot := b.body.GetRotation()
 	return math.Atan2(float64(rot.S), float64(rot.C))
+}
+
+func (b *b2Body) SetVelocity(x, y float64) {
+	b.body.SetLinearVelocity(b2.Vec2{X: float32(x), Y: float32(y)})
 }

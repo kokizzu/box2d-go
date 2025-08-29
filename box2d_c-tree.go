@@ -1,4 +1,4 @@
-package box2d
+package b2
 
 import (
 	"unsafe"
@@ -381,7 +381,7 @@ func b2DynamicTree_Query(tls *_Stack, tree uintptr, aabb AABB, maskBits uint64, 
 					return result
 				}
 			} else {
-				if stackCount < int32FromInt32(B2_TREE_STACK_SIZE)-int32FromInt32(1) {
+				if stackCount < int32FromInt32(_B2_TREE_STACK_SIZE)-int32FromInt32(1) {
 					v7 = stackCount
 					stackCount++
 					stack[v7] = (*b2TreeNode)(unsafe.Pointer(node)).ｆ__ccgo2_24.Children.Child1
@@ -389,7 +389,7 @@ func b2DynamicTree_Query(tls *_Stack, tree uintptr, aabb AABB, maskBits uint64, 
 					stackCount++
 					stack[v8] = (*b2TreeNode)(unsafe.Pointer(node)).ｆ__ccgo2_24.Children.Child2
 				} else {
-					if !(stackCount < int32FromInt32(B2_TREE_STACK_SIZE)-int32FromInt32(1)) && b2InternalAssertFcn(tls, __ccgo_ts+5888, __ccgo_ts+4746, int32FromInt32(1163)) != 0 {
+					if !(stackCount < int32FromInt32(_B2_TREE_STACK_SIZE)-int32FromInt32(1)) && b2InternalAssertFcn(tls, __ccgo_ts+5888, __ccgo_ts+4746, int32FromInt32(1163)) != 0 {
 						__builtin_trap(tls)
 					}
 				}
@@ -704,7 +704,7 @@ _51:
 				segmentAABB.UpperBound = v112
 			}
 		} else {
-			if stackCount < int32FromInt32(B2_TREE_STACK_SIZE)-int32FromInt32(1) {
+			if stackCount < int32FromInt32(_B2_TREE_STACK_SIZE)-int32FromInt32(1) {
 				v114 = (*(*b2TreeNode)(unsafe.Pointer(nodes + uintptr((*b2TreeNode)(unsafe.Pointer(node)).ｆ__ccgo2_24.Children.Child1)*40))).Aabb
 				b9 = Vec2{
 					X: float32(float32FromFloat32(0.5) * (v114.LowerBound.X + v114.UpperBound.X)),
@@ -757,7 +757,7 @@ _51:
 					stack[v131] = (*b2TreeNode)(unsafe.Pointer(node)).ｆ__ccgo2_24.Children.Child2
 				}
 			} else {
-				if !(stackCount < int32FromInt32(B2_TREE_STACK_SIZE)-int32FromInt32(1)) && b2InternalAssertFcn(tls, __ccgo_ts+5888, __ccgo_ts+4746, int32FromInt32(1284)) != 0 {
+				if !(stackCount < int32FromInt32(_B2_TREE_STACK_SIZE)-int32FromInt32(1)) && b2InternalAssertFcn(tls, __ccgo_ts+5888, __ccgo_ts+4746, int32FromInt32(1284)) != 0 {
 					__builtin_trap(tls)
 				}
 			}
@@ -1201,7 +1201,7 @@ _98:
 				totalAABB.UpperBound = v170
 			}
 		} else {
-			if stackCount < int32FromInt32(B2_TREE_STACK_SIZE)-int32FromInt32(1) {
+			if stackCount < int32FromInt32(_B2_TREE_STACK_SIZE)-int32FromInt32(1) {
 				v172 = (*(*b2TreeNode)(unsafe.Pointer(nodes + uintptr((*b2TreeNode)(unsafe.Pointer(node)).ｆ__ccgo2_24.Children.Child1)*40))).Aabb
 				b9 = Vec2{
 					X: float32(float32FromFloat32(0.5) * (v172.LowerBound.X + v172.UpperBound.X)),
@@ -1254,7 +1254,7 @@ _98:
 					stack[v189] = (*b2TreeNode)(unsafe.Pointer(node)).ｆ__ccgo2_24.Children.Child2
 				}
 			} else {
-				if !(stackCount < int32FromInt32(B2_TREE_STACK_SIZE)-int32FromInt32(1)) && b2InternalAssertFcn(tls, __ccgo_ts+5888, __ccgo_ts+4746, int32FromInt32(1412)) != 0 {
+				if !(stackCount < int32FromInt32(_B2_TREE_STACK_SIZE)-int32FromInt32(1)) && b2InternalAssertFcn(tls, __ccgo_ts+5888, __ccgo_ts+4746, int32FromInt32(1412)) != 0 {
 					__builtin_trap(tls)
 				}
 			}
@@ -1319,12 +1319,12 @@ func b2DynamicTree_Rebuild(tls *_Stack, tree uintptr, fullBuild uint8) (r int32)
 			doomedNodeIndex = nodeIndex
 			// Handle children
 			nodeIndex = (*b2TreeNode)(unsafe.Pointer(node)).ｆ__ccgo2_24.Children.Child1
-			if stackCount < int32(B2_TREE_STACK_SIZE) {
+			if stackCount < int32(_B2_TREE_STACK_SIZE) {
 				v4 = stackCount
 				stackCount++
 				stack[v4] = (*b2TreeNode)(unsafe.Pointer(node)).ｆ__ccgo2_24.Children.Child2
 			} else {
-				if !(stackCount < int32FromInt32(B2_TREE_STACK_SIZE)) && b2InternalAssertFcn(tls, __ccgo_ts+6449, __ccgo_ts+4746, int32FromInt32(1951)) != 0 {
+				if !(stackCount < int32FromInt32(_B2_TREE_STACK_SIZE)) && b2InternalAssertFcn(tls, __ccgo_ts+6449, __ccgo_ts+4746, int32FromInt32(1951)) != 0 {
 					__builtin_trap(tls)
 				}
 			}

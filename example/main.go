@@ -10,10 +10,16 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/vector"
 )
 
+const Layers = 20
+
 func main() {
+	// defer profile.Start(profile.CPUProfile).Stop()
+
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
 	ebiten.SetWindowSize(1200, 800)
-	_ = ebiten.RunGame(&viz{})
+	ops := ebiten.RunGameOptions{}
+	ops.SingleThread = true
+	_ = ebiten.RunGameWithOptions(&viz{}, &ops)
 }
 
 type viz struct {
@@ -55,7 +61,21 @@ func (v *viz) Draw(screen *ebiten.Image) {
 
 	var toScreen ebiten.GeoM
 
-	toScreen.Scale(30.0, -30.0)
+	var minX, minY, maxX, maxY float64
+	for _, body := range v.bodies {
+		x, y := body.Position()
+		minX = min(minX, x)
+		maxX = max(maxX, x)
+		minY = min(minY, y)
+		maxY = max(minY, y)
+	}
+
+	_ = maxY
+
+	// scale := (h - 50) / (Layers + 5)
+	scale := w / (5 * Layers)
+
+	toScreen.Scale(scale, -scale)
 	toScreen.Translate(w/2, h-50)
 
 	var p vector.Path
@@ -86,19 +106,24 @@ func (v *viz) initialize(makePhysics func(gravity float64) Physics) {
 
 	var bodies []Body
 
-	bodies = append(bodies, ph.CreateStaticLine(-20, 0, 20, 0))
-
-	const Layers = 20
+	bodies = append(bodies, ph.CreateStaticLine(-2*Layers, 0, 2*Layers, 0))
+	bodies = append(bodies, ph.CreateStaticLine(-2*Layers, 0, -2*Layers, 100))
+	bodies = append(bodies, ph.CreateStaticLine(2*Layers, 0, 2*Layers, 100))
 
 	// create layers of boxes
 	for l := range Layers {
 		for i := range l {
 			centerX := float64(i) + 0.5 - float64(l)/2
-			centerY := (Layers - float64(l)) * 1.1
+			centerY := (Layers - float64(l) - 0.5) * 1.0
 
-			bodies = append(bodies, ph.CreateSquare(0.5, centerX, centerY))
+			bodies = append(bodies, ph.CreateSquare(0.5, centerX, centerY, 1))
 		}
 	}
+
+	// create a fast moving box
+	b := ph.CreateSquare(2, -0.5*Layers, Layers, 10)
+	b.SetVelocity(50, -100)
+	bodies = append(bodies, b)
 
 	v.physics = ph
 	v.bodies = bodies
@@ -125,10 +150,11 @@ type Body interface {
 	Shape() vector.Path
 	Position() (float64, float64)
 	Rotation() float64
+	SetVelocity(x, y float64)
 }
 
 type Physics interface {
-	CreateSquare(halfSize float64, centerX, centerY float64) Body
+	CreateSquare(halfSize, centerX, centerY, density float64) Body
 	CreateStaticLine(x0, y0, x1, y1 float64) Body
 	Step(dt float64, subSteps int)
 }

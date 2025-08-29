@@ -1,6 +1,6 @@
-// Code generated for linux/arm64 by 'ccgo -verify-types --package-name box2d -D BOX2D_DISABLE_SIMD --predef \n#include <stdbool.h>\n#include <stdint.h>\nbool __builtin___atomic_compare_exchange_n(int32_t *ptr, int32_t *expected, int32_t desired, bool weak, int32_t success_memorder, int32_t failure_memorder);\n --predef \n#include <stddef.h>\n#define aligned_alloc __builtin_aligned_alloc\nextern void* __builtin_aligned_alloc(size_t align, size_t size);\n --prefix-field ｆ -o ../box2d_c.go -I ../box2d-c/include/ ../box2d-c/src/aabb.c ../box2d-c/src/arena_allocator.c ../box2d-c/src/array.c ../box2d-c/src/bitset.c ../box2d-c/src/body.c ../box2d-c/src/broad_phase.c ../box2d-c/src/constraint_graph.c ../box2d-c/src/contact.c ../box2d-c/src/contact_solver.c ../box2d-c/src/core.c ../box2d-c/src/distance.c ../box2d-c/src/distance_joint.c ../box2d-c/src/dynamic_tree.c ../box2d-c/src/geometry.c ../box2d-c/src/hull.c ../box2d-c/src/id_pool.c ../box2d-c/src/island.c ../box2d-c/src/joint.c ../box2d-c/src/manifold.c ../box2d-c/src/math_functions.c ../box2d-c/src/motor_joint.c ../box2d-c/src/mouse_joint.c ../box2d-c/src/mover.c ../box2d-c/src/prismatic_joint.c ../box2d-c/src/revolute_joint.c ../box2d-c/src/sensor.c ../box2d-c/src/shape.c ../box2d-c/src/solver.c ../box2d-c/src/solver_set.c ../box2d-c/src/statics.c ../box2d-c/src/table.c ../box2d-c/src/timer.c ../box2d-c/src/types.c ../box2d-c/src/weld_joint.c ../box2d-c/src/wheel_joint.c ../box2d-c/src/world.c', DO NOT EDIT.
+// Code generated for linux/arm64 by 'ccgo -verify-types --package-name b2 -D BOX2D_DISABLE_SIMD --predef \n#include <stdbool.h>\n#include <stdint.h>\nbool __builtin___atomic_compare_exchange_n(int32_t *ptr, int32_t *expected, int32_t desired, bool weak, int32_t success_memorder, int32_t failure_memorder);\n --predef \n#include <stddef.h>\n#define aligned_alloc __builtin_aligned_alloc\nextern void* __builtin_aligned_alloc(size_t align, size_t size);\n --prefix-field ｆ -o ../box2d_c.go -I ../box2d-c/include/ ../box2d-c/src/aabb.c ../box2d-c/src/arena_allocator.c ../box2d-c/src/array.c ../box2d-c/src/bitset.c ../box2d-c/src/body.c ../box2d-c/src/broad_phase.c ../box2d-c/src/constraint_graph.c ../box2d-c/src/contact.c ../box2d-c/src/contact_solver.c ../box2d-c/src/core.c ../box2d-c/src/distance.c ../box2d-c/src/distance_joint.c ../box2d-c/src/dynamic_tree.c ../box2d-c/src/geometry.c ../box2d-c/src/hull.c ../box2d-c/src/id_pool.c ../box2d-c/src/island.c ../box2d-c/src/joint.c ../box2d-c/src/manifold.c ../box2d-c/src/math_functions.c ../box2d-c/src/motor_joint.c ../box2d-c/src/mouse_joint.c ../box2d-c/src/mover.c ../box2d-c/src/prismatic_joint.c ../box2d-c/src/revolute_joint.c ../box2d-c/src/sensor.c ../box2d-c/src/shape.c ../box2d-c/src/solver.c ../box2d-c/src/solver_set.c ../box2d-c/src/statics.c ../box2d-c/src/table.c ../box2d-c/src/timer.c ../box2d-c/src/types.c ../box2d-c/src/weld_joint.c ../box2d-c/src/wheel_joint.c ../box2d-c/src/world.c', DO NOT EDIT.
 
-package box2d
+package b2
 
 import (
 	"reflect"
@@ -10,116 +10,116 @@ import (
 var _ reflect.Type
 var _ unsafe.Pointer
 
-const B2_API = "BOX2D_EXPORT"
-const B2_DEFAULT_CATEGORY_BITS = 1
-const B2_DEFAULT_MASK_BITS = "UINT64_MAX"
-const B2_HASH_INIT = 5381
-const B2_MAX_POLYGON_VERTICES = 8
-const B2_PI = 3.14159265359
-const BOX2D_DISABLE_SIMD = 1
-const DBL_DECIMAL_DIG = 17
-const DBL_DIG = 15
-const DBL_EPSILON = 2.22044604925031308085e-16
-const DBL_HAS_SUBNORM = 1
-const DBL_MANT_DIG = 53
-const DBL_MAX = 1.79769313486231570815e+308
-const DBL_MAX_10_EXP = 308
-const DBL_MAX_EXP = 1024
-const DBL_MIN = 2.22507385850720138309e-308
-const DBL_TRUE_MIN = 4.94065645841246544177e-324
-const DECIMAL_DIG = 17
-const FLT_DECIMAL_DIG = 9
-const FLT_DIG = 6
-const FLT_EPSILON = 1.1920928955078125e-07
-const FLT_EVAL_METHOD = 0
-const FLT_HAS_SUBNORM = 1
-const FLT_MANT_DIG = 24
-const FLT_MAX = 3.4028234663852886e+38
-const FLT_MAX_10_EXP = 38
-const FLT_MAX_EXP = 128
-const FLT_MIN = 1.17549435082228750797e-38
-const FLT_RADIX = 2
-const FLT_TRUE_MIN = 1.40129846432481707092e-45
-const FP_FAST_FMA = 1
-const FP_FAST_FMAF = 1
-const FP_ILOGB0 = "FP_ILOGBNAN"
-const FP_INFINITE = 1
-const FP_NAN = 0
-const FP_NORMAL = 4
-const FP_SUBNORMAL = 3
-const FP_ZERO = 2
-const HUGE = 3.40282346638528859812e+38
-const HUGE_VALF = "INFINITY"
-const INT16_MAX = 0x7fff
-const INT32_MAX = 0x7fffffff
-const INT64_MAX = 0x7fffffffffffffff
-const INT8_MAX = 0x7f
-const INTMAX_MAX = "INT64_MAX"
-const INTMAX_MIN = "INT64_MIN"
-const INTPTR_MAX = "INT64_MAX"
-const INTPTR_MIN = "INT64_MIN"
-const INT_FAST16_MAX = "INT32_MAX"
-const INT_FAST16_MIN = "INT32_MIN"
-const INT_FAST32_MAX = "INT32_MAX"
-const INT_FAST32_MIN = "INT32_MIN"
-const INT_FAST64_MAX = "INT64_MAX"
-const INT_FAST64_MIN = "INT64_MIN"
-const INT_FAST8_MAX = "INT8_MAX"
-const INT_FAST8_MIN = "INT8_MIN"
-const INT_LEAST16_MAX = "INT16_MAX"
-const INT_LEAST16_MIN = "INT16_MIN"
-const INT_LEAST32_MAX = "INT32_MAX"
-const INT_LEAST32_MIN = "INT32_MIN"
-const INT_LEAST64_MAX = "INT64_MAX"
-const INT_LEAST64_MIN = "INT64_MIN"
-const INT_LEAST8_MAX = "INT8_MAX"
-const INT_LEAST8_MIN = "INT8_MIN"
-const LDBL_DECIMAL_DIG = "DECIMAL_DIG"
-const LDBL_DIG = 15
-const LDBL_EPSILON = 2.22044604925031308085e-16
-const LDBL_HAS_SUBNORM = 1
-const LDBL_MANT_DIG = 53
-const LDBL_MAX = 1.79769313486231570815e+308
-const LDBL_MAX_10_EXP = 308
-const LDBL_MAX_EXP = 1024
-const LDBL_MIN = 2.22507385850720138309e-308
-const LDBL_TRUE_MIN = 4.94065645841246544177e-324
-const MATH_ERREXCEPT = 2
-const MATH_ERRNO = 1
-const M_1_PI = 0.31830988618379067154
-const M_2_PI = 0.63661977236758134308
-const M_2_SQRTPI = 1.12837916709551257390
-const M_E = 2.7182818284590452354
-const M_LN10 = 2.30258509299404568402
-const M_LN2 = 0.69314718055994530942
-const M_LOG10E = 0.43429448190325182765
-const M_LOG2E = 1.4426950408889634074
-const M_PI = 3.14159265358979323846
-const M_PI_2 = 1.57079632679489661923
-const M_PI_4 = 0.78539816339744830962
-const M_SQRT1_2 = 0.70710678118654752440
-const M_SQRT2 = 1.41421356237309504880
-const PTRDIFF_MAX = "INT64_MAX"
-const PTRDIFF_MIN = "INT64_MIN"
-const SIG_ATOMIC_MAX = "INT32_MAX"
-const SIG_ATOMIC_MIN = "INT32_MIN"
-const SIZE_MAX = "UINT64_MAX"
-const UINT16_MAX = 0xffff
-const UINT32_MAX = "0xffffffffu"
-const UINT64_MAX = "0xffffffffffffffffu"
-const UINT8_MAX = 0xff
-const UINTMAX_MAX = "UINT64_MAX"
-const UINTPTR_MAX = "UINT64_MAX"
-const UINT_FAST16_MAX = "UINT32_MAX"
-const UINT_FAST32_MAX = "UINT32_MAX"
-const UINT_FAST64_MAX = "UINT64_MAX"
-const UINT_FAST8_MAX = "UINT8_MAX"
-const UINT_LEAST16_MAX = "UINT16_MAX"
-const UINT_LEAST32_MAX = "UINT32_MAX"
-const UINT_LEAST64_MAX = "UINT64_MAX"
-const UINT_LEAST8_MAX = "UINT8_MAX"
-const WINT_MAX = "UINT32_MAX"
-const WINT_MIN = 0
+const _B2_API = "BOX2D_EXPORT"
+const _B2_DEFAULT_CATEGORY_BITS = 1
+const _B2_DEFAULT_MASK_BITS = "UINT64_MAX"
+const _B2_HASH_INIT = 5381
+const _B2_MAX_POLYGON_VERTICES = 8
+const _B2_PI = 3.14159265359
+const _BOX2D_DISABLE_SIMD = 1
+const _DBL_DECIMAL_DIG = 17
+const _DBL_DIG = 15
+const _DBL_EPSILON = 2.22044604925031308085e-16
+const _DBL_HAS_SUBNORM = 1
+const _DBL_MANT_DIG = 53
+const _DBL_MAX = 1.79769313486231570815e+308
+const _DBL_MAX_10_EXP = 308
+const _DBL_MAX_EXP = 1024
+const _DBL_MIN = 2.22507385850720138309e-308
+const _DBL_TRUE_MIN = 4.94065645841246544177e-324
+const _DECIMAL_DIG = 17
+const _FLT_DECIMAL_DIG = 9
+const _FLT_DIG = 6
+const _FLT_EPSILON = 1.1920928955078125e-07
+const _FLT_EVAL_METHOD = 0
+const _FLT_HAS_SUBNORM = 1
+const _FLT_MANT_DIG = 24
+const _FLT_MAX = 3.4028234663852886e+38
+const _FLT_MAX_10_EXP = 38
+const _FLT_MAX_EXP = 128
+const _FLT_MIN = 1.17549435082228750797e-38
+const _FLT_RADIX = 2
+const _FLT_TRUE_MIN = 1.40129846432481707092e-45
+const _FP_FAST_FMA = 1
+const _FP_FAST_FMAF = 1
+const _FP_ILOGB0 = "FP_ILOGBNAN"
+const _FP_INFINITE = 1
+const _FP_NAN = 0
+const _FP_NORMAL = 4
+const _FP_SUBNORMAL = 3
+const _FP_ZERO = 2
+const _HUGE = 3.40282346638528859812e+38
+const _HUGE_VALF = "INFINITY"
+const _INT16_MAX = 0x7fff
+const _INT32_MAX = 0x7fffffff
+const _INT64_MAX = 0x7fffffffffffffff
+const _INT8_MAX = 0x7f
+const _INTMAX_MAX = "INT64_MAX"
+const _INTMAX_MIN = "INT64_MIN"
+const _INTPTR_MAX = "INT64_MAX"
+const _INTPTR_MIN = "INT64_MIN"
+const _INT_FAST16_MAX = "INT32_MAX"
+const _INT_FAST16_MIN = "INT32_MIN"
+const _INT_FAST32_MAX = "INT32_MAX"
+const _INT_FAST32_MIN = "INT32_MIN"
+const _INT_FAST64_MAX = "INT64_MAX"
+const _INT_FAST64_MIN = "INT64_MIN"
+const _INT_FAST8_MAX = "INT8_MAX"
+const _INT_FAST8_MIN = "INT8_MIN"
+const _INT_LEAST16_MAX = "INT16_MAX"
+const _INT_LEAST16_MIN = "INT16_MIN"
+const _INT_LEAST32_MAX = "INT32_MAX"
+const _INT_LEAST32_MIN = "INT32_MIN"
+const _INT_LEAST64_MAX = "INT64_MAX"
+const _INT_LEAST64_MIN = "INT64_MIN"
+const _INT_LEAST8_MAX = "INT8_MAX"
+const _INT_LEAST8_MIN = "INT8_MIN"
+const _LDBL_DECIMAL_DIG = "DECIMAL_DIG"
+const _LDBL_DIG = 15
+const _LDBL_EPSILON = 2.22044604925031308085e-16
+const _LDBL_HAS_SUBNORM = 1
+const _LDBL_MANT_DIG = 53
+const _LDBL_MAX = 1.79769313486231570815e+308
+const _LDBL_MAX_10_EXP = 308
+const _LDBL_MAX_EXP = 1024
+const _LDBL_MIN = 2.22507385850720138309e-308
+const _LDBL_TRUE_MIN = 4.94065645841246544177e-324
+const _MATH_ERREXCEPT = 2
+const _MATH_ERRNO = 1
+const _M_1_PI = 0.31830988618379067154
+const _M_2_PI = 0.63661977236758134308
+const _M_2_SQRTPI = 1.12837916709551257390
+const _M_E = 2.7182818284590452354
+const _M_LN10 = 2.30258509299404568402
+const _M_LN2 = 0.69314718055994530942
+const _M_LOG10E = 0.43429448190325182765
+const _M_LOG2E = 1.4426950408889634074
+const _M_PI = 3.14159265358979323846
+const _M_PI_2 = 1.57079632679489661923
+const _M_PI_4 = 0.78539816339744830962
+const _M_SQRT1_2 = 0.70710678118654752440
+const _M_SQRT2 = 1.41421356237309504880
+const _PTRDIFF_MAX = "INT64_MAX"
+const _PTRDIFF_MIN = "INT64_MIN"
+const _SIG_ATOMIC_MAX = "INT32_MAX"
+const _SIG_ATOMIC_MIN = "INT32_MIN"
+const _SIZE_MAX = "UINT64_MAX"
+const _UINT16_MAX = 0xffff
+const _UINT32_MAX = "0xffffffffu"
+const _UINT64_MAX = "0xffffffffffffffffu"
+const _UINT8_MAX = 0xff
+const _UINTMAX_MAX = "UINT64_MAX"
+const _UINTPTR_MAX = "UINT64_MAX"
+const _UINT_FAST16_MAX = "UINT32_MAX"
+const _UINT_FAST32_MAX = "UINT32_MAX"
+const _UINT_FAST64_MAX = "UINT64_MAX"
+const _UINT_FAST8_MAX = "UINT8_MAX"
+const _UINT_LEAST16_MAX = "UINT16_MAX"
+const _UINT_LEAST32_MAX = "UINT32_MAX"
+const _UINT_LEAST64_MAX = "UINT64_MAX"
+const _UINT_LEAST8_MAX = "UINT8_MAX"
+const _WINT_MAX = "UINT32_MAX"
+const _WINT_MIN = 0
 const _GNU_SOURCE = 1
 const _LP64 = 1
 const _STDC_PREDEF_H = 1
@@ -1570,15 +1570,15 @@ _30:
 	return output
 }
 
-const B2_DEBUG = 1
-const B2_RESTRICT = "restrict"
-const B2_SECRET_COOKIE = 1152023
-const B2_SIMD_WIDTH = 4
-const B2_SNOOP_PAIR_COUNTERS = 0
-const B2_SNOOP_TABLE_COUNTERS = 0
-const B2_SNOOP_TOI_COUNTERS = 0
-const B2_VALIDATE = 0
-const FLT_MAX1 = 3.40282346638528859812e+38
+const _B2_DEBUG = 1
+const _B2_RESTRICT = "restrict"
+const _B2_SECRET_COOKIE = 1152023
+const _B2_SIMD_WIDTH = 4
+const _B2_SNOOP_PAIR_COUNTERS = 0
+const _B2_SNOOP_TABLE_COUNTERS = 0
+const _B2_SNOOP_TOI_COUNTERS = 0
+const _B2_VALIDATE = 0
+const _FLT_MAX1 = 3.40282346638528859812e+38
 
 type b2AtomicInt struct {
 	Value int32
@@ -2003,12 +2003,12 @@ func b2InPlaceUnion(tls *_Stack, setA uintptr, setB uintptr) {
 	}
 }
 
-const B2_GRAPH_COLOR_COUNT = 12
-const B2_JOINT_CONSTRAINT_DAMPING_RATIO = "2.0f"
-const B2_JOINT_CONSTRAINT_HERTZ = "60.0f"
-const B2_MAX_WORKERS = 64
-const B2_MAX_WORLDS = 128
-const B2_TIME_TO_SLEEP = "0.5f"
+const _B2_GRAPH_COLOR_COUNT = 12
+const _B2_JOINT_CONSTRAINT_DAMPING_RATIO = "2.0f"
+const _B2_JOINT_CONSTRAINT_HERTZ = "60.0f"
+const _B2_MAX_WORKERS = 64
+const _B2_MAX_WORLDS = 128
+const _B2_TIME_TO_SLEEP = "0.5f"
 
 type b2World struct {
 	Arena                b2ArenaAllocator
@@ -2704,7 +2704,7 @@ func b2ShouldBodiesCollide(tls *_Stack, world uintptr, bodyA uintptr, bodyB uint
 	return uint8(true1)
 }
 
-const UINT64_MAX1 = 18446744073709551615
+const _UINT64_MAX1 = 18446744073709551615
 
 type b2MovePair struct {
 	ShapeIndexA int32
@@ -3017,8 +3017,8 @@ func b2ValidateNoEnlarged(tls *_Stack, bp uintptr) {
 	_ = uint64FromInt64(4)
 }
 
-const B2_FORCE_OVERFLOW = 0
-const UINT64_MAX2 = "0xffffffffffffffffu"
+const _B2_FORCE_OVERFLOW = 0
+const _UINT64_MAX2 = "0xffffffffffffffffu"
 
 var b2_identityBodyState2 = b2BodyState{
 	DeltaRotation: Rot{
@@ -3046,7 +3046,7 @@ _4:
 	// No bitset for overflow color.
 	i = 0
 	for {
-		if !(i < int32FromInt32(B2_GRAPH_COLOR_COUNT)-int32FromInt32(1)) {
+		if !(i < int32FromInt32(_B2_GRAPH_COLOR_COUNT)-int32FromInt32(1)) {
 			break
 		}
 		color = graph + uintptr(i)*56
@@ -3065,12 +3065,12 @@ func b2DestroyGraph(tls *_Stack, graph uintptr) {
 	_, _ = color, i
 	i = 0
 	for {
-		if !(i < int32(B2_GRAPH_COLOR_COUNT)) {
+		if !(i < int32(_B2_GRAPH_COLOR_COUNT)) {
 			break
 		}
 		color = graph + uintptr(i)*56
 		// The bit set should never be used on the overflow color
-		if !(i != int32FromInt32(B2_GRAPH_COLOR_COUNT)-int32FromInt32(1) || (*b2GraphColor)(unsafe.Pointer(color)).BodySet.Bits == uintptrFromInt32(0)) && b2InternalAssertFcn(tls, __ccgo_ts+2733, __ccgo_ts+2787, int32FromInt32(56)) != 0 {
+		if !(i != int32FromInt32(_B2_GRAPH_COLOR_COUNT)-int32FromInt32(1) || (*b2GraphColor)(unsafe.Pointer(color)).BodySet.Bits == uintptrFromInt32(0)) && b2InternalAssertFcn(tls, __ccgo_ts+2733, __ccgo_ts+2787, int32FromInt32(56)) != 0 {
 			__builtin_trap(tls)
 		}
 		b2DestroyBitSet(tls, color)
@@ -3105,7 +3105,7 @@ func b2AddContactToGraph(tls *_Stack, world uintptr, contactSim uintptr, contact
 		__builtin_trap(tls)
 	}
 	graph = world + 328
-	colorIndex = int32FromInt32(B2_GRAPH_COLOR_COUNT) - int32FromInt32(1)
+	colorIndex = int32FromInt32(_B2_GRAPH_COLOR_COUNT) - int32FromInt32(1)
 	bodyIdA = (*(*b2ContactEdge)(unsafe.Pointer(contact + 12))).BodyId
 	bodyIdB = (*(*b2ContactEdge)(unsafe.Pointer(contact + 12 + 1*12))).BodyId
 	v1 = world + 1024
@@ -3134,7 +3134,7 @@ _8:
 	if int32FromUint8(staticA) == false1 && int32FromUint8(staticB) == false1 {
 		i = 0
 		for {
-			if !(i < int32FromInt32(B2_GRAPH_COLOR_COUNT)-int32FromInt32(1)) {
+			if !(i < int32FromInt32(_B2_GRAPH_COLOR_COUNT)-int32FromInt32(1)) {
 				break
 			}
 			color = graph + uintptr(i)*56
@@ -3190,7 +3190,7 @@ _8:
 			// No static contacts in color 0
 			i1 = int32(1)
 			for {
-				if !(i1 < int32FromInt32(B2_GRAPH_COLOR_COUNT)-int32FromInt32(1)) {
+				if !(i1 < int32FromInt32(_B2_GRAPH_COLOR_COUNT)-int32FromInt32(1)) {
 					break
 				}
 				color1 = graph + uintptr(i1)*56
@@ -3226,7 +3226,7 @@ _8:
 				// No static contacts in color 0
 				i2 = int32(1)
 				for {
-					if !(i2 < int32FromInt32(B2_GRAPH_COLOR_COUNT)-int32FromInt32(1)) {
+					if !(i2 < int32FromInt32(_B2_GRAPH_COLOR_COUNT)-int32FromInt32(1)) {
 						break
 					}
 					color2 = graph + uintptr(i2)*56
@@ -3350,11 +3350,11 @@ func b2RemoveContactFromGraph(tls *_Stack, world uintptr, bodyIdA int32, bodyIdB
 	var movedId, movedIndex, movedIndex1, v12, v8, v9 int32
 	_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ = blockIndex, color, graph, movedContact, movedContactSim, movedId, movedIndex, movedIndex1, v1, v11, v12, v13, v2, v4, v5, v7, v8, v9
 	graph = world + 328
-	if !(0 <= colorIndex && colorIndex < int32(B2_GRAPH_COLOR_COUNT)) && b2InternalAssertFcn(tls, __ccgo_ts+3038, __ccgo_ts+2787, int32FromInt32(188)) != 0 {
+	if !(0 <= colorIndex && colorIndex < int32(_B2_GRAPH_COLOR_COUNT)) && b2InternalAssertFcn(tls, __ccgo_ts+3038, __ccgo_ts+2787, int32FromInt32(188)) != 0 {
 		__builtin_trap(tls)
 	}
 	color = graph + uintptr(colorIndex)*56
-	if colorIndex != int32FromInt32(B2_GRAPH_COLOR_COUNT)-int32FromInt32(1) {
+	if colorIndex != int32FromInt32(_B2_GRAPH_COLOR_COUNT)-int32FromInt32(1) {
 		// might clear a bit for a static body, but this has no effect
 		v1 = color
 		v2 = uint32FromInt32(bodyIdA)
@@ -4009,7 +4009,7 @@ func b2GetContactSim(tls *_Stack, world uintptr, contact uintptr) (r uintptr) {
 	_, _, _, _, _, _, _, _, _, _, _ = color, set, v1, v10, v11, v2, v3, v5, v6, v7, v9
 	if (*b2Contact)(unsafe.Pointer(contact)).SetIndex == int32(b2_awakeSet) && (*b2Contact)(unsafe.Pointer(contact)).ColorIndex != -int32(1) {
 		// contact lives in constraint graph
-		if !(0 <= (*b2Contact)(unsafe.Pointer(contact)).ColorIndex && (*b2Contact)(unsafe.Pointer(contact)).ColorIndex < int32(B2_GRAPH_COLOR_COUNT)) && b2InternalAssertFcn(tls, __ccgo_ts+3755, __ccgo_ts+3357, int32FromInt32(461)) != 0 {
+		if !(0 <= (*b2Contact)(unsafe.Pointer(contact)).ColorIndex && (*b2Contact)(unsafe.Pointer(contact)).ColorIndex < int32(_B2_GRAPH_COLOR_COUNT)) && b2InternalAssertFcn(tls, __ccgo_ts+3755, __ccgo_ts+3357, int32FromInt32(461)) != 0 {
 			__builtin_trap(tls)
 		}
 		color = world + 328 + uintptr((*b2Contact)(unsafe.Pointer(contact)).ColorIndex)*56
@@ -4336,7 +4336,7 @@ func b2PrepareOverflowContacts(tls *_Stack, context uintptr) {
 	_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ = awakeStates, color, constraint, constraints, contactCount, contactSim, contactSoftness, contacts, cp, graph, i, iA, iB, indexA, indexB, j, k, kNormal, kTangent, mA, mB, manifold, mp, normal, pointCount, rA, rB, rnA, rnB, rtA, rtB, stateA, stateB, staticSoftness, tangent, vA, vB, vrA, vrB, wA, wB, warmStartScale, world, v1, v10, v12, v13, v14, v16, v17, v18, v20, v21, v22, v24, v25, v26, v27, v29, v3, v30, v31, v33, v34, v35, v36, v38, v39, v4, v40, v42, v43, v44, v46, v47, v48, v5, v50, v51, v52, v54, v55, v56, v8, v9
 	world = (*b2StepContext)(unsafe.Pointer(context)).World
 	graph = (*b2StepContext)(unsafe.Pointer(context)).Graph
-	color = graph + uintptr(int32FromInt32(B2_GRAPH_COLOR_COUNT)-int32FromInt32(1))*56
+	color = graph + uintptr(int32FromInt32(_B2_GRAPH_COLOR_COUNT)-int32FromInt32(1))*56
 	constraints = *(*uintptr)(unsafe.Add(unsafe.Pointer(color), 48))
 	contactCount = (*b2GraphColor)(unsafe.Pointer(color)).ContactSims.Count
 	contacts = (*b2GraphColor)(unsafe.Pointer(color)).ContactSims.Data
@@ -4554,7 +4554,7 @@ func b2WarmStartOverflowContacts(tls *_Stack, context uintptr) {
 	var _ /* dummyState at bp+0 */ b2BodyState
 	_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ = P, awakeSet, color, constraint, constraints, contactCount, cp, graph, i, iA, iB, indexA, indexB, j, mA, mB, normal, pointCount, rA, rB, stateA, stateB, states, tangent, vA, vB, wA, wB, world, v1, v12, v13, v14, v16, v17, v18, v2, v20, v21, v22, v24, v25, v26, v28, v29, v3, v30, v31, v33, v34, v35, v37, v38, v39, v40, v6, v7, v8, v9
 	graph = (*b2StepContext)(unsafe.Pointer(context)).Graph
-	color = graph + uintptr(int32FromInt32(B2_GRAPH_COLOR_COUNT)-int32FromInt32(1))*56
+	color = graph + uintptr(int32FromInt32(_B2_GRAPH_COLOR_COUNT)-int32FromInt32(1))*56
 	constraints = *(*uintptr)(unsafe.Add(unsafe.Pointer(color), 48))
 	contactCount = (*b2GraphColor)(unsafe.Pointer(color)).ContactSims.Count
 	world = (*b2StepContext)(unsafe.Pointer(context)).World
@@ -4703,7 +4703,7 @@ func b2ApplyOverflowRestitution(tls *_Stack, context uintptr) {
 	var _ /* dummyState at bp+0 */ b2BodyState
 	_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ = P, awakeSet, color, constraint, constraints, contactCount, cp, graph, i, iA, iB, impulse, j, mA, mB, newImpulse, normal, pointCount, rA, rB, restitution, stateA, stateB, states, threshold, vA, vB, vn, vrA, vrB, wA, wB, world, v1, v10, v11, v13, v14, v15, v17, v18, v19, v2, v21, v22, v23, v25, v26, v27, v29, v3, v30, v31, v33, v34, v35, v37, v38, v39, v40, v42, v43, v44, v45, v47, v48, v49, v51, v52, v53, v54, v56, v57, v58, v6, v7, v9
 	graph = (*b2StepContext)(unsafe.Pointer(context)).Graph
-	color = graph + uintptr(int32FromInt32(B2_GRAPH_COLOR_COUNT)-int32FromInt32(1))*56
+	color = graph + uintptr(int32FromInt32(_B2_GRAPH_COLOR_COUNT)-int32FromInt32(1))*56
 	constraints = *(*uintptr)(unsafe.Add(unsafe.Pointer(color), 48))
 	contactCount = (*b2GraphColor)(unsafe.Pointer(color)).ContactSims.Count
 	world = (*b2StepContext)(unsafe.Pointer(context)).World
@@ -4901,7 +4901,7 @@ func b2StoreOverflowImpulses(tls *_Stack, context uintptr) {
 	var contactCount, i, j, pointCount int32
 	_, _, _, _, _, _, _, _, _, _, _ = color, constraint, constraints, contact, contactCount, contacts, graph, i, j, manifold, pointCount
 	graph = (*b2StepContext)(unsafe.Pointer(context)).Graph
-	color = graph + uintptr(int32FromInt32(B2_GRAPH_COLOR_COUNT)-int32FromInt32(1))*56
+	color = graph + uintptr(int32FromInt32(_B2_GRAPH_COLOR_COUNT)-int32FromInt32(1))*56
 	constraints = *(*uintptr)(unsafe.Add(unsafe.Pointer(color), 48))
 	contacts = (*b2GraphColor)(unsafe.Pointer(color)).ContactSims.Data
 	contactCount = (*b2GraphColor)(unsafe.Pointer(color)).ContactSims.Count
@@ -5467,10 +5467,10 @@ func b2PrepareContactsTask(tls *_Stack, startIndex int32, endIndex int32, contex
 		constraint = constraints + uintptr(i)*624
 		j = 0
 		for {
-			if !(j < int32(B2_SIMD_WIDTH)) {
+			if !(j < int32(_B2_SIMD_WIDTH)) {
 				break
 			}
-			contactSim = *(*uintptr)(unsafe.Pointer(contacts + uintptr(int32(B2_SIMD_WIDTH)*i+j)*8))
+			contactSim = *(*uintptr)(unsafe.Pointer(contacts + uintptr(int32(_B2_SIMD_WIDTH)*i+j)*8))
 			if contactSim != uintptrFromInt32(0) {
 				manifold = contactSim + 36
 				indexA = (*b2ContactSim)(unsafe.Pointer(contactSim)).BodySimIndexA
@@ -6000,10 +6000,10 @@ func b2StoreImpulsesTask(tls *_Stack, startIndex int32, endIndex int32, context 
 		totalNormalImpulse2 = c + 512
 		normalVelocity1 = c + 592
 		normalVelocity2 = c + 608
-		baseIndex = int32(B2_SIMD_WIDTH) * constraintIndex
+		baseIndex = int32(_B2_SIMD_WIDTH) * constraintIndex
 		laneIndex = 0
 		for {
-			if !(laneIndex < int32(B2_SIMD_WIDTH)) {
+			if !(laneIndex < int32(_B2_SIMD_WIDTH)) {
 				break
 			}
 			if *(*uintptr)(unsafe.Pointer(contacts + uintptr(baseIndex+laneIndex)*8)) == uintptrFromInt32(0) {
@@ -6033,20 +6033,20 @@ func b2StoreImpulsesTask(tls *_Stack, startIndex int32, endIndex int32, context 
 	}
 }
 
-const B2_ALIGNMENT = 32
-const BUFSIZ = 1024
-const EXIT_FAILURE = 1
-const EXIT_SUCCESS = 0
-const FILENAME_MAX = 4096
-const FOPEN_MAX = 1000
-const L_ctermid = 20
-const L_cuserid = 20
-const L_tmpnam = 20
-const P_tmpdir = "/tmp"
-const RAND_MAX = 0x7fffffff
-const TMP_MAX = 10000
-const WNOHANG = 1
-const WUNTRACED = 2
+const _B2_ALIGNMENT = 32
+const _BUFSIZ = 1024
+const _EXIT_FAILURE = 1
+const _EXIT_SUCCESS = 0
+const _FILENAME_MAX = 4096
+const _FOPEN_MAX = 1000
+const _L_ctermid = 20
+const _L_cuserid = 20
+const _L_tmpnam = 20
+const _P_tmpdir = "/tmp"
+const _RAND_MAX = 0x7fffffff
+const _TMP_MAX = 10000
+const _WNOHANG = 1
+const _WUNTRACED = 2
 const _IOFBF = 0
 const _IOLBF = 1
 const _IONBF = 2
@@ -6157,7 +6157,7 @@ _1:
 	// https://en.cppreference.com/w/c/memory/aligned_alloc
 	size32 = size - int32(1) | int32(0x1F) + int32(1)
 	if b2_allocFcn != uintptrFromInt32(0) {
-		ptr = (*(*func(*_Stack, uint32, int32) uintptr)(unsafe.Pointer(&struct{ uintptr }{b2_allocFcn})))(tls, uint32FromInt32(size32), int32(B2_ALIGNMENT))
+		ptr = (*(*func(*_Stack, uint32, int32) uintptr)(unsafe.Pointer(&struct{ uintptr }{b2_allocFcn})))(tls, uint32FromInt32(size32), int32(_B2_ALIGNMENT))
 		if !(ptr != uintptrFromInt32(0)) && b2InternalAssertFcn(tls, __ccgo_ts+4018, __ccgo_ts+3944, int32FromInt32(111)) != 0 {
 			__builtin_trap(tls)
 		}
@@ -6166,7 +6166,7 @@ _1:
 		}
 		return ptr
 	}
-	ptr1 = __builtin_aligned_alloc(tls, uint64(B2_ALIGNMENT), uint64FromInt32(size32))
+	ptr1 = __builtin_aligned_alloc(tls, uint64(_B2_ALIGNMENT), uint64FromInt32(size32))
 	if !(ptr1 != uintptrFromInt32(0)) && b2InternalAssertFcn(tls, __ccgo_ts+4018, __ccgo_ts+3944, int32FromInt32(132)) != 0 {
 		__builtin_trap(tls)
 	}
@@ -6524,7 +6524,7 @@ func b2MakeProxy(tls *_Stack, points uintptr, count int32, radius float32) (r Sh
 	var _ /* proxy at bp+0 */ ShapeProxy
 	_, _, _, _, _ = i, v1, v2, v3, v5
 	v1 = count
-	v2 = int32(B2_MAX_POLYGON_VERTICES)
+	v2 = int32(_B2_MAX_POLYGON_VERTICES)
 	if v1 < v2 {
 		v5 = v1
 	} else {
@@ -6560,7 +6560,7 @@ func b2MakeOffsetProxy(tls *_Stack, points uintptr, count int32, radius float32,
 	var _ /* proxy at bp+0 */ ShapeProxy
 	_, _, _, _, _, _, _, _, _, _, _ = i, transform, x, y, v1, v2, v3, v5, v7, v8, v9
 	v1 = count
-	v2 = int32(B2_MAX_POLYGON_VERTICES)
+	v2 = int32(_B2_MAX_POLYGON_VERTICES)
 	if v1 < v2 {
 		v5 = v1
 	} else {
@@ -7675,7 +7675,7 @@ _18:
 			_22:
 			}
 			pushBackIterations += int32(1)
-			if pushBackIterations == int32(B2_MAX_POLYGON_VERTICES) {
+			if pushBackIterations == int32(_B2_MAX_POLYGON_VERTICES) {
 				break
 			}
 			goto _21
@@ -7702,10 +7702,10 @@ var b2_identityBodyState5 = b2BodyState{
 	},
 }
 
-const B2_TREE_HEURISTIC = 0
-const B2_TREE_STACK_SIZE = 1024
-const FLT_MAX2 = 3.4028234663852886e+38
-const UINT64_MAX3 = 18446744073709551615
+const _B2_TREE_HEURISTIC = 0
+const _B2_TREE_STACK_SIZE = 1024
+const _FLT_MAX2 = 3.4028234663852886e+38
+const _UINT64_MAX3 = 18446744073709551615
 
 // todo externalize this to visualize internal nodes and speed up FindPairs
 
@@ -7731,7 +7731,7 @@ type b2TreeNode struct {
 }
 
 var b2_defaultTreeNode = b2TreeNode{
-	CategoryBits: uint64(B2_DEFAULT_CATEGORY_BITS),
+	CategoryBits: uint64(_B2_DEFAULT_CATEGORY_BITS),
 	ｆ__ccgo2_24: *(*struct {
 		UserData [0]uint64_t
 		Children struct {
@@ -9585,7 +9585,7 @@ func b2BuildTree(tls *_Stack, tree uintptr, leafCount int32) (r int32) {
 				if !(count > int32FromInt32(0)) && b2InternalAssertFcn(tls, __ccgo_ts+6294, __ccgo_ts+4746, int32FromInt32(1836)) != 0 {
 					__builtin_trap(tls)
 				}
-				if !(top < int32FromInt32(B2_TREE_STACK_SIZE)) && b2InternalAssertFcn(tls, __ccgo_ts+6304, __ccgo_ts+4746, int32FromInt32(1837)) != 0 {
+				if !(top < int32FromInt32(_B2_TREE_STACK_SIZE)) && b2InternalAssertFcn(tls, __ccgo_ts+6304, __ccgo_ts+4746, int32FromInt32(1837)) != 0 {
 					__builtin_trap(tls)
 				}
 				top += int32(1)
@@ -9666,8 +9666,8 @@ _48:
 	return (*(*[1024]b2RebuildItem)(unsafe.Pointer(bp)))[0].NodeIndex
 }
 
-const FLT_MAX3 = 3.40282346638528859812e+38
-const UINT64_MAX4 = "0xffffffffffffffffu"
+const _FLT_MAX3 = 3.40282346638528859812e+38
+const _UINT64_MAX4 = "0xffffffffffffffffu"
 
 func b2IsValidRay(tls *_Stack, input uintptr) (r uint8) {
 	var isValid uint8
@@ -11056,7 +11056,7 @@ func b2RayCastPolygon(tls *_Stack, input uintptr, shape uintptr) (r CastOutput) 
 	return b2ShapeCast(tls, bp)
 }
 
-const FLT_MAX4 = 3.4028234663852886e+38
+const _FLT_MAX4 = 3.4028234663852886e+38
 
 /**@}*/
 
@@ -11208,7 +11208,7 @@ _15:
 		;
 		i2++
 	}
-	if !((*(*Hull)(unsafe.Pointer(bp))).Count < int32FromInt32(B2_MAX_POLYGON_VERTICES)) && b2InternalAssertFcn(tls, __ccgo_ts+6846, __ccgo_ts+6883, int32FromInt32(78)) != 0 {
+	if !((*(*Hull)(unsafe.Pointer(bp))).Count < int32FromInt32(_B2_MAX_POLYGON_VERTICES)) && b2InternalAssertFcn(tls, __ccgo_ts+6846, __ccgo_ts+6883, int32FromInt32(78)) != 0 {
 		__builtin_trap(tls)
 	}
 	return *(*Hull)(unsafe.Pointer(bp))
@@ -11219,7 +11219,7 @@ func b2ValidateHull(tls *_Stack, hull uintptr) (r uint8) {
 	var e, e1, n, p, p1, p2, p3, v11, v12, v13, v15, v16, v20, v21, v22, v24, v25, v27, v28, v29, v3, v31, v32, v4, v5, v7, v8 Vec2
 	var i, i1, i11, i12, i2, i21, i3, j, v2 int32
 	_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ = distance, distance1, e, e1, i, i1, i11, i12, i2, i21, i3, invLength, j, length, linearSlop, n, p, p1, p2, p3, v11, v12, v13, v15, v16, v17, v2, v20, v21, v22, v24, v25, v27, v28, v29, v3, v31, v32, v33, v4, v5, v7, v8
-	if (*Hull)(unsafe.Pointer(hull)).Count < int32(3) || int32(B2_MAX_POLYGON_VERTICES) < (*Hull)(unsafe.Pointer(hull)).Count {
+	if (*Hull)(unsafe.Pointer(hull)).Count < int32(3) || int32(_B2_MAX_POLYGON_VERTICES) < (*Hull)(unsafe.Pointer(hull)).Count {
 		return uint8(false1)
 	}
 	// test that every point is behind every edge
@@ -11358,7 +11358,7 @@ func b2ValidateHull(tls *_Stack, hull uintptr) (r uint8) {
 	return uint8(true1)
 }
 
-const FLT_MAX5 = 3.40282346638528859812e+38
+const _FLT_MAX5 = 3.40282346638528859812e+38
 
 func b2CreateIdPool(tls *_Stack) (r b2IdPool) {
 	var pool b2IdPool
@@ -11428,7 +11428,7 @@ func b2ValidateUsedId(tls *_Stack, pool uintptr, id int32) {
 	_ = uint64FromInt64(4)
 }
 
-const B2_CONTACT_REMOVE_THRESHOLD = 1
+const _B2_CONTACT_REMOVE_THRESHOLD = 1
 
 var b2_identityBodyState6 = b2BodyState{
 	DeltaRotation: Rot{
@@ -12489,9 +12489,9 @@ func b2ValidateIsland(tls *_Stack, world uintptr, islandId int32) {
 	_ = uint64FromInt64(4)
 }
 
-const B2_JOINT_CONSTRAINT_DAMPING_RATIO1 = 2
-const B2_JOINT_CONSTRAINT_HERTZ1 = 60
-const UINT64_MAX5 = 18446744073709551615
+const _B2_JOINT_CONSTRAINT_DAMPING_RATIO1 = 2
+const _B2_JOINT_CONSTRAINT_HERTZ1 = 60
+const _UINT64_MAX5 = 18446744073709551615
 
 var b2_identityBodyState7 = b2BodyState{
 	DeltaRotation: Rot{
@@ -12550,10 +12550,10 @@ func b2DestroyContactsBetweenBodies(tls *_Stack, world uintptr, bodyA uintptr, b
 	b2ValidateSolverSets(tls, world)
 }
 
-const B2_JOINT_CONSTRAINT_DAMPING_RATIO2 = "2.0f"
-const B2_JOINT_CONSTRAINT_HERTZ2 = "60.0f"
-const FLT_MAX6 = 3.4028234663852886e+38
-const UINT64_MAX6 = "0xffffffffffffffffu"
+const _B2_JOINT_CONSTRAINT_DAMPING_RATIO2 = "2.0f"
+const _B2_JOINT_CONSTRAINT_HERTZ2 = "60.0f"
+const _FLT_MAX6 = 3.4028234663852886e+38
+const _UINT64_MAX6 = "0xffffffffffffffffu"
 
 func b2MakeCapsule(tls *_Stack, p1 Vec2, p2 Vec2, radius float32) (r Polygon) {
 	bp := tls.Alloc(144)
@@ -13151,7 +13151,7 @@ _4:
 	return r
 }
 
-const FLT_MAX7 = 3.40282346638528859812e+38
+const _FLT_MAX7 = 3.40282346638528859812e+38
 
 func b2IsValidFloat(tls *_Stack, a float32) (r uint8) {
 	bp := tls.Alloc(16)
@@ -13477,7 +13477,7 @@ func b2CreateChain(tls *_Stack, bodyId BodyId, def uintptr) (r ChainId) {
 	var _ /* chainSegment at bp+80 */ ChainSegment
 	var _ /* shapeDef at bp+0 */ ShapeDef
 	_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ = body, chainId, chainShape, i, i1, i2, id, material, materialCount, materialIndex, materialIndex1, materialIndex2, materialIndex3, n, newCapacity, points, prevIndex, shape, shape1, shape2, shape3, transform, world, v1, v10, v11, v12, v14, v2, v3, v4, v5, p7
-	if !((*ChainDef)(unsafe.Pointer(def)).InternalValue == int32FromInt32(B2_SECRET_COOKIE)) && b2InternalAssertFcn(tls, __ccgo_ts+730, __ccgo_ts+11037, int32FromInt32(341)) != 0 {
+	if !((*ChainDef)(unsafe.Pointer(def)).InternalValue == int32FromInt32(_B2_SECRET_COOKIE)) && b2InternalAssertFcn(tls, __ccgo_ts+730, __ccgo_ts+11037, int32FromInt32(341)) != 0 {
 		__builtin_trap(tls)
 	}
 	if !((*ChainDef)(unsafe.Pointer(def)).Count >= int32FromInt32(4)) && b2InternalAssertFcn(tls, __ccgo_ts+11577, __ccgo_ts+11037, int32FromInt32(342)) != 0 {
@@ -14016,61 +14016,61 @@ func b2Chain_GetMaterial(tls *_Stack, chainId ChainId) (r int32) {
 	return (*(*SurfaceMaterial)(unsafe.Pointer((*b2ChainShape)(unsafe.Pointer(chainShape)).Materials))).UserMaterialId
 }
 
-const ARG_MAX = 131072
-const B2_SIMD_SHIFT = 2
-const B2_TIME_TO_SLEEP1 = 0.5
-const BC_BASE_MAX = 99
-const BC_DIM_MAX = 2048
-const BC_SCALE_MAX = 99
-const BC_STRING_MAX = 1000
-const CHARCLASS_NAME_MAX = 14
-const CHAR_BIT = 8
-const CHAR_MAX = 255
-const CHAR_MIN = 0
-const COLL_WEIGHTS_MAX = 2
-const DELAYTIMER_MAX = 0x7fffffff
-const EXPR_NEST_MAX = 32
-const FILESIZEBITS = 64
-const HOST_NAME_MAX = 255
-const INT_MAX = 0x7fffffff
-const IOV_MAX = 1024
-const ITERATIONS = 1
-const LINE_MAX = 4096
-const LLONG_MAX = 0x7fffffffffffffff
-const LOGIN_NAME_MAX = 256
-const LONG_BIT = 64
-const LONG_MAX = "__LONG_MAX"
-const MB_LEN_MAX = 4
-const MQ_PRIO_MAX = 32768
-const NAME_MAX = 255
-const NGROUPS_MAX = 32
-const NL_ARGMAX = 9
-const NL_LANGMAX = 32
-const NL_MSGMAX = 32767
-const NL_NMAX = 16
-const NL_SETMAX = 255
-const NL_TEXTMAX = 2048
-const NZERO = 20
-const PATH_MAX = 4096
-const PIPE_BUF = 4096
-const PTHREAD_DESTRUCTOR_ITERATIONS = 4
-const PTHREAD_KEYS_MAX = 128
-const PTHREAD_STACK_MIN = 2048
-const RELAX_ITERATIONS = 1
-const RE_DUP_MAX = 255
-const SCHAR_MAX = 127
-const SEM_NSEMS_MAX = 256
-const SEM_VALUE_MAX = 0x7fffffff
-const SHRT_MAX = 0x7fff
-const SSIZE_MAX = "LONG_MAX"
-const SYMLOOP_MAX = 40
-const TTY_NAME_MAX = 32
-const TZNAME_MAX = 6
-const UCHAR_MAX = 255
-const UINT64_MAX7 = 18446744073709551615
-const UINT_MAX = 4294967295
-const USHRT_MAX = 0xffff
-const WORD_BIT = 32
+const _ARG_MAX = 131072
+const _B2_SIMD_SHIFT = 2
+const _B2_TIME_TO_SLEEP1 = 0.5
+const _BC_BASE_MAX = 99
+const _BC_DIM_MAX = 2048
+const _BC_SCALE_MAX = 99
+const _BC_STRING_MAX = 1000
+const _CHARCLASS_NAME_MAX = 14
+const _CHAR_BIT = 8
+const _CHAR_MAX = 255
+const _CHAR_MIN = 0
+const _COLL_WEIGHTS_MAX = 2
+const _DELAYTIMER_MAX = 0x7fffffff
+const _EXPR_NEST_MAX = 32
+const _FILESIZEBITS = 64
+const _HOST_NAME_MAX = 255
+const _INT_MAX = 0x7fffffff
+const _IOV_MAX = 1024
+const _ITERATIONS = 1
+const _LINE_MAX = 4096
+const _LLONG_MAX = 0x7fffffffffffffff
+const _LOGIN_NAME_MAX = 256
+const _LONG_BIT = 64
+const _LONG_MAX = "__LONG_MAX"
+const _MB_LEN_MAX = 4
+const _MQ_PRIO_MAX = 32768
+const _NAME_MAX = 255
+const _NGROUPS_MAX = 32
+const _NL_ARGMAX = 9
+const _NL_LANGMAX = 32
+const _NL_MSGMAX = 32767
+const _NL_NMAX = 16
+const _NL_SETMAX = 255
+const _NL_TEXTMAX = 2048
+const _NZERO = 20
+const _PATH_MAX = 4096
+const _PIPE_BUF = 4096
+const _PTHREAD_DESTRUCTOR_ITERATIONS = 4
+const _PTHREAD_KEYS_MAX = 128
+const _PTHREAD_STACK_MIN = 2048
+const _RELAX_ITERATIONS = 1
+const _RE_DUP_MAX = 255
+const _SCHAR_MAX = 127
+const _SEM_NSEMS_MAX = 256
+const _SEM_VALUE_MAX = 0x7fffffff
+const _SHRT_MAX = 0x7fff
+const _SSIZE_MAX = "LONG_MAX"
+const _SYMLOOP_MAX = 40
+const _TTY_NAME_MAX = 32
+const _TZNAME_MAX = 6
+const _UCHAR_MAX = 255
+const _UINT64_MAX7 = 18446744073709551615
+const _UINT_MAX = 4294967295
+const _USHRT_MAX = 0xffff
+const _WORD_BIT = 32
 const _POSIX2_BC_BASE_MAX = 99
 const _POSIX2_BC_DIM_MAX = 2048
 const _POSIX2_BC_SCALE_MAX = 99
@@ -15084,8 +15084,8 @@ func b2ExecuteMainStage(tls *_Stack, stage uintptr, context uintptr, syncBits ui
 	}
 }
 
-const B2_TIME_TO_SLEEP2 = "0.5f"
-const UINT64_MAX8 = "0xffffffffffffffffu"
+const _B2_TIME_TO_SLEEP2 = "0.5f"
+const _UINT64_MAX8 = "0xffffffffffffffffu"
 
 var b2_identityBodyState15 = b2BodyState{
 	DeltaRotation: Rot{
@@ -15429,12 +15429,12 @@ _18:
 			__builtin_trap(tls)
 		}
 		colorIndex = (*b2Contact)(unsafe.Pointer(contact1)).ColorIndex
-		if !(0 <= colorIndex && colorIndex < int32(B2_GRAPH_COLOR_COUNT)) && b2InternalAssertFcn(tls, __ccgo_ts+3038, __ccgo_ts+14063, int32FromInt32(313)) != 0 {
+		if !(0 <= colorIndex && colorIndex < int32(_B2_GRAPH_COLOR_COUNT)) && b2InternalAssertFcn(tls, __ccgo_ts+3038, __ccgo_ts+14063, int32FromInt32(313)) != 0 {
 			__builtin_trap(tls)
 		}
 		color = world + 328 + uintptr(colorIndex)*56
 		// Remove bodies from graph coloring associated with this constraint
-		if colorIndex != int32FromInt32(B2_GRAPH_COLOR_COUNT)-int32FromInt32(1) {
+		if colorIndex != int32FromInt32(_B2_GRAPH_COLOR_COUNT)-int32FromInt32(1) {
 			// might clear a bit for a static body, but this has no effect
 			v74 = color
 			v75 = uint32FromInt32((*(*b2ContactEdge)(unsafe.Pointer(contact1 + 12))).BodyId)
@@ -15539,7 +15539,7 @@ _18:
 		}
 		colorIndex1 = (*b2Joint)(unsafe.Pointer(joint)).ColorIndex
 		localIndex2 = (*b2Joint)(unsafe.Pointer(joint)).LocalIndex
-		if !(0 <= colorIndex1 && colorIndex1 < int32(B2_GRAPH_COLOR_COUNT)) && b2InternalAssertFcn(tls, __ccgo_ts+3038, __ccgo_ts+14063, int32FromInt32(362)) != 0 {
+		if !(0 <= colorIndex1 && colorIndex1 < int32(_B2_GRAPH_COLOR_COUNT)) && b2InternalAssertFcn(tls, __ccgo_ts+3038, __ccgo_ts+14063, int32FromInt32(362)) != 0 {
 			__builtin_trap(tls)
 		}
 		color1 = world + 328 + uintptr(colorIndex1)*56
@@ -15552,7 +15552,7 @@ _18:
 		goto _103
 	_103:
 		awakeJointSim = v102
-		if colorIndex1 != int32FromInt32(B2_GRAPH_COLOR_COUNT)-int32FromInt32(1) {
+		if colorIndex1 != int32FromInt32(_B2_GRAPH_COLOR_COUNT)-int32FromInt32(1) {
 			// might clear a bit for a static body, but this has no effect
 			v104 = color1
 			v105 = uint32FromInt32((*(*b2JointEdge)(unsafe.Pointer(joint + 20))).BodyId)
@@ -15914,55 +15914,55 @@ func b2RemoveKey(tls *_Stack, set uintptr, key uint64) (r uint8) {
 	return uint8(true1)
 }
 
-const CLOCKS_PER_SEC = 1000000
-const CLOCK_BOOTTIME = 7
-const CLOCK_BOOTTIME_ALARM = 9
-const CLOCK_MONOTONIC = 1
-const CLOCK_MONOTONIC_COARSE = 6
-const CLOCK_MONOTONIC_RAW = 4
-const CLOCK_PROCESS_CPUTIME_ID = 2
-const CLOCK_REALTIME = 0
-const CLOCK_REALTIME_ALARM = 8
-const CLOCK_REALTIME_COARSE = 5
-const CLOCK_SGI_CYCLE = 10
-const CLOCK_TAI = 11
-const CLOCK_THREAD_CPUTIME_ID = 3
-const CLONE_CHILD_CLEARTID = 0x00200000
-const CLONE_CHILD_SETTID = 0x01000000
-const CLONE_DETACHED = 0x00400000
-const CLONE_FILES = 0x00000400
-const CLONE_FS = 0x00000200
-const CLONE_IO = 0x80000000
-const CLONE_NEWCGROUP = 0x02000000
-const CLONE_NEWIPC = 0x08000000
-const CLONE_NEWNET = 0x40000000
-const CLONE_NEWNS = 0x00020000
-const CLONE_NEWPID = 0x20000000
-const CLONE_NEWTIME = 0x00000080
-const CLONE_NEWUSER = 0x10000000
-const CLONE_NEWUTS = 0x04000000
-const CLONE_PARENT = 0x00008000
-const CLONE_PARENT_SETTID = 0x00100000
-const CLONE_PIDFD = 0x00001000
-const CLONE_PTRACE = 0x00002000
-const CLONE_SETTLS = 0x00080000
-const CLONE_SIGHAND = 0x00000800
-const CLONE_SYSVSEM = 0x00040000
-const CLONE_THREAD = 0x00010000
-const CLONE_UNTRACED = 0x00800000
-const CLONE_VFORK = 0x00004000
-const CLONE_VM = 0x00000100
-const CPU_SETSIZE = 1024
-const CSIGNAL = 0x000000ff
-const SCHED_BATCH = 3
-const SCHED_DEADLINE = 6
-const SCHED_FIFO = 1
-const SCHED_IDLE = 5
-const SCHED_OTHER = 0
-const SCHED_RESET_ON_FORK = 0x40000000
-const SCHED_RR = 2
-const TIMER_ABSTIME = 1
-const TIME_UTC = 1
+const _CLOCKS_PER_SEC = 1000000
+const _CLOCK_BOOTTIME = 7
+const _CLOCK_BOOTTIME_ALARM = 9
+const _CLOCK_MONOTONIC = 1
+const _CLOCK_MONOTONIC_COARSE = 6
+const _CLOCK_MONOTONIC_RAW = 4
+const _CLOCK_PROCESS_CPUTIME_ID = 2
+const _CLOCK_REALTIME = 0
+const _CLOCK_REALTIME_ALARM = 8
+const _CLOCK_REALTIME_COARSE = 5
+const _CLOCK_SGI_CYCLE = 10
+const _CLOCK_TAI = 11
+const _CLOCK_THREAD_CPUTIME_ID = 3
+const _CLONE_CHILD_CLEARTID = 0x00200000
+const _CLONE_CHILD_SETTID = 0x01000000
+const _CLONE_DETACHED = 0x00400000
+const _CLONE_FILES = 0x00000400
+const _CLONE_FS = 0x00000200
+const _CLONE_IO = 0x80000000
+const _CLONE_NEWCGROUP = 0x02000000
+const _CLONE_NEWIPC = 0x08000000
+const _CLONE_NEWNET = 0x40000000
+const _CLONE_NEWNS = 0x00020000
+const _CLONE_NEWPID = 0x20000000
+const _CLONE_NEWTIME = 0x00000080
+const _CLONE_NEWUSER = 0x10000000
+const _CLONE_NEWUTS = 0x04000000
+const _CLONE_PARENT = 0x00008000
+const _CLONE_PARENT_SETTID = 0x00100000
+const _CLONE_PIDFD = 0x00001000
+const _CLONE_PTRACE = 0x00002000
+const _CLONE_SETTLS = 0x00080000
+const _CLONE_SIGHAND = 0x00000800
+const _CLONE_SYSVSEM = 0x00040000
+const _CLONE_THREAD = 0x00010000
+const _CLONE_UNTRACED = 0x00800000
+const _CLONE_VFORK = 0x00004000
+const _CLONE_VM = 0x00000100
+const _CPU_SETSIZE = 1024
+const _CSIGNAL = 0x000000ff
+const _SCHED_BATCH = 3
+const _SCHED_DEADLINE = 6
+const _SCHED_FIFO = 1
+const _SCHED_IDLE = 5
+const _SCHED_OTHER = 0
+const _SCHED_RESET_ON_FORK = 0x40000000
+const _SCHED_RR = 2
+const _TIMER_ABSTIME = 1
+const _TIME_UTC = 1
 const __tm_gmtoff = "tm_gmtoff"
 const __tm_zone = "tm_zone"
 
@@ -16018,7 +16018,7 @@ func b2GetTicks(tls *_Stack) (r uint64) {
 	bp := tls.Alloc(16)
 	defer tls.Free(16)
 	var _ /* ts at bp+0 */ timespec
-	clock_gettime(tls, int32(CLOCK_MONOTONIC), bp)
+	clock_gettime(tls, int32(_CLOCK_MONOTONIC), bp)
 	return uint64FromInt64((*(*timespec)(unsafe.Pointer(bp))).Tv_sec*int64(1000000000) + (*(*timespec)(unsafe.Pointer(bp))).Tv_nsec)
 }
 
@@ -16066,13 +16066,13 @@ func b2Hash(tls *_Stack, hash uint32, data uintptr, count int32) (r uint32) {
 	return result
 }
 
-const UINT64_MAX9 = 18446744073709551615
+const _UINT64_MAX9 = 18446744073709551615
 
 func b2DefaultFilter(tls *_Stack) (r Filter) {
 	var filter Filter
 	_ = filter
 	filter = Filter{
-		CategoryBits: uint64(B2_DEFAULT_CATEGORY_BITS),
+		CategoryBits: uint64(_B2_DEFAULT_CATEGORY_BITS),
 		MaskBits:     uint64FromUint64(0xffffffffffffffff),
 	}
 	return filter
@@ -16082,7 +16082,7 @@ func b2DefaultQueryFilter(tls *_Stack) (r QueryFilter) {
 	var filter QueryFilter
 	_ = filter
 	filter = QueryFilter{
-		CategoryBits: uint64(B2_DEFAULT_CATEGORY_BITS),
+		CategoryBits: uint64(_B2_DEFAULT_CATEGORY_BITS),
 		MaskBits:     uint64FromUint64(0xffffffffffffffff),
 	}
 	return filter
@@ -16104,7 +16104,7 @@ func b2DefaultChainDef(tls *_Stack) (r ChainDef) {
 	def.Materials = uintptr(unsafe.Pointer(&defaultMaterial))
 	def.MaterialCount = int32(1)
 	def.Filter = b2DefaultFilter(tls)
-	def.InternalValue = int32(B2_SECRET_COOKIE)
+	def.InternalValue = int32(_B2_SECRET_COOKIE)
 	return def
 }
 
@@ -16165,7 +16165,7 @@ func b2DefaultDebugDraw(tls *_Stack) (r DebugDraw) {
 	return draw
 }
 
-const UINT64_MAX10 = "0xffffffffffffffffu"
+const _UINT64_MAX10 = "0xffffffffffffffffu"
 
 var b2_identityBodyState16 = b2BodyState{
 	DeltaRotation: Rot{
@@ -16179,9 +16179,9 @@ var b2_identityBodyState17 = b2BodyState{
 	},
 }
 
-const FLT_MAX8 = 3.4028234663852886e+38
-const UINT16_MAX1 = 65535
-const UINT64_MAX11 = 18446744073709551615
+const _FLT_MAX8 = 3.4028234663852886e+38
+const _UINT16_MAX1 = 65535
+const _UINT64_MAX11 = 18446744073709551615
 
 var b2_identityBodyState18 = b2BodyState{
 	DeltaRotation: Rot{
@@ -16768,7 +16768,7 @@ _6:
 					goto _40
 				_40:
 					if int32FromUint8(v39) == false1 {
-						if !(0 <= (*b2Contact)(unsafe.Pointer(contact)).ColorIndex && (*b2Contact)(unsafe.Pointer(contact)).ColorIndex < int32(B2_GRAPH_COLOR_COUNT)) && b2InternalAssertFcn(tls, __ccgo_ts+3755, __ccgo_ts+15342, int32FromInt32(1076)) != 0 {
+						if !(0 <= (*b2Contact)(unsafe.Pointer(contact)).ColorIndex && (*b2Contact)(unsafe.Pointer(contact)).ColorIndex < int32(_B2_GRAPH_COLOR_COUNT)) && b2InternalAssertFcn(tls, __ccgo_ts+3755, __ccgo_ts+15342, int32FromInt32(1076)) != 0 {
 							__builtin_trap(tls)
 						}
 						gc = world + 328 + uintptr((*b2Contact)(unsafe.Pointer(contact)).ColorIndex)*56
@@ -16790,7 +16790,7 @@ _6:
 							}
 							point = contactSim + 36 + 12 + uintptr(j)*48
 							if (*DebugDraw)(unsafe.Pointer(draw)).DrawGraphColors != 0 {
-								if (*b2Contact)(unsafe.Pointer(contact)).ColorIndex == int32FromInt32(B2_GRAPH_COLOR_COUNT)-int32FromInt32(1) {
+								if (*b2Contact)(unsafe.Pointer(contact)).ColorIndex == int32FromInt32(_B2_GRAPH_COLOR_COUNT)-int32FromInt32(1) {
 									v46 = float32FromFloat32(7.5)
 								} else {
 									v46 = float32FromFloat32(5)
@@ -16907,7 +16907,7 @@ func b2Chain_IsValid(tls *_Stack, id ChainId) (r uint8) {
 	var chain, world uintptr
 	var chainId int32
 	_, _, _ = chain, chainId, world
-	if int32(B2_MAX_WORLDS) <= int32FromUint16(id.World0) {
+	if int32(_B2_MAX_WORLDS) <= int32FromUint16(id.World0) {
 		return uint8(false1)
 	}
 	world = uintptr(unsafe.Pointer(&b2_worlds)) + uintptr(id.World0)*1792
