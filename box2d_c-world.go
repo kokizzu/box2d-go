@@ -1570,29 +1570,29 @@ func b2World_GetUserData(tls *_Stack, worldId WorldId) (r uintptr) {
 	return (*b2World)(unsafe.Pointer(world)).UserData
 }
 
-func b2World_SetFrictionCallback(tls *_Stack, worldId WorldId, callback uintptr) {
+func b2World_SetFrictionCallback(tls *_Stack, worldId WorldId, __ccgo_fp_callback uintptr) {
 	var world uintptr
 	_ = world
 	world = b2GetWorldFromId(tls, worldId)
 	if (*b2World)(unsafe.Pointer(world)).Locked != 0 {
 		return
 	}
-	if callback != uintptrFromInt32(0) {
-		(*b2World)(unsafe.Pointer(world)).FrictionCallback = callback
+	if __ccgo_fp_callback != uintptrFromInt32(0) {
+		(*b2World)(unsafe.Pointer(world)).FrictionCallback = __ccgo_fp_callback
 	} else {
 		(*b2World)(unsafe.Pointer(world)).FrictionCallback = __ccgo_fp(b2DefaultFrictionCallback)
 	}
 }
 
-func b2World_SetRestitutionCallback(tls *_Stack, worldId WorldId, callback uintptr) {
+func b2World_SetRestitutionCallback(tls *_Stack, worldId WorldId, __ccgo_fp_callback uintptr) {
 	var world uintptr
 	_ = world
 	world = b2GetWorldFromId(tls, worldId)
 	if (*b2World)(unsafe.Pointer(world)).Locked != 0 {
 		return
 	}
-	if callback != uintptrFromInt32(0) {
-		(*b2World)(unsafe.Pointer(world)).RestitutionCallback = callback
+	if __ccgo_fp_callback != uintptrFromInt32(0) {
+		(*b2World)(unsafe.Pointer(world)).RestitutionCallback = __ccgo_fp_callback
 	} else {
 		(*b2World)(unsafe.Pointer(world)).RestitutionCallback = __ccgo_fp(b2DefaultRestitutionCallback)
 	}
@@ -1772,7 +1772,7 @@ _44:
 	fclose(tls, file)
 }
 
-func b2World_OverlapAABB(tls *_Stack, worldId WorldId, aabb AABB, filter QueryFilter, fcn uintptr, context uintptr) (r TreeStats) {
+func b2World_OverlapAABB(tls *_Stack, worldId WorldId, aabb AABB, filter QueryFilter, __ccgo_fp_fcn uintptr, context uintptr) (r TreeStats) {
 	bp := tls.Alloc(48)
 	defer tls.Free(48)
 	var i int32
@@ -1793,7 +1793,7 @@ func b2World_OverlapAABB(tls *_Stack, worldId WorldId, aabb AABB, filter QueryFi
 	}
 	*(*WorldQueryContext)(unsafe.Pointer(bp)) = WorldQueryContext{
 		World:       world,
-		Fcn:         fcn,
+		Fcn:         __ccgo_fp_fcn,
 		Filter:      filter,
 		UserContext: context,
 	}
@@ -1813,7 +1813,7 @@ func b2World_OverlapAABB(tls *_Stack, worldId WorldId, aabb AABB, filter QueryFi
 	return treeStats
 }
 
-func b2World_OverlapShape(tls *_Stack, worldId WorldId, proxy uintptr, filter QueryFilter, fcn uintptr, context uintptr) (r1 TreeStats) {
+func b2World_OverlapShape(tls *_Stack, worldId WorldId, proxy uintptr, filter QueryFilter, __ccgo_fp_fcn uintptr, context uintptr) (r1 TreeStats) {
 	bp := tls.Alloc(48)
 	defer tls.Free(48)
 	var a6, aabb, v41 AABB
@@ -1936,7 +1936,7 @@ _42:
 	aabb = v41
 	*(*WorldOverlapContext)(unsafe.Pointer(bp)) = WorldOverlapContext{
 		World:       world,
-		Fcn:         fcn,
+		Fcn:         __ccgo_fp_fcn,
 		Filter:      filter,
 		Proxy:       proxy,
 		UserContext: context,
@@ -1957,7 +1957,7 @@ _42:
 	return treeStats
 }
 
-func b2World_CastRay(tls *_Stack, worldId WorldId, origin Vec2, translation Vec2, filter QueryFilter, fcn uintptr, context uintptr) (r TreeStats) {
+func b2World_CastRay(tls *_Stack, worldId WorldId, origin Vec2, translation Vec2, filter QueryFilter, __ccgo_fp_fcn uintptr, context uintptr) (r TreeStats) {
 	bp := tls.Alloc(80)
 	defer tls.Free(80)
 	var i int32
@@ -1987,7 +1987,7 @@ func b2World_CastRay(tls *_Stack, worldId WorldId, origin Vec2, translation Vec2
 	}
 	*(*WorldRayCastContext)(unsafe.Pointer(bp + 24)) = WorldRayCastContext{
 		World:       world,
-		Fcn:         fcn,
+		Fcn:         __ccgo_fp_fcn,
 		Filter:      filter,
 		Fraction:    float32FromFloat32(1),
 		UserContext: context,
@@ -2068,7 +2068,7 @@ func b2World_CastRayClosest(tls *_Stack, worldId WorldId, origin Vec2, translati
 	return *(*RayResult)(unsafe.Pointer(bp))
 }
 
-func b2World_CastShape(tls *_Stack, worldId WorldId, proxy uintptr, translation Vec2, filter QueryFilter, fcn uintptr, context uintptr) (r TreeStats) {
+func b2World_CastShape(tls *_Stack, worldId WorldId, proxy uintptr, translation Vec2, filter QueryFilter, __ccgo_fp_fcn uintptr, context uintptr) (r TreeStats) {
 	bp := tls.Alloc(144)
 	defer tls.Free(144)
 	var i int32
@@ -2094,7 +2094,7 @@ func b2World_CastShape(tls *_Stack, worldId WorldId, proxy uintptr, translation 
 	(*(*ShapeCastInput)(unsafe.Pointer(bp))).MaxFraction = float32FromFloat32(1)
 	*(*WorldRayCastContext)(unsafe.Pointer(bp + 88)) = WorldRayCastContext{
 		World:       world,
-		Fcn:         fcn,
+		Fcn:         __ccgo_fp_fcn,
 		Filter:      filter,
 		Fraction:    float32FromFloat32(1),
 		UserContext: context,
@@ -2175,7 +2175,7 @@ func b2World_CastMover(tls *_Stack, worldId WorldId, mover uintptr, translation 
 //
 //	// It is tempting to use a shape proxy for the mover, but this makes handling deep overlap difficult and the generality may
 //	// not be worth it.
-func b2World_CollideMover(tls *_Stack, worldId WorldId, mover uintptr, filter QueryFilter, fcn uintptr, context uintptr) {
+func b2World_CollideMover(tls *_Stack, worldId WorldId, mover uintptr, filter QueryFilter, __ccgo_fp_fcn uintptr, context uintptr) {
 	bp := tls.Alloc(64)
 	defer tls.Free(64)
 	var aabb AABB
@@ -2270,7 +2270,7 @@ _36:
 	aabb.UpperBound = v35
 	*(*WorldMoverContext)(unsafe.Pointer(bp)) = WorldMoverContext{
 		World:       world,
-		Fcn:         fcn,
+		Fcn:         __ccgo_fp_fcn,
 		Filter:      filter,
 		Mover:       *(*Capsule)(unsafe.Pointer(mover)),
 		UserContext: context,
@@ -2288,19 +2288,19 @@ _36:
 	}
 }
 
-func b2World_SetCustomFilterCallback(tls *_Stack, worldId WorldId, fcn uintptr, context uintptr) {
+func b2World_SetCustomFilterCallback(tls *_Stack, worldId WorldId, __ccgo_fp_fcn uintptr, context uintptr) {
 	var world uintptr
 	_ = world
 	world = b2GetWorldFromId(tls, worldId)
-	(*b2World)(unsafe.Pointer(world)).CustomFilterFcn = fcn
+	(*b2World)(unsafe.Pointer(world)).CustomFilterFcn = __ccgo_fp_fcn
 	(*b2World)(unsafe.Pointer(world)).CustomFilterContext = context
 }
 
-func b2World_SetPreSolveCallback(tls *_Stack, worldId WorldId, fcn uintptr, context uintptr) {
+func b2World_SetPreSolveCallback(tls *_Stack, worldId WorldId, __ccgo_fp_fcn uintptr, context uintptr) {
 	var world uintptr
 	_ = world
 	world = b2GetWorldFromId(tls, worldId)
-	(*b2World)(unsafe.Pointer(world)).PreSolveFcn = fcn
+	(*b2World)(unsafe.Pointer(world)).PreSolveFcn = __ccgo_fp_fcn
 	(*b2World)(unsafe.Pointer(world)).PreSolveContext = context
 }
 

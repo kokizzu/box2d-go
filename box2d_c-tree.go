@@ -337,7 +337,7 @@ func b2DynamicTree_GetAABB(tls *_Stack, tree uintptr, proxyId int32) (r AABB) {
 	return (*(*b2TreeNode)(unsafe.Pointer((*DynamicTree)(unsafe.Pointer(tree)).Nodes + uintptr(proxyId)*40))).Aabb
 }
 
-func b2DynamicTree_Query(tls *_Stack, tree uintptr, aabb AABB, maskBits uint64, callback uintptr, context uintptr) (r TreeStats) {
+func b2DynamicTree_Query(tls *_Stack, tree uintptr, aabb AABB, maskBits uint64, __ccgo_fp_callback uintptr, context uintptr) (r TreeStats) {
 	var node uintptr
 	var nodeId, stackCount, v1, v2, v7, v8 int32
 	var proceed, v5 uint8
@@ -375,7 +375,7 @@ func b2DynamicTree_Query(tls *_Stack, tree uintptr, aabb AABB, maskBits uint64, 
 		if v5 != 0 && (*b2TreeNode)(unsafe.Pointer(node)).CategoryBits&maskBits != uint64(0) {
 			if b2IsLeaf(tls, node) != 0 {
 				// callback to user code with proxy id
-				proceed = (*(*func(*_Stack, int32, uint64, uintptr) uint8)(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, nodeId, *(*uint64_t)(unsafe.Add(unsafe.Pointer(node), 24)), context)
+				proceed = (*(*func(*_Stack, int32, uint64, uintptr) uint8)(unsafe.Pointer(&struct{ uintptr }{__ccgo_fp_callback})))(tls, nodeId, *(*uint64_t)(unsafe.Add(unsafe.Pointer(node), 24)), context)
 				result.LeafVisits += int32(1)
 				if int32FromUint8(proceed) == false1 {
 					return result
@@ -399,7 +399,7 @@ func b2DynamicTree_Query(tls *_Stack, tree uintptr, aabb AABB, maskBits uint64, 
 	return result
 }
 
-func b2DynamicTree_RayCast(tls *_Stack, tree uintptr, input uintptr, maskBits uint64, callback uintptr, context uintptr) (r1 TreeStats) {
+func b2DynamicTree_RayCast(tls *_Stack, tree uintptr, input uintptr, maskBits uint64, __ccgo_fp_callback uintptr, context uintptr) (r1 TreeStats) {
 	bp := tls.Alloc(32)
 	defer tls.Free(32)
 	var abs_v, b10, b5, b9, c, c1, c11, c2, c21, c3, d, h, n, p1, p2, r, v2, v1, v100, v101, v112, v115, v118, v120, v121, v124, v125, v17, v19, v21, v211, v22, v24, v25, v36, v38, v39, v5, v50, v6, v60, v63, v65, v66, v67, v69, v70, v77, v78, v8, v81, v83, v84, v86, v87, v98 Vec2
@@ -626,7 +626,7 @@ _51:
 		}
 		if b2IsLeaf(tls, node) != 0 {
 			(*(*RayCastInput)(unsafe.Pointer(bp))).MaxFraction = maxFraction
-			value = (*(*func(*_Stack, uintptr, int32, uint64, uintptr) float32)(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, bp, nodeId, *(*uint64_t)(unsafe.Add(unsafe.Pointer(node), 24)), context)
+			value = (*(*func(*_Stack, uintptr, int32, uint64, uintptr) float32)(unsafe.Pointer(&struct{ uintptr }{__ccgo_fp_callback})))(tls, bp, nodeId, *(*uint64_t)(unsafe.Add(unsafe.Pointer(node), 24)), context)
 			result.LeafVisits += int32(1)
 			// The user may return -1 to indicate this shape should be skipped
 			if value == float32FromFloat32(0) {
@@ -766,7 +766,7 @@ _51:
 	return result
 }
 
-func b2DynamicTree_ShapeCast(tls *_Stack, tree uintptr, input uintptr, maskBits uint64, callback uintptr, context uintptr) (r1 TreeStats) {
+func b2DynamicTree_ShapeCast(tls *_Stack, tree uintptr, input uintptr, maskBits uint64, __ccgo_fp_callback uintptr, context uintptr) (r1 TreeStats) {
 	bp := tls.Alloc(96)
 	defer tls.Free(96)
 	var abs_v, b10, b5, b9, c, c1, c11, c2, c21, c3, extension, h, p1, r, radius, t, v2, v107, v110, v112, v113, v114, v116, v117, v118, v120, v121, v128, v129, v133, v134, v136, v137, v138, v14, v140, v141, v152, v154, v155, v156, v158, v159, v16, v17, v170, v173, v176, v178, v179, v182, v183, v21, v28, v3, v30, v31, v32, v34, v35, v36, v39, v42, v45, v46, v48, v57, v60, v61, v63, v64, v65, v67, v68, v79, v81, v82, v83, v85, v86, v97 Vec2
@@ -1109,7 +1109,7 @@ _98:
 		}
 		if b2IsLeaf(tls, node) != 0 {
 			(*(*ShapeCastInput)(unsafe.Pointer(bp))).MaxFraction = maxFraction
-			value = (*(*func(*_Stack, uintptr, int32, uint64, uintptr) float32)(unsafe.Pointer(&struct{ uintptr }{callback})))(tls, bp, nodeId, *(*uint64_t)(unsafe.Add(unsafe.Pointer(node), 24)), context)
+			value = (*(*func(*_Stack, uintptr, int32, uint64, uintptr) float32)(unsafe.Pointer(&struct{ uintptr }{__ccgo_fp_callback})))(tls, bp, nodeId, *(*uint64_t)(unsafe.Add(unsafe.Pointer(node), 24)), context)
 			stats.LeafVisits += int32(1)
 			if value == float32FromFloat32(0) {
 				// The client has terminated the ray cast.

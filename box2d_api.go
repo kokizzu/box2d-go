@@ -1243,24 +1243,24 @@ func (b World) GetCounters() (r Counters)    { r = b2World_GetCounters(theStack,
 func (b World) SetUserData(userData uintptr) { b2World_SetUserData(theStack, b.Id, userData) }
 func (b World) GetUserData() (r uintptr)     { r = b2World_GetUserData(theStack, b.Id); return }
 func (b World) DumpMemoryStats()             { b2World_DumpMemoryStats(theStack, b.Id) }
-func (b World) OverlapShape(proxy ShapeProxy, filter QueryFilter, fcn uintptr, context uintptr) (r1 TreeStats) {
+func (b World) OverlapShape(proxy ShapeProxy, filter QueryFilter, __ccgo_fp_fcn uintptr, context uintptr) (r1 TreeStats) {
 	proxyStack := copyToStack(theStack, proxy)
 	defer proxyStack.Free()
-	r1 = b2World_OverlapShape(theStack, b.Id, proxyStack.Addr, filter, fcn, context)
+	r1 = b2World_OverlapShape(theStack, b.Id, proxyStack.Addr, filter, __ccgo_fp_fcn, context)
 	return
 }
-func (b World) CastRay(origin Vec2, translation Vec2, filter QueryFilter, fcn uintptr, context uintptr) (r TreeStats) {
-	r = b2World_CastRay(theStack, b.Id, origin, translation, filter, fcn, context)
+func (b World) CastRay(origin Vec2, translation Vec2, filter QueryFilter, __ccgo_fp_fcn uintptr, context uintptr) (r TreeStats) {
+	r = b2World_CastRay(theStack, b.Id, origin, translation, filter, __ccgo_fp_fcn, context)
 	return
 }
 func (b World) CastRayClosest(origin Vec2, translation Vec2, filter QueryFilter) (r RayResult) {
 	r = b2World_CastRayClosest(theStack, b.Id, origin, translation, filter)
 	return
 }
-func (b World) CastShape(proxy ShapeProxy, translation Vec2, filter QueryFilter, fcn uintptr, context uintptr) (r TreeStats) {
+func (b World) CastShape(proxy ShapeProxy, translation Vec2, filter QueryFilter, __ccgo_fp_fcn uintptr, context uintptr) (r TreeStats) {
 	proxyStack := copyToStack(theStack, proxy)
 	defer proxyStack.Free()
-	r = b2World_CastShape(theStack, b.Id, proxyStack.Addr, translation, filter, fcn, context)
+	r = b2World_CastShape(theStack, b.Id, proxyStack.Addr, translation, filter, __ccgo_fp_fcn, context)
 	return
 }
 func (b World) CastMover(mover Capsule, translation Vec2, filter QueryFilter) (r float32) {

@@ -1,0 +1,42 @@
+name: Go
+
+on: [push]
+
+jobs:
+   test-b2:
+      runs-on: ubuntu-latest
+      strategy:
+         matrix:
+            go-version: ["1.22.x", "1.23.x", "1.24.x", "1.25.x"]
+
+      steps:
+         - uses: actions/checkout@v4
+
+         - name: Setup Go ${{ matrix.go-version }}
+           uses: actions/setup-go@v5
+           with:
+              go-version: ${{ matrix.go-version }}
+
+         # You can test your matrix by printing the current Go version
+         - name: Run tests
+           run: go test -v ./...
+
+   transpile:
+      runs-on: ubuntu-latest
+
+      steps:
+         - uses: actions/checkout@v4
+
+         - name: Setup Go
+           uses: actions/setup-go@v5
+           with:
+              go-version: 1.25.x
+
+         - name: Fetch box2d sources
+           run: ./fetch.sh
+
+         - name: Transpile to go code
+           run: ./transpile.sh
+
+         - name: Run tests on compiled code
+           run: go test -v ./...

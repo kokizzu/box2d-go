@@ -3546,17 +3546,17 @@ func b2ChainSegmentAndPolygonManifold(tls *_Stack, shapeA uintptr, xfA Transform
 	return b2CollideChainSegmentAndPolygon(tls, shapeA+132, xfA, shapeB+132, xfB, cache)
 }
 
-func b2AddType(tls *_Stack, fcn uintptr, type1 ShapeType, type2 ShapeType) {
+func b2AddType(tls *_Stack, __ccgo_fp_fcn uintptr, type1 ShapeType, type2 ShapeType) {
 	if !(0 <= type1 && type1 < int32(b2_shapeTypeCount)) && b2InternalAssertFcn(tls, __ccgo_ts+3317, __ccgo_ts+3357, int32FromInt32(153)) != 0 {
 		__builtin_trap(tls)
 	}
 	if !(0 <= type2 && type2 < int32(b2_shapeTypeCount)) && b2InternalAssertFcn(tls, __ccgo_ts+3382, __ccgo_ts+3357, int32FromInt32(154)) != 0 {
 		__builtin_trap(tls)
 	}
-	(*(*b2ContactRegister)(unsafe.Pointer(uintptr(unsafe.Pointer(&s_registers)) + uintptr(type1)*80 + uintptr(type2)*16))).Fcn = fcn
+	(*(*b2ContactRegister)(unsafe.Pointer(uintptr(unsafe.Pointer(&s_registers)) + uintptr(type1)*80 + uintptr(type2)*16))).Fcn = __ccgo_fp_fcn
 	(*(*b2ContactRegister)(unsafe.Pointer(uintptr(unsafe.Pointer(&s_registers)) + uintptr(type1)*80 + uintptr(type2)*16))).Primary = uint8(true1)
 	if type1 != type2 {
-		(*(*b2ContactRegister)(unsafe.Pointer(uintptr(unsafe.Pointer(&s_registers)) + uintptr(type2)*80 + uintptr(type1)*16))).Fcn = fcn
+		(*(*b2ContactRegister)(unsafe.Pointer(uintptr(unsafe.Pointer(&s_registers)) + uintptr(type2)*80 + uintptr(type1)*16))).Fcn = __ccgo_fp_fcn
 		(*(*b2ContactRegister)(unsafe.Pointer(uintptr(unsafe.Pointer(&s_registers)) + uintptr(type2)*80 + uintptr(type1)*16))).Primary = uint8(false1)
 	}
 }
@@ -6111,11 +6111,13 @@ func b2DefaultAssertFcn(tls *_Stack, condition uintptr, fileName uintptr, lineNu
 	return int32(1)
 }
 
-func b2SetAssertFcn(tls *_Stack, assertFcn uintptr) {
-	if !(assertFcn != uintptrFromInt32(0)) && b2InternalAssertFcn(tls, __ccgo_ts+4000, __ccgo_ts+3944, int32FromInt32(58)) != 0 {
+type __ccgo_fp__Xb2SetAssertFcn_0 = func(*_Stack, uintptr, uintptr, int32) int32
+
+func b2SetAssertFcn(tls *_Stack, __ccgo_fp_assertFcn uintptr) {
+	if !(__ccgo_fp_assertFcn != uintptrFromInt32(0)) && b2InternalAssertFcn(tls, __ccgo_ts+4000, __ccgo_ts+3944, int32FromInt32(58)) != 0 {
 		__builtin_trap(tls)
 	}
-	b2AssertHandler = assertFcn
+	b2AssertHandler = __ccgo_fp_assertFcn
 }
 
 func b2InternalAssertFcn(tls *_Stack, condition uintptr, fileName uintptr, lineNumber int32) (r int32) {
@@ -6134,9 +6136,13 @@ var b2_allocFcn = uintptr(0)
 
 var b2_freeFcn = uintptr(0)
 
-func b2SetAllocator(tls *_Stack, allocFcn uintptr, freeFcn uintptr) {
-	b2_allocFcn = allocFcn
-	b2_freeFcn = freeFcn
+type __ccgo_fp__Xb2SetAllocator_0 = func(*_Stack, uint32, int32) uintptr
+
+type __ccgo_fp__Xb2SetAllocator_1 = func(*_Stack, uintptr)
+
+func b2SetAllocator(tls *_Stack, __ccgo_fp_allocFcn uintptr, __ccgo_fp_freeFcn uintptr) {
+	b2_allocFcn = __ccgo_fp_allocFcn
+	b2_freeFcn = __ccgo_fp_freeFcn
 }
 
 // Use 32 byte alignment for everything. Works with 256bit SIMD.
@@ -9266,6 +9272,12 @@ func b2RemoveLeaf(tls *_Stack, tree uintptr, leaf int32) {
 		b2FreeNode(tls, tree, parent)
 	}
 }
+
+type __ccgo_fp__Xb2DynamicTree_Query_3 = func(*_Stack, int32, uint64, uintptr) uint8
+
+type __ccgo_fp__Xb2DynamicTree_RayCast_3 = func(*_Stack, uintptr, int32, uint64, uintptr) float32
+
+type __ccgo_fp__Xb2DynamicTree_ShapeCast_3 = func(*_Stack, uintptr, int32, uint64, uintptr) float32
 
 // Median split == 0, Surface area heuristic == 1
 
@@ -16301,9 +16313,9 @@ func b2TaskContextArray_Destroy(tls *_Stack, a uintptr) {
 	(*b2TaskContextArray)(unsafe.Pointer(a)).Capacity = 0
 }
 
-func b2DefaultAddTaskFcn(tls *_Stack, task uintptr, count int32, minRange int32, taskContext uintptr, userContext uintptr) (r uintptr) {
+func b2DefaultAddTaskFcn(tls *_Stack, __ccgo_fp_task uintptr, count int32, minRange int32, taskContext uintptr, userContext uintptr) (r uintptr) {
 	_ = uint64FromInt64(4)
-	(*(*func(*_Stack, int32, int32, uint32, uintptr))(unsafe.Pointer(&struct{ uintptr }{task})))(tls, 0, count, uint32(0), taskContext)
+	(*(*func(*_Stack, int32, int32, uint32, uintptr))(unsafe.Pointer(&struct{ uintptr }{__ccgo_fp_task})))(tls, 0, count, uint32(0), taskContext)
 	return uintptrFromInt32(0)
 }
 
@@ -16930,6 +16942,10 @@ func b2Chain_IsValid(tls *_Stack, id ChainId) (r uint8) {
 	return boolUint8(int32FromUint16(id.Generation) == int32FromUint16((*b2ChainShape)(unsafe.Pointer(chain)).Generation))
 }
 
+type __ccgo_fp__Xb2World_SetFrictionCallback_1 = func(*_Stack, float32, int32, float32, int32) float32
+
+type __ccgo_fp__Xb2World_SetRestitutionCallback_1 = func(*_Stack, float32, int32, float32, int32) float32
+
 type WorldQueryContext struct {
 	World       uintptr
 	Fcn         uintptr
@@ -16974,6 +16990,12 @@ _8:
 	result = (*(*func(*_Stack, ShapeId, uintptr) uint8)(unsafe.Pointer(&struct{ uintptr }{(*WorldQueryContext)(unsafe.Pointer(worldContext)).Fcn})))(tls, id, (*WorldQueryContext)(unsafe.Pointer(worldContext)).UserContext)
 	return result
 }
+
+type __ccgo_fp__Xb2World_OverlapAABB_3 = func(*_Stack, struct {
+	Index1     int32
+	World0     uint16
+	Generation uint16
+}, uintptr) uint8
 
 type WorldOverlapContext struct {
 	World       uintptr
@@ -17049,6 +17071,12 @@ _12:
 	return result
 }
 
+type __ccgo_fp__Xb2World_OverlapShape_3 = func(*_Stack, struct {
+	Index1     int32
+	World0     uint16
+	Generation uint16
+}, uintptr) uint8
+
 type WorldRayCastContext struct {
 	World       uintptr
 	Fcn         uintptr
@@ -17115,6 +17143,18 @@ _12:
 	}
 	return (*RayCastInput)(unsafe.Pointer(input)).MaxFraction
 }
+
+type __ccgo_fp__Xb2World_CastRay_4 = func(*_Stack, struct {
+	Index1     int32
+	World0     uint16
+	Generation uint16
+}, struct {
+	X float32
+	Y float32
+}, struct {
+	X float32
+	Y float32
+}, float32, uintptr) float32
 
 // C documentation
 //
@@ -17193,6 +17233,18 @@ _12:
 	}
 	return (*ShapeCastInput)(unsafe.Pointer(input)).MaxFraction
 }
+
+type __ccgo_fp__Xb2World_CastShape_4 = func(*_Stack, struct {
+	Index1     int32
+	World0     uint16
+	Generation uint16
+}, struct {
+	X float32
+	Y float32
+}, struct {
+	X float32
+	Y float32
+}, float32, uintptr) float32
 
 type b2CharacterCallbackContext struct {
 	World       uintptr
@@ -17346,6 +17398,32 @@ _12:
 	}
 	return uint8(true1)
 }
+
+type __ccgo_fp__Xb2World_CollideMover_3 = func(*_Stack, struct {
+	Index1     int32
+	World0     uint16
+	Generation uint16
+}, uintptr, uintptr) uint8
+
+type __ccgo_fp__Xb2World_SetCustomFilterCallback_1 = func(*_Stack, struct {
+	Index1     int32
+	World0     uint16
+	Generation uint16
+}, struct {
+	Index1     int32
+	World0     uint16
+	Generation uint16
+}, uintptr) uint8
+
+type __ccgo_fp__Xb2World_SetPreSolveCallback_1 = func(*_Stack, struct {
+	Index1     int32
+	World0     uint16
+	Generation uint16
+}, struct {
+	Index1     int32
+	World0     uint16
+	Generation uint16
+}, uintptr, uintptr) uint8
 
 type ExplosionContext struct {
 	World            uintptr
