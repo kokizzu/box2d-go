@@ -33,7 +33,10 @@ jobs:
               go-version: 1.25.x
 
          - name: Fetch box2d sources
-           run: ./fetch.sh
+           run: |
+              git config --global user.email "you@example.com"
+              git config --global user.name "Your Name"
+              ./fetch.sh
 
          - name: Transpile to go code
            run: ./transpile.sh
