@@ -90,7 +90,7 @@ func main() {
 	slog.Info("Perform code cleanup via regexp")
 	source = regexp.MustCompile("//go:build .*").ReplaceAllLiteralString(source, "")
 
-	source = regexp.MustCompile(PrefixField+"([a-z])([A-Za-z0-9_]*)").ReplaceAllStringFunc(source, func(s string) string {
+	source = regexp.MustCompile(PrefixField+"([A-Za-z])([A-Za-z0-9_]*)").ReplaceAllStringFunc(source, func(s string) string {
 		name := strings.TrimPrefix(s, PrefixField)
 		name = strings.ToUpper(name[:1]) + name[1:]
 		return name
@@ -958,6 +958,9 @@ func readAPI() API {
 	api.Exposed["b2World_OverlapAABB"] = false
 	api.Exposed["b2World_SetCustomFilterCallback"] = false
 	api.Exposed["b2World_SetPreSolveCallback"] = false
+
+	api.ExposedTypes["b2DebugDraw"] = false
+	api.Exposed["b2World_Draw"] = false
 
 	api.ExposedTypes["b2BodyEvents"] = false
 	api.Exposed["b2World_GetBodyEvents"] = false

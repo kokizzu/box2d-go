@@ -1,8 +1,8 @@
 package b2
 
 import (
-	"unsafe"
 	"reflect"
+	"unsafe"
 )
 
 var _ unsafe.Pointer
@@ -27,7 +27,7 @@ func b2DynamicTree_Create(tls *_Stack) (r DynamicTree) {
 		goto _1
 	_1:
 		;
-		i++
+		i = i + 1
 	}
 	*(*int32_t)(unsafe.Add(unsafe.Pointer(&*(*b2TreeNode)(unsafe.Pointer(tree.Nodes + uintptr(tree.NodeCapacity-int32(1))*40))), 32)) = -int32FromInt32(1)
 	tree.FreeList = 0
@@ -77,7 +77,7 @@ func b2DynamicTree_CreateProxy(tls *_Stack, tree uintptr, aabb AABB, categoryBit
 	(*b2TreeNode)(unsafe.Pointer(node)).CategoryBits = categoryBits
 	(*b2TreeNode)(unsafe.Pointer(node)).Height = uint16(0)
 	(*b2TreeNode)(unsafe.Pointer(node)).Flags = uint16FromInt32(int32(b2_allocatedNode) | int32(b2_leafNode))
-	shouldRotate = uint8(true1)
+	shouldRotate = boolUint8(true1 != 0)
 	b2InsertLeaf(tls, tree, proxyId, shouldRotate)
 	*(*int32)(unsafe.Pointer(tree + 24)) += int32(1)
 	return proxyId
@@ -122,7 +122,7 @@ func b2DynamicTree_MoveProxy(tls *_Stack, tree uintptr, proxyId int32, aabb AABB
 	}
 	b2RemoveLeaf(tls, tree, proxyId)
 	(*(*b2TreeNode)(unsafe.Pointer((*DynamicTree)(unsafe.Pointer(tree)).Nodes + uintptr(proxyId)*40))).Aabb = aabb
-	shouldRotate = uint8(false1)
+	shouldRotate = boolUint8(false1 != 0)
 	b2InsertLeaf(tls, tree, proxyId, shouldRotate)
 }
 
@@ -151,7 +151,7 @@ func b2DynamicTree_EnlargeProxy(tls *_Stack, tree uintptr, proxyId int32, aabb A
 	// Caller must ensure this
 	v1 = (*(*b2TreeNode)(unsafe.Pointer(nodes + uintptr(proxyId)*40))).Aabb
 	v2 = aabb
-	s = uint8(true1)
+	s = boolUint8(true1 != 0)
 	s = boolUint8(s != 0 && v1.LowerBound.X <= v2.LowerBound.X)
 	s = boolUint8(s != 0 && v1.LowerBound.Y <= v2.LowerBound.Y)
 	s = boolUint8(s != 0 && v2.UpperBound.X <= v1.UpperBound.X)
@@ -168,22 +168,22 @@ _4:
 	for parentIndex != -int32(1) {
 		v5 = nodes + uintptr(parentIndex)*40
 		v6 = aabb
-		changed = uint8(false1)
+		changed = boolUint8(false1 != 0)
 		if v6.LowerBound.X < (*AABB)(unsafe.Pointer(v5)).LowerBound.X {
 			(*AABB)(unsafe.Pointer(v5)).LowerBound.X = v6.LowerBound.X
-			changed = uint8(true1)
+			changed = boolUint8(true1 != 0)
 		}
 		if v6.LowerBound.Y < (*AABB)(unsafe.Pointer(v5)).LowerBound.Y {
 			(*AABB)(unsafe.Pointer(v5)).LowerBound.Y = v6.LowerBound.Y
-			changed = uint8(true1)
+			changed = boolUint8(true1 != 0)
 		}
 		if (*AABB)(unsafe.Pointer(v5)).UpperBound.X < v6.UpperBound.X {
 			(*AABB)(unsafe.Pointer(v5)).UpperBound.X = v6.UpperBound.X
-			changed = uint8(true1)
+			changed = boolUint8(true1 != 0)
 		}
 		if (*AABB)(unsafe.Pointer(v5)).UpperBound.Y < v6.UpperBound.Y {
 			(*AABB)(unsafe.Pointer(v5)).UpperBound.Y = v6.UpperBound.Y
-			changed = uint8(true1)
+			changed = boolUint8(true1 != 0)
 		}
 		v7 = changed
 		goto _8
@@ -286,11 +286,11 @@ _3:
 		v6 = float32(float32FromFloat32(2) * (wx + wy))
 		goto _7
 	_7:
-		totalArea += v6
+		totalArea = totalArea + v6
 		goto _4
 	_4:
 		;
-		i++
+		i = i + 1
 	}
 	return totalArea / rootArea
 }
@@ -351,10 +351,10 @@ func b2DynamicTree_Query(tls *_Stack, tree uintptr, aabb AABB, maskBits uint64, 
 	}
 	stackCount = 0
 	v1 = stackCount
-	stackCount++
+	stackCount = stackCount + 1
 	stack[v1] = (*DynamicTree)(unsafe.Pointer(tree)).Root
 	for stackCount > 0 {
-		stackCount--
+		stackCount = stackCount - 1
 		v2 = stackCount
 		nodeId = stack[v2]
 		if nodeId == -int32(1) {
@@ -383,10 +383,10 @@ func b2DynamicTree_Query(tls *_Stack, tree uintptr, aabb AABB, maskBits uint64, 
 			} else {
 				if stackCount < int32FromInt32(_B2_TREE_STACK_SIZE)-int32FromInt32(1) {
 					v7 = stackCount
-					stackCount++
+					stackCount = stackCount + 1
 					stack[v7] = (*b2TreeNode)(unsafe.Pointer(node)).ｆ__ccgo2_24.Children.Child1
 					v8 = stackCount
-					stackCount++
+					stackCount = stackCount + 1
 					stack[v8] = (*b2TreeNode)(unsafe.Pointer(node)).ｆ__ccgo2_24.Children.Child2
 				} else {
 					if !(stackCount < int32FromInt32(_B2_TREE_STACK_SIZE)-int32FromInt32(1)) && b2InternalAssertFcn(tls, __ccgo_ts+5888, __ccgo_ts+4746, int32FromInt32(1163)) != 0 {
@@ -543,12 +543,12 @@ _51:
 	}
 	stackCount = 0
 	v52 = stackCount
-	stackCount++
+	stackCount = stackCount + 1
 	stack[v52] = (*DynamicTree)(unsafe.Pointer(tree)).Root
 	nodes = (*DynamicTree)(unsafe.Pointer(tree)).Nodes
 	*(*RayCastInput)(unsafe.Pointer(bp)) = *(*RayCastInput)(unsafe.Pointer(input))
 	for stackCount > 0 {
-		stackCount--
+		stackCount = stackCount - 1
 		v53 = stackCount
 		nodeId = stack[v53]
 		if nodeId == -int32(1) {
@@ -743,17 +743,17 @@ _51:
 			_127:
 				if v122 < v126 {
 					v128 = stackCount
-					stackCount++
+					stackCount = stackCount + 1
 					stack[v128] = (*b2TreeNode)(unsafe.Pointer(node)).ｆ__ccgo2_24.Children.Child2
 					v129 = stackCount
-					stackCount++
+					stackCount = stackCount + 1
 					stack[v129] = (*b2TreeNode)(unsafe.Pointer(node)).ｆ__ccgo2_24.Children.Child1
 				} else {
 					v130 = stackCount
-					stackCount++
+					stackCount = stackCount + 1
 					stack[v130] = (*b2TreeNode)(unsafe.Pointer(node)).ｆ__ccgo2_24.Children.Child1
 					v131 = stackCount
-					stackCount++
+					stackCount = stackCount + 1
 					stack[v131] = (*b2TreeNode)(unsafe.Pointer(node)).ｆ__ccgo2_24.Children.Child2
 				}
 			} else {
@@ -852,7 +852,7 @@ func b2DynamicTree_ShapeCast(tls *_Stack, tree uintptr, input uintptr, maskBits 
 		goto _1
 	_1:
 		;
-		i++
+		i = i + 1
 	}
 	radius = Vec2{
 		X: (*ShapeCastInput)(unsafe.Pointer(input)).Proxy.Radius,
@@ -1021,10 +1021,10 @@ _98:
 	nodes = (*DynamicTree)(unsafe.Pointer(tree)).Nodes
 	stackCount = 0
 	v99 = stackCount
-	stackCount++
+	stackCount = stackCount + 1
 	stack[v99] = (*DynamicTree)(unsafe.Pointer(tree)).Root
 	for stackCount > 0 {
-		stackCount--
+		stackCount = stackCount - 1
 		v100 = stackCount
 		nodeId = stack[v100]
 		if nodeId == -int32(1) {
@@ -1240,17 +1240,17 @@ _98:
 			_185:
 				if v180 < v184 {
 					v186 = stackCount
-					stackCount++
+					stackCount = stackCount + 1
 					stack[v186] = (*b2TreeNode)(unsafe.Pointer(node)).ｆ__ccgo2_24.Children.Child2
 					v187 = stackCount
-					stackCount++
+					stackCount = stackCount + 1
 					stack[v187] = (*b2TreeNode)(unsafe.Pointer(node)).ｆ__ccgo2_24.Children.Child1
 				} else {
 					v188 = stackCount
-					stackCount++
+					stackCount = stackCount + 1
 					stack[v188] = (*b2TreeNode)(unsafe.Pointer(node)).ｆ__ccgo2_24.Children.Child1
 					v189 = stackCount
-					stackCount++
+					stackCount = stackCount + 1
 					stack[v189] = (*b2TreeNode)(unsafe.Pointer(node)).ｆ__ccgo2_24.Children.Child2
 				}
 			} else {
@@ -1312,7 +1312,7 @@ func b2DynamicTree_Rebuild(tls *_Stack, tree uintptr, fullBuild uint8) (r int32)
 			goto _3
 		_3:
 			*(*Vec2)(unsafe.Pointer(leafCenters + uintptr(leafCount)*8)) = v2
-			leafCount += int32(1)
+			leafCount = leafCount + int32(1)
 			// Detach
 			(*b2TreeNode)(unsafe.Pointer(node)).ｆ__ccgo3_32.Parent = -int32FromInt32(1)
 		} else {
@@ -1321,7 +1321,7 @@ func b2DynamicTree_Rebuild(tls *_Stack, tree uintptr, fullBuild uint8) (r int32)
 			nodeIndex = (*b2TreeNode)(unsafe.Pointer(node)).ｆ__ccgo2_24.Children.Child1
 			if stackCount < int32(_B2_TREE_STACK_SIZE) {
 				v4 = stackCount
-				stackCount++
+				stackCount = stackCount + 1
 				stack[v4] = (*b2TreeNode)(unsafe.Pointer(node)).ｆ__ccgo2_24.Children.Child2
 			} else {
 				if !(stackCount < int32FromInt32(_B2_TREE_STACK_SIZE)) && b2InternalAssertFcn(tls, __ccgo_ts+6449, __ccgo_ts+4746, int32FromInt32(1951)) != 0 {
@@ -1336,7 +1336,7 @@ func b2DynamicTree_Rebuild(tls *_Stack, tree uintptr, fullBuild uint8) (r int32)
 		if stackCount == 0 {
 			break
 		}
-		stackCount--
+		stackCount = stackCount - 1
 		v5 = stackCount
 		nodeIndex = stack[v5]
 		node = nodes + uintptr(nodeIndex)*40

@@ -1,8 +1,8 @@
 package b2
 
 import (
-	"unsafe"
 	"reflect"
+	"unsafe"
 )
 
 var _ unsafe.Pointer
@@ -102,11 +102,11 @@ func b2ComputePolygonCentroid(tls *_Stack, vertices uintptr, count int32) (r Vec
 		goto _22
 	_22:
 		center = v21
-		area += a4
+		area = area + a4
 		goto _1
 	_1:
 		;
-		i++
+		i = i + 1
 	}
 	if !(area > float32FromFloat32(1.1920928955078125e-07)) && b2InternalAssertFcn(tls, __ccgo_ts+6505, __ccgo_ts+6524, int32FromInt32(45)) != 0 {
 		__builtin_trap(tls)
@@ -301,7 +301,7 @@ func b2ComputePolygonMass(tls *_Stack, shape uintptr, density float32) (r1 MassD
 			goto _1
 		_1:
 			;
-			i++
+			i = i + 1
 		}
 	} else {
 		i1 = 0
@@ -313,7 +313,7 @@ func b2ComputePolygonMass(tls *_Stack, shape uintptr, density float32) (r1 MassD
 			goto _15
 		_15:
 			;
-			i1++
+			i1 = i1 + 1
 		}
 	}
 	center = Vec2{}
@@ -354,7 +354,7 @@ func b2ComputePolygonMass(tls *_Stack, shape uintptr, density float32) (r1 MassD
 	_28:
 		D = v27
 		triangleArea = float32(float32FromFloat32(0.5) * D)
-		area += triangleArea
+		area = area + triangleArea
 		// Area weighted centroid, r at origin
 		v29 = e1
 		v30 = e2
@@ -380,11 +380,11 @@ func b2ComputePolygonMass(tls *_Stack, shape uintptr, density float32) (r1 MassD
 		ey2 = e2.Y
 		intx2 = float32(ex1*ex1) + float32(ex2*ex1) + float32(ex2*ex2)
 		inty2 = float32(ey1*ey1) + float32(ey2*ey1) + float32(ey2*ey2)
-		rotationalInertia += float32(float32(float32(float32FromFloat32(0.25)*inv3)*D) * (intx2 + inty2))
+		rotationalInertia = rotationalInertia + float32(float32(float32(float32FromFloat32(0.25)*inv3)*D)*(intx2+inty2))
 		goto _16
 	_16:
 		;
-		i2++
+		i2 = i2 + 1
 	}
 	// Total mass
 	massData.Mass = float32(density * area)
@@ -660,7 +660,7 @@ _4:
 		goto _5
 	_5:
 		;
-		i++
+		i = i + 1
 	}
 	r = Vec2{
 		X: (*Polygon)(unsafe.Pointer(shape)).Radius,
@@ -895,7 +895,7 @@ _4:
 	_34:
 		aabb.UpperBound = v33
 		vi = *(*Vec2)(unsafe.Pointer(points + uintptr(i)*8))
-		unique = uint8(true1)
+		unique = boolUint8(true1 != 0)
 		j = 0
 		for {
 			if !(j < i) {
@@ -913,23 +913,23 @@ _4:
 		_39:
 			distSqr = v38
 			if distSqr < tolSqr {
-				unique = uint8(false1)
+				unique = boolUint8(false1 != 0)
 				break
 			}
 			goto _35
 		_35:
 			;
-			j++
+			j = j + 1
 		}
 		if unique != 0 {
 			v40 = n1
-			n1++
+			n1 = n1 + 1
 			ps[v40] = vi
 		}
 		goto _6
 	_6:
 		;
-		i++
+		i = i + 1
 	}
 	if n1 < int32(3) {
 		// all points very close together, check your data and check your scale
@@ -978,7 +978,7 @@ _47:
 		goto _48
 	_48:
 		;
-		i1++
+		i1 = i1 + 1
 	}
 	// remove p1 from working set
 	p1 = ps[f1]
@@ -1017,7 +1017,7 @@ _56:
 		goto _57
 	_57:
 		;
-		i2++
+		i2 = i2 + 1
 	}
 	// remove p2 from working set
 	p2 = ps[f2]
@@ -1070,19 +1070,19 @@ _68:
 		// slop used here to skip points that are very close to the line p1-p2
 		if d >= float32(float32FromFloat32(2)*linearSlop) {
 			v78 = rightCount
-			rightCount++
+			rightCount = rightCount + 1
 			(*(*[6]Vec2)(unsafe.Pointer(bp + 68)))[v78] = ps[i3]
 		} else {
 			if d <= float32(-float32FromFloat32(2)*linearSlop) {
 				v79 = leftCount
-				leftCount++
+				leftCount = leftCount + 1
 				(*(*[6]Vec2)(unsafe.Pointer(bp + 116)))[v79] = ps[i3]
 			}
 		}
 		goto _69
 	_69:
 		;
-		i3++
+		i3 = i3 + 1
 	}
 	// compute hulls on right and left
 	*(*Hull)(unsafe.Pointer(bp + 164)) = b2RecurseHull(tls, p1, p2, bp+68, rightCount)
@@ -1094,7 +1094,7 @@ _68:
 	// stitch hulls together, preserving CCW winding order
 	v81 = bp + 64
 	v80 = *(*int32)(unsafe.Pointer(v81))
-	*(*int32)(unsafe.Pointer(v81))++
+	*(*int32)(unsafe.Pointer(v81)) = *(*int32)(unsafe.Pointer(v81)) + 1
 	*(*Vec2)(unsafe.Pointer(bp + uintptr(v80)*8)) = p1
 	i4 = 0
 	for {
@@ -1103,16 +1103,16 @@ _68:
 		}
 		v84 = bp + 64
 		v83 = *(*int32)(unsafe.Pointer(v84))
-		*(*int32)(unsafe.Pointer(v84))++
+		*(*int32)(unsafe.Pointer(v84)) = *(*int32)(unsafe.Pointer(v84)) + 1
 		*(*Vec2)(unsafe.Pointer(bp + uintptr(v83)*8)) = *(*Vec2)(unsafe.Pointer(bp + 164 + uintptr(i4)*8))
 		goto _82
 	_82:
 		;
-		i4++
+		i4 = i4 + 1
 	}
 	v86 = bp + 64
 	v85 = *(*int32)(unsafe.Pointer(v86))
-	*(*int32)(unsafe.Pointer(v86))++
+	*(*int32)(unsafe.Pointer(v86)) = *(*int32)(unsafe.Pointer(v86)) + 1
 	*(*Vec2)(unsafe.Pointer(bp + uintptr(v85)*8)) = p2
 	i5 = 0
 	for {
@@ -1121,20 +1121,20 @@ _68:
 		}
 		v89 = bp + 64
 		v88 = *(*int32)(unsafe.Pointer(v89))
-		*(*int32)(unsafe.Pointer(v89))++
+		*(*int32)(unsafe.Pointer(v89)) = *(*int32)(unsafe.Pointer(v89)) + 1
 		*(*Vec2)(unsafe.Pointer(bp + uintptr(v88)*8)) = *(*Vec2)(unsafe.Pointer(bp + 232 + uintptr(i5)*8))
 		goto _87
 	_87:
 		;
-		i5++
+		i5 = i5 + 1
 	}
 	if !((*(*Hull)(unsafe.Pointer(bp))).Count <= int32FromInt32(_B2_MAX_POLYGON_VERTICES)) && b2InternalAssertFcn(tls, __ccgo_ts+6905, __ccgo_ts+6883, int32FromInt32(225)) != 0 {
 		__builtin_trap(tls)
 	}
 	// merge collinear
-	searching = uint8(true1)
+	searching = boolUint8(true1 != 0)
 	for searching != 0 && (*(*Hull)(unsafe.Pointer(bp))).Count > int32(2) {
-		searching = uint8(false1)
+		searching = boolUint8(false1 != 0)
 		i6 = 0
 		for {
 			if !(i6 < (*(*Hull)(unsafe.Pointer(bp))).Count) {
@@ -1195,17 +1195,17 @@ _68:
 					goto _106
 				_106:
 					;
-					j1++
+					j1 = j1 + 1
 				}
 				(*(*Hull)(unsafe.Pointer(bp))).Count -= int32(1)
 				// continue searching for collinear points
-				searching = uint8(true1)
+				searching = boolUint8(true1 != 0)
 				break
 			}
 			goto _90
 		_90:
 			;
-			i6++
+			i6 = i6 + 1
 		}
 	}
 	if (*(*Hull)(unsafe.Pointer(bp))).Count < int32(3) {

@@ -1,8 +1,8 @@
 package b2
 
 import (
-	"unsafe"
 	"runtime"
+	"unsafe"
 )
 
 var _ unsafe.Pointer
@@ -1088,7 +1088,7 @@ func DefaultQueryFilter() (r QueryFilter)         { r = b2DefaultQueryFilter(the
 func DefaultShapeDef() (r ShapeDef)               { r = b2DefaultShapeDef(theStack); return }
 func DefaultSurfaceMaterial() (r SurfaceMaterial) { r = b2DefaultSurfaceMaterial(theStack); return }
 func DefaultChainDef() (r ChainDef)               { r = b2DefaultChainDef(theStack); return }
-func DefaultDebugDraw() (r DebugDraw)             { r = b2DefaultDebugDraw(theStack); return }
+func DefaultDebugDraw() (r b2DebugDraw)           { r = b2DefaultDebugDraw(theStack); return }
 func (b Joint) WeldJoint_SetLinearHertz(hertz float32) {
 	b2WeldJoint_SetLinearHertz(theStack, b.Id, hertz)
 }
@@ -1190,11 +1190,6 @@ func CreateWorld(def WorldDef) (r World) {
 func (b World) DestroyWorld() { b2DestroyWorld(theStack, b.Id) }
 func (b World) Step(timeStep float32, subStepCount int32) {
 	b2World_Step(theStack, b.Id, timeStep, subStepCount)
-}
-func (b World) Draw(draw *DebugDraw) {
-	defer runtime.KeepAlive(draw)
-	escapes(draw)
-	b2World_Draw(theStack, b.Id, uintptr(unsafe.Pointer(draw)))
 }
 func (b World) IsValid() (r uint8)            { r = b2World_IsValid(theStack, b.Id); return }
 func (b Body) IsValid() (r uint8)             { r = b2Body_IsValid(theStack, b.Id); return }

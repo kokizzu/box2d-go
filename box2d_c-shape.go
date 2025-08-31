@@ -1,8 +1,8 @@
 package b2
 
 import (
-	"unsafe"
 	"reflect"
+	"unsafe"
 )
 
 var _ unsafe.Pointer
@@ -99,14 +99,14 @@ _16:
 		goto _17
 	_17:
 		;
-		i++
+		i = i + 1
 	}
 	// Initialize the simplex.
 	*(*Simplex)(unsafe.Pointer(bp + 72)) = b2MakeSimplexFromCache(tls, cache, proxyA, bp)
 	simplexIndex = 0
 	if simplexes != uintptrFromInt32(0) && simplexIndex < simplexCapacity {
 		*(*Simplex)(unsafe.Pointer(simplexes + uintptr(simplexIndex)*112)) = *(*Simplex)(unsafe.Pointer(bp + 72))
-		simplexIndex += int32(1)
+		simplexIndex = simplexIndex + int32(1)
 	}
 	// Get simplex vertices as an array.
 	vertices = [3]uintptr{
@@ -131,7 +131,7 @@ _16:
 			goto _22
 		_22:
 			;
-			i1++
+			i1 = i1 + 1
 		}
 		d = Vec2{}
 		switch (*(*Simplex)(unsafe.Pointer(bp + 72))).Count {
@@ -211,7 +211,7 @@ _16:
 		}
 		if simplexes != uintptrFromInt32(0) && simplexIndex < simplexCapacity {
 			*(*Simplex)(unsafe.Pointer(simplexes + uintptr(simplexIndex)*112)) = *(*Simplex)(unsafe.Pointer(bp + 72))
-			simplexIndex += int32(1)
+			simplexIndex = simplexIndex + int32(1)
 		}
 		// Ensure the search direction is numerically fit.
 		v42 = d
@@ -271,22 +271,22 @@ _16:
 	_60:
 		(*SimplexVertex)(unsafe.Pointer(vertex)).W = v59
 		// Iteration count is equated to the number of support point calls.
-		iteration++
+		iteration = iteration + 1
 		// Check for duplicate support points. This is the main termination criteria.
-		duplicate = uint8(false1)
+		duplicate = boolUint8(false1 != 0)
 		i2 = 0
 		for {
 			if !(i2 < saveCount) {
 				break
 			}
 			if (*SimplexVertex)(unsafe.Pointer(vertex)).IndexA == saveA[i2] && (*SimplexVertex)(unsafe.Pointer(vertex)).IndexB == saveB[i2] {
-				duplicate = uint8(true1)
+				duplicate = boolUint8(true1 != 0)
 				break
 			}
 			goto _61
 		_61:
 			;
-			i2++
+			i2 = i2 + 1
 		}
 		// If we found a duplicate support point we must exit to avoid cycling.
 		if duplicate != 0 {
@@ -297,7 +297,7 @@ _16:
 	}
 	if simplexes != uintptrFromInt32(0) && simplexIndex < simplexCapacity {
 		*(*Simplex)(unsafe.Pointer(simplexes + uintptr(simplexIndex)*112)) = *(*Simplex)(unsafe.Pointer(bp + 72))
-		simplexIndex += int32(1)
+		simplexIndex = simplexIndex + int32(1)
 	}
 	v62 = nonUnitNormal
 	length = sqrtf(tls, float32(v62.X*v62.X)+float32(v62.Y*v62.Y))
@@ -465,7 +465,7 @@ _4:
 	(*(*DistanceInput)(unsafe.Pointer(bp + 8))).ProxyB = (*ShapeCastPairInput)(unsafe.Pointer(input)).ProxyB
 	(*(*DistanceInput)(unsafe.Pointer(bp + 8))).TransformA = (*ShapeCastPairInput)(unsafe.Pointer(input)).TransformA
 	(*(*DistanceInput)(unsafe.Pointer(bp + 8))).TransformB = (*ShapeCastPairInput)(unsafe.Pointer(input)).TransformB
-	(*(*DistanceInput)(unsafe.Pointer(bp + 8))).UseRadii = uint8(false1)
+	(*(*DistanceInput)(unsafe.Pointer(bp + 8))).UseRadii = boolUint8(false1 != 0)
 	delta2 = (*ShapeCastPairInput)(unsafe.Pointer(input)).TranslationB
 	output = CastOutput{}
 	iteration = 0
@@ -482,7 +482,7 @@ _4:
 					target = distanceOutput.Distance - linearSlop
 				} else {
 					// Initial overlap
-					output.Hit = uint8(true1)
+					output.Hit = boolUint8(true1 != 0)
 					v7 = distanceOutput.PointA
 					v8 = (*ShapeCastPairInput)(unsafe.Pointer(input)).ProxyA.Radius
 					v9 = distanceOutput.Normal
@@ -554,7 +554,7 @@ _4:
 			_38:
 				output.Point = v37
 				output.Normal = distanceOutput.Normal
-				output.Hit = uint8(true1)
+				output.Hit = boolUint8(true1 != 0)
 				return output
 			}
 		}
@@ -596,7 +596,7 @@ _4:
 			return output
 		}
 		// Advance sweep
-		fraction += (target - distanceOutput.Distance) / denominator
+		fraction = fraction + (target-distanceOutput.Distance)/denominator
 		if fraction >= (*ShapeCastPairInput)(unsafe.Pointer(input)).MaxFraction {
 			// Miss
 			return output
@@ -614,7 +614,7 @@ _4:
 		goto _6
 	_6:
 		;
-		iteration++
+		iteration = iteration + 1
 	}
 	// Failure!
 	return output
@@ -962,7 +962,7 @@ _13:
 	(*b2Shape)(unsafe.Pointer(shape)).Filter = (*ShapeDef)(unsafe.Pointer(def)).Filter
 	(*b2Shape)(unsafe.Pointer(shape)).UserData = (*ShapeDef)(unsafe.Pointer(def)).UserData
 	(*b2Shape)(unsafe.Pointer(shape)).CustomColor = (*ShapeDef)(unsafe.Pointer(def)).Material.CustomColor
-	(*b2Shape)(unsafe.Pointer(shape)).EnlargedAABB = uint8(false1)
+	(*b2Shape)(unsafe.Pointer(shape)).EnlargedAABB = boolUint8(false1 != 0)
 	(*b2Shape)(unsafe.Pointer(shape)).EnableSensorEvents = (*ShapeDef)(unsafe.Pointer(def)).EnableSensorEvents
 	(*b2Shape)(unsafe.Pointer(shape)).EnableContactEvents = (*ShapeDef)(unsafe.Pointer(def)).EnableContactEvents
 	(*b2Shape)(unsafe.Pointer(shape)).EnableHitEvents = (*ShapeDef)(unsafe.Pointer(def)).EnableHitEvents
@@ -1240,7 +1240,7 @@ func b2DestroyShapeInternal(tls *_Stack, world uintptr, shape uintptr, body uint
 			goto _17
 		_17:
 			;
-			i++
+			i = i + 1
 		}
 		// Destroy sensor
 		b2ShapeRefArray_Destroy(tls, sensor)
@@ -1300,7 +1300,7 @@ func b2DestroyShape(tls *_Stack, shapeId ShapeId, updateBodyMass uint8) {
 	}
 	shape = b2GetShape(tls, world, shapeId)
 	// need to wake bodies because this might be a static body
-	wakeBodies = uint8(true1)
+	wakeBodies = boolUint8(true1 != 0)
 	v1 = world + 1024
 	v2 = (*b2Shape)(unsafe.Pointer(shape)).BodyId
 	if !(0 <= v2 && v2 < (*b2BodyArray)(unsafe.Pointer(v1)).Count) && b2InternalAssertFcn(tls, __ccgo_ts+349, __ccgo_ts+380, int32FromInt32(192)) != 0 {
@@ -1443,12 +1443,12 @@ func b2GetShapePerimeter(tls *_Stack, shape uintptr) (r float32) {
 			v14 = sqrtf(tls, float32(v13.X*v13.X)+float32(v13.Y*v13.Y))
 			goto _15
 		_15:
-			perimeter += v14
+			perimeter = perimeter + v14
 			prev = next
 			goto _8
 		_8:
 			;
-			i++
+			i = i + 1
 		}
 		return perimeter
 	case int32(b2_segmentShape):
@@ -1573,7 +1573,7 @@ func b2GetShapeProjectedPerimeter(tls *_Stack, shape uintptr, line Vec2) (r floa
 			goto _17
 		_17:
 			;
-			i++
+			i = i + 1
 		}
 		return upper - lower + float32(float32FromFloat32(2)*(*(*Polygon)(unsafe.Add(unsafe.Pointer(shape), 132))).Radius)
 	case int32(b2_segmentShape):
@@ -1770,7 +1770,7 @@ func b2ComputeShapeExtent(tls *_Stack, shape uintptr, localCenter Vec2) (r b2Sha
 			goto _27
 		_27:
 			;
-			i++
+			i = i + 1
 		}
 		extent.MinExtent = minExtent + (*Polygon)(unsafe.Pointer(poly)).Radius
 		extent.MaxExtent = sqrtf(tls, maxExtentSqr) + (*Polygon)(unsafe.Pointer(poly)).Radius
@@ -1898,9 +1898,9 @@ _8:
 	case int32(b2_polygonShape):
 		output = b2RayCastPolygon(tls, bp, shape+132)
 	case int32(b2_segmentShape):
-		output = b2RayCastSegment(tls, bp, shape+132, uint8(false1))
+		output = b2RayCastSegment(tls, bp, shape+132, boolUint8(false1 != 0))
 	case int32(b2_chainSegmentShape):
-		output = b2RayCastSegment(tls, bp, shape+132+8, uint8(true1))
+		output = b2RayCastSegment(tls, bp, shape+132+8, boolUint8(true1 != 0))
 	default:
 		return output
 	}
@@ -1958,7 +1958,7 @@ func b2ShapeCastShape(tls *_Stack, input uintptr, shape uintptr, transform Trans
 		goto _1
 	_1:
 		;
-		i++
+		i = i + 1
 	}
 	v6 = transform.Q
 	v7 = (*ShapeCastInput)(unsafe.Pointer(input)).Translation
@@ -2120,7 +2120,7 @@ _4:
 	case int32(b2_polygonShape):
 		return b2PointInPolygon(tls, localPoint, shape+132)
 	default:
-		return uint8(false1)
+		return boolUint8(false1 != 0)
 	}
 	return r
 }
@@ -2189,7 +2189,7 @@ _10:
 	goto _15
 _11:
 	;
-	output = b2RayCastSegment(tls, bp, shape+132, uint8(false1))
+	output = b2RayCastSegment(tls, bp, shape+132, boolUint8(false1 != 0))
 	goto _15
 _12:
 	;
@@ -2197,7 +2197,7 @@ _12:
 	goto _15
 _13:
 	;
-	output = b2RayCastSegment(tls, bp, shape+132+8, uint8(true1))
+	output = b2RayCastSegment(tls, bp, shape+132+8, boolUint8(true1 != 0))
 	goto _15
 _14:
 	;
@@ -2407,7 +2407,7 @@ func b2Shape_SetFilter(tls *_Stack, shapeId ShapeId, filter Filter) {
 	destroyProxy = boolUint8(filter.CategoryBits != (*b2Shape)(unsafe.Pointer(shape)).Filter.CategoryBits)
 	(*b2Shape)(unsafe.Pointer(shape)).Filter = filter
 	// need to wake bodies because a filter change may destroy contacts
-	wakeBodies = uint8(true1)
+	wakeBodies = boolUint8(true1 != 0)
 	b2ResetProxy(tls, world, shape, wakeBodies, destroyProxy)
 	// note: this does not immediately update sensor overlaps. Instead sensor
 	// overlaps are updated the next time step
@@ -2564,8 +2564,8 @@ func b2Shape_SetCircle(tls *_Stack, shapeId ShapeId, circle uintptr) {
 	*(*Circle)(unsafe.Add(unsafe.Pointer(shape), 132)) = *(*Circle)(unsafe.Pointer(circle))
 	(*b2Shape)(unsafe.Pointer(shape)).Type1 = int32(b2_circleShape)
 	// need to wake bodies so they can react to the shape change
-	wakeBodies = uint8(true1)
-	destroyProxy = uint8(true1)
+	wakeBodies = boolUint8(true1 != 0)
+	destroyProxy = boolUint8(true1 != 0)
 	b2ResetProxy(tls, world, shape, wakeBodies, destroyProxy)
 }
 
@@ -2581,8 +2581,8 @@ func b2Shape_SetCapsule(tls *_Stack, shapeId ShapeId, capsule uintptr) {
 	(*b2Shape)(unsafe.Pointer(shape)).ｆ__ccgo19_132.Capsule = *(*Capsule)(unsafe.Pointer(capsule))
 	(*b2Shape)(unsafe.Pointer(shape)).Type1 = int32(b2_capsuleShape)
 	// need to wake bodies so they can react to the shape change
-	wakeBodies = uint8(true1)
-	destroyProxy = uint8(true1)
+	wakeBodies = boolUint8(true1 != 0)
+	destroyProxy = boolUint8(true1 != 0)
 	b2ResetProxy(tls, world, shape, wakeBodies, destroyProxy)
 }
 
@@ -2598,8 +2598,8 @@ func b2Shape_SetSegment(tls *_Stack, shapeId ShapeId, segment uintptr) {
 	*(*Segment)(unsafe.Add(unsafe.Pointer(shape), 132)) = *(*Segment)(unsafe.Pointer(segment))
 	(*b2Shape)(unsafe.Pointer(shape)).Type1 = int32(b2_segmentShape)
 	// need to wake bodies so they can react to the shape change
-	wakeBodies = uint8(true1)
-	destroyProxy = uint8(true1)
+	wakeBodies = boolUint8(true1 != 0)
+	destroyProxy = boolUint8(true1 != 0)
 	b2ResetProxy(tls, world, shape, wakeBodies, destroyProxy)
 }
 
@@ -2615,8 +2615,8 @@ func b2Shape_SetPolygon(tls *_Stack, shapeId ShapeId, polygon uintptr) {
 	*(*Polygon)(unsafe.Add(unsafe.Pointer(shape), 132)) = *(*Polygon)(unsafe.Pointer(polygon))
 	(*b2Shape)(unsafe.Pointer(shape)).Type1 = int32(b2_polygonShape)
 	// need to wake bodies so they can react to the shape change
-	wakeBodies = uint8(true1)
-	destroyProxy = uint8(true1)
+	wakeBodies = boolUint8(true1 != 0)
+	destroyProxy = boolUint8(true1 != 0)
 	b2ResetProxy(tls, world, shape, wakeBodies, destroyProxy)
 }
 
@@ -2726,7 +2726,7 @@ _4:
 			}
 			contactSim = b2GetContactSim(tls, world, contact)
 			(*(*ContactData)(unsafe.Pointer(contactData + uintptr(index2)*128))).Manifold = (*b2ContactSim)(unsafe.Pointer(contactSim)).Manifold
-			index2 += int32(1)
+			index2 = index2 + int32(1)
 		}
 		contactKey = (*(*b2ContactEdge)(unsafe.Pointer(contact + 12 + uintptr(edgeIndex)*12))).NextKey
 	}
@@ -2806,7 +2806,7 @@ _8:
 		goto _10
 	_10:
 		;
-		i++
+		i = i + 1
 	}
 	return count
 }
@@ -2863,7 +2863,7 @@ _4:
 	(*(*DistanceInput)(unsafe.Pointer(bp + 8))).ProxyB = b2MakeProxy(tls, bp, int32(1), float32FromFloat32(0))
 	(*(*DistanceInput)(unsafe.Pointer(bp + 8))).TransformA = transform
 	(*(*DistanceInput)(unsafe.Pointer(bp + 8))).TransformB = b2Transform_identity
-	(*(*DistanceInput)(unsafe.Pointer(bp + 8))).UseRadii = uint8(true1)
+	(*(*DistanceInput)(unsafe.Pointer(bp + 8))).UseRadii = boolUint8(true1 != 0)
 	*(*SimplexCache)(unsafe.Pointer(bp + 192)) = SimplexCache{}
 	output = b2ShapeDistance(tls, bp+8, bp+192, uintptrFromInt32(0), 0)
 	return output.PointA
@@ -2876,8 +2876,8 @@ func b2DefaultShapeDef(tls *_Stack) (r ShapeDef) {
 	def.Material.Friction = float32FromFloat32(0.6)
 	def.Density = float32FromFloat32(1)
 	def.Filter = b2DefaultFilter(tls)
-	def.UpdateBodyMass = uint8(true1)
-	def.InvokeContactCreation = uint8(true1)
+	def.UpdateBodyMass = boolUint8(true1 != 0)
+	def.InvokeContactCreation = boolUint8(true1 != 0)
 	def.InternalValue = int32(_B2_SECRET_COOKIE)
 	return def
 }
@@ -2913,7 +2913,7 @@ func b2DrawShape(tls *_Stack, draw uintptr, shape uintptr, xf Transform, color H
 		goto _8
 	_8:
 		p2 = v7
-		(*(*func(*_Stack, Vec2, Vec2, float32, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawSolidCapsuleFcn})))(tls, p1, p2, (*Capsule)(unsafe.Pointer(capsule)).Radius, color, (*DebugDraw)(unsafe.Pointer(draw)).Context)
+		(*(*func(*_Stack, Vec2, Vec2, float32, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawSolidCapsuleFcn})))(tls, p1, p2, (*Capsule)(unsafe.Pointer(capsule)).Radius, color, (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 	case int32(b2_circleShape):
 		circle = shape + 132
 		v9 = xf
@@ -2927,10 +2927,10 @@ func b2DrawShape(tls *_Stack, draw uintptr, shape uintptr, xf Transform, color H
 		goto _12
 	_12:
 		xf.P = v11
-		(*(*func(*_Stack, Transform, float32, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawSolidCircleFcn})))(tls, xf, (*Circle)(unsafe.Pointer(circle)).Radius, color, (*DebugDraw)(unsafe.Pointer(draw)).Context)
+		(*(*func(*_Stack, Transform, float32, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawSolidCircleFcn})))(tls, xf, (*Circle)(unsafe.Pointer(circle)).Radius, color, (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 	case int32(b2_polygonShape):
 		poly = shape + 132
-		(*(*func(*_Stack, Transform, uintptr, int32, float32, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawSolidPolygonFcn})))(tls, xf, poly, (*Polygon)(unsafe.Pointer(poly)).Count, (*Polygon)(unsafe.Pointer(poly)).Radius, color, (*DebugDraw)(unsafe.Pointer(draw)).Context)
+		(*(*func(*_Stack, Transform, uintptr, int32, float32, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawSolidPolygonFcn})))(tls, xf, poly, (*Polygon)(unsafe.Pointer(poly)).Count, (*Polygon)(unsafe.Pointer(poly)).Radius, color, (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 	case int32(b2_segmentShape):
 		segment = shape + 132
 		v13 = xf
@@ -2955,7 +2955,7 @@ func b2DrawShape(tls *_Stack, draw uintptr, shape uintptr, xf Transform, color H
 		goto _20
 	_20:
 		p21 = v19
-		(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawSegmentFcn})))(tls, p11, p21, color, (*DebugDraw)(unsafe.Pointer(draw)).Context)
+		(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawSegmentFcn})))(tls, p11, p21, color, (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 	case int32(b2_chainSegmentShape):
 		segment1 = shape + 132 + 8
 		v21 = xf
@@ -2980,8 +2980,8 @@ func b2DrawShape(tls *_Stack, draw uintptr, shape uintptr, xf Transform, color H
 		goto _28
 	_28:
 		p22 = v27
-		(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawSegmentFcn})))(tls, p12, p22, color, (*DebugDraw)(unsafe.Pointer(draw)).Context)
-		(*(*func(*_Stack, Vec2, float32, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawPointFcn})))(tls, p22, float32FromFloat32(4), color, (*DebugDraw)(unsafe.Pointer(draw)).Context)
+		(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawSegmentFcn})))(tls, p12, p22, color, (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
+		(*(*func(*_Stack, Vec2, float32, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawPointFcn})))(tls, p22, float32FromFloat32(4), color, (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 		v29 = p12
 		v30 = p22
 		v31 = float32FromFloat32(0.1)
@@ -2991,7 +2991,7 @@ func b2DrawShape(tls *_Stack, draw uintptr, shape uintptr, xf Transform, color H
 		}
 		goto _33
 	_33:
-		(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawSegmentFcn})))(tls, p12, v32, int32(b2_colorPaleGreen), (*DebugDraw)(unsafe.Pointer(draw)).Context)
+		(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawSegmentFcn})))(tls, p12, v32, int32(b2_colorPaleGreen), (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 	default:
 		break
 	}
@@ -3002,21 +3002,21 @@ func b2Shape_IsValid(tls *_Stack, id ShapeId) (r uint8) {
 	var shapeId int32
 	_, _, _ = shape, shapeId, world
 	if int32(_B2_MAX_WORLDS) <= int32FromUint16(id.World0) {
-		return uint8(false1)
+		return boolUint8(false1 != 0)
 	}
 	world = uintptr(unsafe.Pointer(&b2_worlds)) + uintptr(id.World0)*1792
 	if int32FromUint16((*b2World)(unsafe.Pointer(world)).WorldId) != int32FromUint16(id.World0) {
 		// world is free
-		return uint8(false1)
+		return boolUint8(false1 != 0)
 	}
 	shapeId = id.Index1 - int32(1)
 	if shapeId < 0 || (*b2World)(unsafe.Pointer(world)).Shapes.Count <= shapeId {
-		return uint8(false1)
+		return boolUint8(false1 != 0)
 	}
 	shape = (*b2World)(unsafe.Pointer(world)).Shapes.Data + uintptr(shapeId)*288
 	if (*b2Shape)(unsafe.Pointer(shape)).Id == -int32(1) {
 		// shape is free
-		return uint8(false1)
+		return boolUint8(false1 != 0)
 	}
 	if !((*b2Shape)(unsafe.Pointer(shape)).Id == shapeId) && b2InternalAssertFcn(tls, __ccgo_ts+16034, __ccgo_ts+15342, int32FromInt32(1641)) != 0 {
 		__builtin_trap(tls)

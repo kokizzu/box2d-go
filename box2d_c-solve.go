@@ -1,8 +1,8 @@
 package b2
 
 import (
-	"unsafe"
 	"reflect"
+	"unsafe"
 )
 
 var _ unsafe.Pointer
@@ -228,7 +228,7 @@ _4:
 			impulse = newImpulse - (*b2ContactConstraintPoint)(unsafe.Pointer(cp)).NormalImpulse
 			(*b2ContactConstraintPoint)(unsafe.Pointer(cp)).NormalImpulse = newImpulse
 			*(*float32)(unsafe.Pointer(cp + 32)) += newImpulse
-			totalNormalImpulse += newImpulse
+			totalNormalImpulse = totalNormalImpulse + newImpulse
 			v70 = impulse
 			v71 = normal
 			v72 = Vec2{
@@ -254,7 +254,7 @@ _4:
 			v81 = float32(v79.X*v80.Y) - float32(v79.Y*v80.X)
 			goto _82
 		_82:
-			wA -= float32(iA * v81)
+			wA = wA - float32(iA*v81)
 			v83 = vB
 			v84 = mB
 			v85 = P
@@ -270,11 +270,11 @@ _4:
 			v90 = float32(v88.X*v89.Y) - float32(v88.Y*v89.X)
 			goto _91
 		_91:
-			wB += float32(iB * v90)
+			wB = wB + float32(iB*v90)
 			goto _15
 		_15:
 			;
-			j++
+			j = j + 1
 		}
 		// Friction
 		j1 = 0
@@ -385,7 +385,7 @@ _4:
 			v135 = float32(v133.X*v134.Y) - float32(v133.Y*v134.X)
 			goto _136
 		_136:
-			wA -= float32(iA * v135)
+			wA = wA - float32(iA*v135)
 			v137 = vB
 			v138 = mB
 			v139 = P1
@@ -401,11 +401,11 @@ _4:
 			v144 = float32(v142.X*v143.Y) - float32(v142.Y*v143.X)
 			goto _145
 		_145:
-			wB += float32(iB * v144)
+			wB = wB + float32(iB*v144)
 			goto _92
 		_92:
 			;
-			j1++
+			j1 = j1 + 1
 		}
 		// Rolling resistance
 		deltaLambda = float32(-(*b2ContactConstraint)(unsafe.Pointer(constraint)).RollingMass * (wB - wA))
@@ -429,8 +429,8 @@ _4:
 	_150:
 		(*b2ContactConstraint)(unsafe.Pointer(constraint)).RollingImpulse = v149
 		deltaLambda = (*b2ContactConstraint)(unsafe.Pointer(constraint)).RollingImpulse - lambda
-		wA -= float32(iA * deltaLambda)
-		wB += float32(iB * deltaLambda)
+		wA = wA - float32(iA*deltaLambda)
+		wB = wB + float32(iB*deltaLambda)
 		(*b2BodyState)(unsafe.Pointer(stateA)).LinearVelocity = vA
 		(*b2BodyState)(unsafe.Pointer(stateA)).AngularVelocity = wA
 		(*b2BodyState)(unsafe.Pointer(stateB)).LinearVelocity = vB
@@ -438,7 +438,7 @@ _4:
 		goto _5
 	_5:
 		;
-		i++
+		i = i + 1
 	}
 }
 
@@ -476,8 +476,8 @@ func b2SolveContactsTask(tls *_Stack, startIndex int32, endIndex int32, context 
 		}
 		totalNormalImpulse = b2ZeroW(tls)
 		dp = b2Vec2W{
-			ｆX: b2SubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).Dp.ｆX, (*(*b2BodyStateW)(unsafe.Pointer(bp))).Dp.ｆX),
-			ｆY: b2SubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).Dp.ｆY, (*(*b2BodyStateW)(unsafe.Pointer(bp))).Dp.ｆY),
+			X: b2SubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).Dp.X, (*(*b2BodyStateW)(unsafe.Pointer(bp))).Dp.X),
+			Y: b2SubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).Dp.Y, (*(*b2BodyStateW)(unsafe.Pointer(bp))).Dp.Y),
 		}
 		// point1 non-penetration constraint
 		// Fixed anchors for impulses
@@ -489,8 +489,8 @@ func b2SolveContactsTask(tls *_Stack, startIndex int32, endIndex int32, context 
 		// compute current separation
 		// this is subject to round-off error if the anchor is far from the body center of mass
 		ds = b2Vec2W{
-			ｆX: b2AddW(tls, dp.ｆX, b2SubW(tls, rsB.ｆX, rsA.ｆX)),
-			ｆY: b2AddW(tls, dp.ｆY, b2SubW(tls, rsB.ｆY, rsA.ｆY)),
+			X: b2AddW(tls, dp.X, b2SubW(tls, rsB.X, rsA.X)),
+			Y: b2AddW(tls, dp.Y, b2SubW(tls, rsB.Y, rsA.Y)),
 		}
 		s = b2AddW(tls, b2DotW(tls, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).Normal, ds), (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).BaseSeparation1)
 		// Apply speculative bias if separation is greater than zero, otherwise apply soft constraint bias
@@ -503,9 +503,9 @@ func b2SolveContactsTask(tls *_Stack, startIndex int32, endIndex int32, context 
 		pointMassScale = b2BlendW(tls, massScale, oneW, mask)
 		pointImpulseScale = b2BlendW(tls, impulseScale, b2ZeroW(tls), mask)
 		// Relative velocity at contact
-		dvx = b2SubW(tls, b2SubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.ｆX, b2MulW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).W, rB.ｆY)), b2SubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).V.ｆX, b2MulW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).W, rA.ｆY)))
-		dvy = b2SubW(tls, b2AddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.ｆY, b2MulW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).W, rB.ｆX)), b2AddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).V.ｆY, b2MulW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).W, rA.ｆX)))
-		vn = b2AddW(tls, b2MulW(tls, dvx, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).Normal.ｆX), b2MulW(tls, dvy, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).Normal.ｆY))
+		dvx = b2SubW(tls, b2SubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.X, b2MulW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).W, rB.Y)), b2SubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).V.X, b2MulW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).W, rA.Y)))
+		dvy = b2SubW(tls, b2AddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.Y, b2MulW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).W, rB.X)), b2AddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).V.Y, b2MulW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).W, rA.X)))
+		vn = b2AddW(tls, b2MulW(tls, dvx, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).Normal.X), b2MulW(tls, dvy, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).Normal.Y))
 		// Compute normal impulse
 		negImpulse = b2AddW(tls, b2MulW(tls, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).NormalMass1, b2MulW(tls, pointMassScale, b2AddW(tls, vn, bias))), b2MulW(tls, pointImpulseScale, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).NormalImpulse1))
 		// Clamp the accumulated impulse
@@ -515,22 +515,22 @@ func b2SolveContactsTask(tls *_Stack, startIndex int32, endIndex int32, context 
 		(*b2ContactConstraintSIMD)(unsafe.Pointer(c)).TotalNormalImpulse1 = b2AddW(tls, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).TotalNormalImpulse1, newImpulse)
 		totalNormalImpulse = b2AddW(tls, totalNormalImpulse, newImpulse)
 		// Apply contact impulse
-		Px = b2MulW(tls, impulse, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).Normal.ｆX)
-		Py = b2MulW(tls, impulse, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).Normal.ｆY)
-		(*(*b2BodyStateW)(unsafe.Pointer(bp))).V.ｆX = b2MulSubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).V.ｆX, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassA, Px)
-		(*(*b2BodyStateW)(unsafe.Pointer(bp))).V.ｆY = b2MulSubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).V.ｆY, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassA, Py)
-		(*(*b2BodyStateW)(unsafe.Pointer(bp))).W = b2MulSubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).W, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvIA, b2SubW(tls, b2MulW(tls, rA.ｆX, Py), b2MulW(tls, rA.ｆY, Px)))
-		(*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.ｆX = b2MulAddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.ｆX, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassB, Px)
-		(*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.ｆY = b2MulAddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.ｆY, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassB, Py)
-		(*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).W = b2MulAddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).W, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvIB, b2SubW(tls, b2MulW(tls, rB.ｆX, Py), b2MulW(tls, rB.ｆY, Px)))
+		Px = b2MulW(tls, impulse, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).Normal.X)
+		Py = b2MulW(tls, impulse, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).Normal.Y)
+		(*(*b2BodyStateW)(unsafe.Pointer(bp))).V.X = b2MulSubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).V.X, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassA, Px)
+		(*(*b2BodyStateW)(unsafe.Pointer(bp))).V.Y = b2MulSubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).V.Y, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassA, Py)
+		(*(*b2BodyStateW)(unsafe.Pointer(bp))).W = b2MulSubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).W, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvIA, b2SubW(tls, b2MulW(tls, rA.X, Py), b2MulW(tls, rA.Y, Px)))
+		(*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.X = b2MulAddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.X, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassB, Px)
+		(*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.Y = b2MulAddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.Y, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassB, Py)
+		(*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).W = b2MulAddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).W, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvIB, b2SubW(tls, b2MulW(tls, rB.X, Py), b2MulW(tls, rB.Y, Px)))
 		// second point non-penetration constraint
 		// moving anchors for current separation
 		rsA1 = b2RotateVectorW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).Dq, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).AnchorA2)
 		rsB1 = b2RotateVectorW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).Dq, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).AnchorB2)
 		// compute current separation
 		ds1 = b2Vec2W{
-			ｆX: b2AddW(tls, dp.ｆX, b2SubW(tls, rsB1.ｆX, rsA1.ｆX)),
-			ｆY: b2AddW(tls, dp.ｆY, b2SubW(tls, rsB1.ｆY, rsA1.ｆY)),
+			X: b2AddW(tls, dp.X, b2SubW(tls, rsB1.X, rsA1.X)),
+			Y: b2AddW(tls, dp.Y, b2SubW(tls, rsB1.Y, rsA1.Y)),
 		}
 		s1 = b2AddW(tls, b2DotW(tls, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).Normal, ds1), (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).BaseSeparation2)
 		mask1 = b2GreaterThanW(tls, s1, b2ZeroW(tls))
@@ -543,9 +543,9 @@ func b2SolveContactsTask(tls *_Stack, startIndex int32, endIndex int32, context 
 		rA1 = (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).AnchorA2
 		rB1 = (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).AnchorB2
 		// Relative velocity at contact
-		dvx1 = b2SubW(tls, b2SubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.ｆX, b2MulW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).W, rB1.ｆY)), b2SubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).V.ｆX, b2MulW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).W, rA1.ｆY)))
-		dvy1 = b2SubW(tls, b2AddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.ｆY, b2MulW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).W, rB1.ｆX)), b2AddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).V.ｆY, b2MulW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).W, rA1.ｆX)))
-		vn1 = b2AddW(tls, b2MulW(tls, dvx1, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).Normal.ｆX), b2MulW(tls, dvy1, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).Normal.ｆY))
+		dvx1 = b2SubW(tls, b2SubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.X, b2MulW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).W, rB1.Y)), b2SubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).V.X, b2MulW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).W, rA1.Y)))
+		dvy1 = b2SubW(tls, b2AddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.Y, b2MulW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).W, rB1.X)), b2AddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).V.Y, b2MulW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).W, rA1.X)))
+		vn1 = b2AddW(tls, b2MulW(tls, dvx1, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).Normal.X), b2MulW(tls, dvy1, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).Normal.Y))
 		// Compute normal impulse
 		negImpulse1 = b2AddW(tls, b2MulW(tls, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).NormalMass2, b2MulW(tls, pointMassScale1, b2AddW(tls, vn1, bias1))), b2MulW(tls, pointImpulseScale1, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).NormalImpulse2))
 		// Clamp the accumulated impulse
@@ -555,23 +555,23 @@ func b2SolveContactsTask(tls *_Stack, startIndex int32, endIndex int32, context 
 		(*b2ContactConstraintSIMD)(unsafe.Pointer(c)).TotalNormalImpulse2 = b2AddW(tls, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).TotalNormalImpulse2, newImpulse1)
 		totalNormalImpulse = b2AddW(tls, totalNormalImpulse, newImpulse1)
 		// Apply contact impulse
-		Px1 = b2MulW(tls, impulse1, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).Normal.ｆX)
-		Py1 = b2MulW(tls, impulse1, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).Normal.ｆY)
-		(*(*b2BodyStateW)(unsafe.Pointer(bp))).V.ｆX = b2MulSubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).V.ｆX, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassA, Px1)
-		(*(*b2BodyStateW)(unsafe.Pointer(bp))).V.ｆY = b2MulSubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).V.ｆY, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassA, Py1)
-		(*(*b2BodyStateW)(unsafe.Pointer(bp))).W = b2MulSubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).W, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvIA, b2SubW(tls, b2MulW(tls, rA1.ｆX, Py1), b2MulW(tls, rA1.ｆY, Px1)))
-		(*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.ｆX = b2MulAddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.ｆX, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassB, Px1)
-		(*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.ｆY = b2MulAddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.ｆY, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassB, Py1)
-		(*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).W = b2MulAddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).W, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvIB, b2SubW(tls, b2MulW(tls, rB1.ｆX, Py1), b2MulW(tls, rB1.ｆY, Px1)))
-		tangentX = (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).Normal.ｆY
-		tangentY = b2SubW(tls, b2ZeroW(tls), (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).Normal.ｆX)
+		Px1 = b2MulW(tls, impulse1, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).Normal.X)
+		Py1 = b2MulW(tls, impulse1, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).Normal.Y)
+		(*(*b2BodyStateW)(unsafe.Pointer(bp))).V.X = b2MulSubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).V.X, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassA, Px1)
+		(*(*b2BodyStateW)(unsafe.Pointer(bp))).V.Y = b2MulSubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).V.Y, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassA, Py1)
+		(*(*b2BodyStateW)(unsafe.Pointer(bp))).W = b2MulSubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).W, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvIA, b2SubW(tls, b2MulW(tls, rA1.X, Py1), b2MulW(tls, rA1.Y, Px1)))
+		(*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.X = b2MulAddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.X, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassB, Px1)
+		(*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.Y = b2MulAddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.Y, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassB, Py1)
+		(*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).W = b2MulAddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).W, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvIB, b2SubW(tls, b2MulW(tls, rB1.X, Py1), b2MulW(tls, rB1.Y, Px1)))
+		tangentX = (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).Normal.Y
+		tangentY = b2SubW(tls, b2ZeroW(tls), (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).Normal.X)
 		// point 1 friction constraint
 		// fixed anchors for Jacobians
 		rA2 = (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).AnchorA1
 		rB2 = (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).AnchorB1
 		// Relative velocity at contact
-		dvx2 = b2SubW(tls, b2SubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.ｆX, b2MulW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).W, rB2.ｆY)), b2SubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).V.ｆX, b2MulW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).W, rA2.ｆY)))
-		dvy2 = b2SubW(tls, b2AddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.ｆY, b2MulW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).W, rB2.ｆX)), b2AddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).V.ｆY, b2MulW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).W, rA2.ｆX)))
+		dvx2 = b2SubW(tls, b2SubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.X, b2MulW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).W, rB2.Y)), b2SubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).V.X, b2MulW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).W, rA2.Y)))
+		dvy2 = b2SubW(tls, b2AddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.Y, b2MulW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).W, rB2.X)), b2AddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).V.Y, b2MulW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).W, rA2.X)))
 		vt = b2AddW(tls, b2MulW(tls, dvx2, tangentX), b2MulW(tls, dvy2, tangentY))
 		// Tangent speed (conveyor belt)
 		vt = b2SubW(tls, vt, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).TangentSpeed)
@@ -586,19 +586,19 @@ func b2SolveContactsTask(tls *_Stack, startIndex int32, endIndex int32, context 
 		// Apply contact impulse
 		Px2 = b2MulW(tls, impulse2, tangentX)
 		Py2 = b2MulW(tls, impulse2, tangentY)
-		(*(*b2BodyStateW)(unsafe.Pointer(bp))).V.ｆX = b2MulSubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).V.ｆX, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassA, Px2)
-		(*(*b2BodyStateW)(unsafe.Pointer(bp))).V.ｆY = b2MulSubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).V.ｆY, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassA, Py2)
-		(*(*b2BodyStateW)(unsafe.Pointer(bp))).W = b2MulSubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).W, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvIA, b2SubW(tls, b2MulW(tls, rA2.ｆX, Py2), b2MulW(tls, rA2.ｆY, Px2)))
-		(*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.ｆX = b2MulAddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.ｆX, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassB, Px2)
-		(*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.ｆY = b2MulAddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.ｆY, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassB, Py2)
-		(*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).W = b2MulAddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).W, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvIB, b2SubW(tls, b2MulW(tls, rB2.ｆX, Py2), b2MulW(tls, rB2.ｆY, Px2)))
+		(*(*b2BodyStateW)(unsafe.Pointer(bp))).V.X = b2MulSubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).V.X, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassA, Px2)
+		(*(*b2BodyStateW)(unsafe.Pointer(bp))).V.Y = b2MulSubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).V.Y, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassA, Py2)
+		(*(*b2BodyStateW)(unsafe.Pointer(bp))).W = b2MulSubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).W, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvIA, b2SubW(tls, b2MulW(tls, rA2.X, Py2), b2MulW(tls, rA2.Y, Px2)))
+		(*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.X = b2MulAddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.X, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassB, Px2)
+		(*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.Y = b2MulAddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.Y, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassB, Py2)
+		(*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).W = b2MulAddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).W, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvIB, b2SubW(tls, b2MulW(tls, rB2.X, Py2), b2MulW(tls, rB2.Y, Px2)))
 		// second point friction constraint
 		// fixed anchors for Jacobians
 		rA3 = (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).AnchorA2
 		rB3 = (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).AnchorB2
 		// Relative velocity at contact
-		dvx3 = b2SubW(tls, b2SubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.ｆX, b2MulW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).W, rB3.ｆY)), b2SubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).V.ｆX, b2MulW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).W, rA3.ｆY)))
-		dvy3 = b2SubW(tls, b2AddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.ｆY, b2MulW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).W, rB3.ｆX)), b2AddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).V.ｆY, b2MulW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).W, rA3.ｆX)))
+		dvx3 = b2SubW(tls, b2SubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.X, b2MulW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).W, rB3.Y)), b2SubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).V.X, b2MulW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).W, rA3.Y)))
+		dvy3 = b2SubW(tls, b2AddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.Y, b2MulW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).W, rB3.X)), b2AddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).V.Y, b2MulW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).W, rA3.X)))
 		vt1 = b2AddW(tls, b2MulW(tls, dvx3, tangentX), b2MulW(tls, dvy3, tangentY))
 		// Tangent speed (conveyor belt)
 		vt1 = b2SubW(tls, vt1, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).TangentSpeed)
@@ -613,12 +613,12 @@ func b2SolveContactsTask(tls *_Stack, startIndex int32, endIndex int32, context 
 		// Apply contact impulse
 		Px3 = b2MulW(tls, impulse3, tangentX)
 		Py3 = b2MulW(tls, impulse3, tangentY)
-		(*(*b2BodyStateW)(unsafe.Pointer(bp))).V.ｆX = b2MulSubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).V.ｆX, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassA, Px3)
-		(*(*b2BodyStateW)(unsafe.Pointer(bp))).V.ｆY = b2MulSubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).V.ｆY, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassA, Py3)
-		(*(*b2BodyStateW)(unsafe.Pointer(bp))).W = b2MulSubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).W, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvIA, b2SubW(tls, b2MulW(tls, rA3.ｆX, Py3), b2MulW(tls, rA3.ｆY, Px3)))
-		(*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.ｆX = b2MulAddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.ｆX, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassB, Px3)
-		(*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.ｆY = b2MulAddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.ｆY, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassB, Py3)
-		(*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).W = b2MulAddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).W, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvIB, b2SubW(tls, b2MulW(tls, rB3.ｆX, Py3), b2MulW(tls, rB3.ｆY, Px3)))
+		(*(*b2BodyStateW)(unsafe.Pointer(bp))).V.X = b2MulSubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).V.X, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassA, Px3)
+		(*(*b2BodyStateW)(unsafe.Pointer(bp))).V.Y = b2MulSubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).V.Y, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassA, Py3)
+		(*(*b2BodyStateW)(unsafe.Pointer(bp))).W = b2MulSubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).W, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvIA, b2SubW(tls, b2MulW(tls, rA3.X, Py3), b2MulW(tls, rA3.Y, Px3)))
+		(*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.X = b2MulAddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.X, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassB, Px3)
+		(*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.Y = b2MulAddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.Y, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassB, Py3)
+		(*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).W = b2MulAddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).W, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvIB, b2SubW(tls, b2MulW(tls, rB3.X, Py3), b2MulW(tls, rB3.Y, Px3)))
 		// Rolling resistance
 		deltaLambda = b2MulW(tls, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).RollingMass, b2SubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).W, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).W))
 		lambda = (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).RollingImpulse
@@ -632,7 +632,7 @@ func b2SolveContactsTask(tls *_Stack, startIndex int32, endIndex int32, context 
 		goto _1
 	_1:
 		;
-		i++
+		i = i + 1
 	}
 }
 
@@ -1019,7 +1019,7 @@ func b2SolvePlanes(tls *_Stack, targetDelta Vec2, planes uintptr, count int32) (
 		goto _1
 	_1:
 		;
-		i++
+		i = i + 1
 	}
 	delta = targetDelta
 	tolerance = float32(float32FromFloat32(0.005) * b2_lengthUnitsPerMeter)
@@ -1091,11 +1091,11 @@ func b2SolvePlanes(tls *_Stack, targetDelta Vec2, planes uintptr, count int32) (
 			v24 = v26
 			goto _25
 		_25:
-			totalPush += v24
+			totalPush = totalPush + v24
 			goto _3
 		_3:
 			;
-			planeIndex++
+			planeIndex = planeIndex + 1
 		}
 		if totalPush < tolerance {
 			break
@@ -1103,7 +1103,7 @@ func b2SolvePlanes(tls *_Stack, targetDelta Vec2, planes uintptr, count int32) (
 		goto _2
 	_2:
 		;
-		iteration++
+		iteration = iteration + 1
 	}
 	return PlaneSolverResult{
 		Translation:    delta,
@@ -1408,7 +1408,7 @@ _31:
 			(*b2Shape)(unsafe.Pointer(shape)).Aabb = aabb
 			v95 = (*b2Shape)(unsafe.Pointer(shape)).FatAABB
 			v96 = aabb
-			s = uint8(true1)
+			s = boolUint8(true1 != 0)
 			s = boolUint8(s != 0 && v95.LowerBound.X <= v96.LowerBound.X)
 			s = boolUint8(s != 0 && v95.LowerBound.Y <= v96.LowerBound.Y)
 			s = boolUint8(s != 0 && v96.UpperBound.X <= v95.UpperBound.X)
@@ -1422,8 +1422,8 @@ _31:
 				fatAABB.UpperBound.X = aabb.UpperBound.X + aabbMargin
 				fatAABB.UpperBound.Y = aabb.UpperBound.Y + aabbMargin
 				(*b2Shape)(unsafe.Pointer(shape)).FatAABB = fatAABB
-				(*b2Shape)(unsafe.Pointer(shape)).EnlargedAABB = uint8(true1)
-				(*b2BodySim)(unsafe.Pointer(fastBodySim)).EnlargeAABB = uint8(true1)
+				(*b2Shape)(unsafe.Pointer(shape)).EnlargedAABB = boolUint8(true1 != 0)
+				(*b2BodySim)(unsafe.Pointer(fastBodySim)).EnlargeAABB = boolUint8(true1 != 0)
 			}
 			shapeId = (*b2Shape)(unsafe.Pointer(shape)).NextShapeId
 		}
@@ -1447,7 +1447,7 @@ _31:
 			// shape->aabb is still valid from above
 			v103 = (*b2Shape)(unsafe.Pointer(shape1)).FatAABB
 			v104 = (*b2Shape)(unsafe.Pointer(shape1)).Aabb
-			s = uint8(true1)
+			s = boolUint8(true1 != 0)
 			s = boolUint8(s != 0 && v103.LowerBound.X <= v104.LowerBound.X)
 			s = boolUint8(s != 0 && v103.LowerBound.Y <= v104.LowerBound.Y)
 			s = boolUint8(s != 0 && v104.UpperBound.X <= v103.UpperBound.X)
@@ -1461,8 +1461,8 @@ _31:
 				fatAABB1.UpperBound.X = (*b2Shape)(unsafe.Pointer(shape1)).Aabb.UpperBound.X + aabbMargin
 				fatAABB1.UpperBound.Y = (*b2Shape)(unsafe.Pointer(shape1)).Aabb.UpperBound.Y + aabbMargin
 				(*b2Shape)(unsafe.Pointer(shape1)).FatAABB = fatAABB1
-				(*b2Shape)(unsafe.Pointer(shape1)).EnlargedAABB = uint8(true1)
-				(*b2BodySim)(unsafe.Pointer(fastBodySim)).EnlargeAABB = uint8(true1)
+				(*b2Shape)(unsafe.Pointer(shape1)).EnlargedAABB = boolUint8(true1 != 0)
+				(*b2BodySim)(unsafe.Pointer(fastBodySim)).EnlargeAABB = boolUint8(true1 != 0)
 			}
 			shapeId = (*b2Shape)(unsafe.Pointer(shape1)).NextShapeId
 		}
@@ -1517,8 +1517,8 @@ func b2SolverTask(tls *_Stack, startIndex int32, endIndex int32, threadIndexIgno
 			__builtin_trap(tls)
 		}
 		b2ExecuteMainStage(tls, stages+uintptr(stageIndex)*32, context, syncBits)
-		stageIndex += int32(1)
-		jointSyncIndex += uint32(1)
+		stageIndex = stageIndex + int32(1)
+		jointSyncIndex = jointSyncIndex + uint32(1)
 		// This stage loops over all contact constraints
 		contactSyncIndex = uint32(1)
 		syncBits = contactSyncIndex<<int32FromInt32(16) | uint32FromInt32(stageIndex)
@@ -1526,8 +1526,8 @@ func b2SolverTask(tls *_Stack, startIndex int32, endIndex int32, threadIndexIgno
 			__builtin_trap(tls)
 		}
 		b2ExecuteMainStage(tls, stages+uintptr(stageIndex)*32, context, syncBits)
-		stageIndex += int32(1)
-		contactSyncIndex += uint32(1)
+		stageIndex = stageIndex + int32(1)
+		contactSyncIndex = contactSyncIndex + uint32(1)
 		graphSyncIndex = int32(1)
 		// Single-threaded overflow work. These constraints don't fit in the graph coloring.
 		b2PrepareOverflowJoints(tls, context)
@@ -1548,8 +1548,8 @@ func b2SolverTask(tls *_Stack, startIndex int32, endIndex int32, threadIndexIgno
 				__builtin_trap(tls)
 			}
 			b2ExecuteMainStage(tls, stages+uintptr(iterStageIndex)*32, context, syncBits)
-			iterStageIndex += int32(1)
-			bodySyncIndex += int32(1)
+			iterStageIndex = iterStageIndex + int32(1)
+			bodySyncIndex = bodySyncIndex + int32(1)
 			*(*float32)(unsafe.Pointer(profile + 32)) += b2GetMillisecondsAndReset(tls, bp)
 			// warm start constraints
 			b2WarmStartOverflowJoints(tls, context)
@@ -1564,16 +1564,16 @@ func b2SolverTask(tls *_Stack, startIndex int32, endIndex int32, threadIndexIgno
 					__builtin_trap(tls)
 				}
 				b2ExecuteMainStage(tls, stages+uintptr(iterStageIndex)*32, context, syncBits)
-				iterStageIndex += int32(1)
+				iterStageIndex = iterStageIndex + int32(1)
 				goto _2
 			_2:
 				;
-				colorIndex++
+				colorIndex = colorIndex + 1
 			}
-			graphSyncIndex += int32(1)
+			graphSyncIndex = graphSyncIndex + int32(1)
 			*(*float32)(unsafe.Pointer(profile + 36)) += b2GetMillisecondsAndReset(tls, bp)
 			// solve constraints
-			useBias = uint8(true1)
+			useBias = boolUint8(true1 != 0)
 			j = 0
 			for {
 				if !(j < int32(_ITERATIONS)) {
@@ -1591,17 +1591,17 @@ func b2SolverTask(tls *_Stack, startIndex int32, endIndex int32, threadIndexIgno
 						__builtin_trap(tls)
 					}
 					b2ExecuteMainStage(tls, stages+uintptr(iterStageIndex)*32, context, syncBits)
-					iterStageIndex += int32(1)
+					iterStageIndex = iterStageIndex + int32(1)
 					goto _4
 				_4:
 					;
-					colorIndex1++
+					colorIndex1 = colorIndex1 + 1
 				}
-				graphSyncIndex += int32(1)
+				graphSyncIndex = graphSyncIndex + int32(1)
 				goto _3
 			_3:
 				;
-				j++
+				j = j + 1
 			}
 			*(*float32)(unsafe.Pointer(profile + 40)) += b2GetMillisecondsAndReset(tls, bp)
 			// integrate positions
@@ -1610,11 +1610,11 @@ func b2SolverTask(tls *_Stack, startIndex int32, endIndex int32, threadIndexIgno
 			}
 			syncBits = uint32FromInt32(bodySyncIndex<<int32(16) | iterStageIndex)
 			b2ExecuteMainStage(tls, stages+uintptr(iterStageIndex)*32, context, syncBits)
-			iterStageIndex += int32(1)
-			bodySyncIndex += int32(1)
+			iterStageIndex = iterStageIndex + int32(1)
+			bodySyncIndex = bodySyncIndex + int32(1)
 			*(*float32)(unsafe.Pointer(profile + 44)) += b2GetMillisecondsAndReset(tls, bp)
 			// relax constraints
-			useBias = uint8(false1)
+			useBias = boolUint8(false1 != 0)
 			j1 = 0
 			for {
 				if !(j1 < int32(_RELAX_ITERATIONS)) {
@@ -1632,27 +1632,27 @@ func b2SolverTask(tls *_Stack, startIndex int32, endIndex int32, threadIndexIgno
 						__builtin_trap(tls)
 					}
 					b2ExecuteMainStage(tls, stages+uintptr(iterStageIndex)*32, context, syncBits)
-					iterStageIndex += int32(1)
+					iterStageIndex = iterStageIndex + int32(1)
 					goto _6
 				_6:
 					;
-					colorIndex2++
+					colorIndex2 = colorIndex2 + 1
 				}
-				graphSyncIndex += int32(1)
+				graphSyncIndex = graphSyncIndex + int32(1)
 				goto _5
 			_5:
 				;
-				j1++
+				j1 = j1 + 1
 			}
 			*(*float32)(unsafe.Pointer(profile + 48)) += b2GetMillisecondsAndReset(tls, bp)
 			goto _1
 		_1:
 			;
-			i++
+			i = i + 1
 		}
 		// advance the stage according to the sub-stepping tasks just completed
 		// integrate velocities / warm start / solve / integrate positions / relax
-		stageIndex += int32(1) + activeColorCount + int32(_ITERATIONS)*activeColorCount + int32(1) + int32(_RELAX_ITERATIONS)*activeColorCount
+		stageIndex = stageIndex + (int32(1) + activeColorCount + int32(_ITERATIONS)*activeColorCount + int32(1) + int32(_RELAX_ITERATIONS)*activeColorCount)
 		// Restitution
 		b2ApplyOverflowRestitution(tls, context)
 		iterStageIndex1 = stageIndex
@@ -1666,14 +1666,14 @@ func b2SolverTask(tls *_Stack, startIndex int32, endIndex int32, threadIndexIgno
 				__builtin_trap(tls)
 			}
 			b2ExecuteMainStage(tls, stages+uintptr(iterStageIndex1)*32, context, syncBits)
-			iterStageIndex1 += int32(1)
+			iterStageIndex1 = iterStageIndex1 + int32(1)
 			goto _7
 		_7:
 			;
-			colorIndex3++
+			colorIndex3 = colorIndex3 + 1
 		}
 		// graphSyncIndex += 1;
-		stageIndex += activeColorCount
+		stageIndex = stageIndex + activeColorCount
 		*(*float32)(unsafe.Pointer(profile + 52)) += b2GetMillisecondsAndReset(tls, bp)
 		b2StoreOverflowImpulses(tls, context)
 		syncBits = contactSyncIndex<<int32FromInt32(16) | uint32FromInt32(stageIndex)
@@ -1718,7 +1718,7 @@ func b2SolverTask(tls *_Stack, startIndex int32, endIndex int32, threadIndexIgno
 				// maxSpinTime += 10;
 				b2Pause(tls)
 				b2Pause(tls)
-				spinCount += int32(1)
+				spinCount = spinCount + int32(1)
 			}
 		}
 		if syncBits1 == uint32(0xffffffff) {
@@ -1810,12 +1810,12 @@ _4:
 		} else {
 			v6 = 0
 		}
-		activeColorCount += v6
-		awakeJointCount += perColorJointCount
+		activeColorCount = activeColorCount + v6
+		awakeJointCount = awakeJointCount + perColorJointCount
 		goto _5
 	_5:
 		;
-		i++
+		i = i + 1
 	}
 	// prepare for move events
 	v7 = world + 1328
@@ -1894,14 +1894,14 @@ _4:
 					colorJointBlockCounts[c] = 0
 				}
 			}
-			graphBlockCount += colorContactBlockCounts[c] + colorJointBlockCounts[c]
-			simdContactCount += colorContactCountSIMD
-			c += int32(1)
+			graphBlockCount = graphBlockCount + (colorContactBlockCounts[c] + colorJointBlockCounts[c])
+			simdContactCount = simdContactCount + colorContactCountSIMD
+			c = c + int32(1)
 		}
 		goto _9
 	_9:
 		;
-		i1++
+		i1 = i1 + 1
 	}
 	activeColorCount = c
 	// Gather contact pointers for easy parallel-for traversal. Some may be NULL due to SIMD remainders.
@@ -1937,7 +1937,7 @@ _4:
 				goto _12
 			_12:
 				;
-				k++
+				k = k + 1
 			}
 			// remainder
 			colorContactCountSIMD1 = (colorContactCount1-int32(1))>>int32(_B2_SIMD_SHIFT) + int32(1)
@@ -1950,9 +1950,9 @@ _4:
 				goto _13
 			_13:
 				;
-				k1++
+				k1 = k1 + 1
 			}
-			contactBase += colorContactCountSIMD1
+			contactBase = contactBase + colorContactCountSIMD1
 		}
 		colorJointCount1 = (*b2GraphColor)(unsafe.Pointer(color)).JointSims.Count
 		k2 = 0
@@ -1964,13 +1964,13 @@ _4:
 			goto _14
 		_14:
 			;
-			k2++
+			k2 = k2 + 1
 		}
-		jointBase += colorJointCount1
+		jointBase = jointBase + colorJointCount1
 		goto _11
 	_11:
 		;
-		i2++
+		i2 = i2 + 1
 	}
 	if !(contactBase == simdContactCount) && b2InternalAssertFcn(tls, __ccgo_ts+13533, __ccgo_ts+12460, int32FromInt32(1425)) != 0 {
 		__builtin_trap(tls)
@@ -2006,23 +2006,23 @@ _4:
 	}
 	stageCount = 0
 	// b2_stagePrepareJoints
-	stageCount += int32(1)
+	stageCount = stageCount + int32(1)
 	// b2_stagePrepareContacts
-	stageCount += int32(1)
+	stageCount = stageCount + int32(1)
 	// b2_stageIntegrateVelocities
-	stageCount += int32(1)
+	stageCount = stageCount + int32(1)
 	// b2_stageWarmStart
-	stageCount += activeColorCount
+	stageCount = stageCount + activeColorCount
 	// b2_stageSolve
-	stageCount += int32(_ITERATIONS) * activeColorCount
+	stageCount = stageCount + int32(_ITERATIONS)*activeColorCount
 	// b2_stageIntegratePositions
-	stageCount += int32(1)
+	stageCount = stageCount + int32(1)
 	// b2_stageRelax
-	stageCount += int32(_RELAX_ITERATIONS) * activeColorCount
+	stageCount = stageCount + int32(_RELAX_ITERATIONS)*activeColorCount
 	// b2_stageRestitution
-	stageCount += activeColorCount
+	stageCount = stageCount + activeColorCount
 	// b2_stageStoreImpulses
-	stageCount += int32(1)
+	stageCount = stageCount + int32(1)
 	stages = b2AllocateArenaItem(tls, world, int32FromUint64(uint64FromInt32(stageCount)*uint64(32)), __ccgo_ts+13594)
 	bodyBlocks = b2AllocateArenaItem(tls, world, int32FromUint64(uint64FromInt32(bodyBlockCount)*uint64(12)), __ccgo_ts+13601)
 	contactBlocks = b2AllocateArenaItem(tls, world, int32FromUint64(uint64FromInt32(contactBlockCount)*uint64(12)), __ccgo_ts+13613)
@@ -2059,7 +2059,7 @@ _4:
 		goto _18
 	_18:
 		;
-		i3++
+		i3 = i3 + 1
 	}
 	(*(*b2SolverBlock)(unsafe.Pointer(bodyBlocks + uintptr(bodyBlockCount-int32(1))*12))).Count = int16(awakeBodyCount - (bodyBlockCount-int32FromInt32(1))*bodyBlockSize)
 	// Prepare joint work blocks
@@ -2076,7 +2076,7 @@ _4:
 		goto _19
 	_19:
 		;
-		i4++
+		i4 = i4 + 1
 	}
 	if jointBlockCount > 0 {
 		(*(*b2SolverBlock)(unsafe.Pointer(jointBlocks + uintptr(jointBlockCount-int32(1))*12))).Count = int16(awakeJointCount - (jointBlockCount-int32FromInt32(1))*jointBlockSize)
@@ -2095,7 +2095,7 @@ _4:
 		goto _20
 	_20:
 		;
-		i5++
+		i5 = i5 + 1
 	}
 	if contactBlockCount > 0 {
 		(*(*b2SolverBlock)(unsafe.Pointer(contactBlocks + uintptr(contactBlockCount-int32(1))*12))).Count = int16(simdContactCount - (contactBlockCount-int32FromInt32(1))*contactBlockSize)
@@ -2122,11 +2122,11 @@ _4:
 			goto _22
 		_22:
 			;
-			j1++
+			j1 = j1 + 1
 		}
 		if colorJointBlockCount > 0 {
 			(*(*b2SolverBlock)(unsafe.Pointer(baseGraphBlock + uintptr(colorJointBlockCount-int32(1))*12))).Count = int16(colorJointCounts[i6] - (colorJointBlockCount-int32FromInt32(1))*colorJointBlockSize)
-			baseGraphBlock += uintptr(colorJointBlockCount) * 12
+			baseGraphBlock = baseGraphBlock + uintptr(colorJointBlockCount)*12
 		}
 		colorContactBlockCount = colorContactBlockCounts[i6]
 		colorContactBlockSize = colorContactBlockSizes[i6]
@@ -2143,16 +2143,16 @@ _4:
 			goto _23
 		_23:
 			;
-			j2++
+			j2 = j2 + 1
 		}
 		if colorContactBlockCount > 0 {
 			(*(*b2SolverBlock)(unsafe.Pointer(baseGraphBlock + uintptr(colorContactBlockCount-int32(1))*12))).Count = int16(colorContactCounts[i6] - (colorContactBlockCount-int32FromInt32(1))*colorContactBlockSize)
-			baseGraphBlock += uintptr(colorContactBlockCount) * 12
+			baseGraphBlock = baseGraphBlock + uintptr(colorContactBlockCount)*12
 		}
 		goto _21
 	_21:
 		;
-		i6++
+		i6 = i6 + 1
 	}
 	if !((int64(baseGraphBlock)-int64(graphBlocks))/12 == int64(graphBlockCount)) && b2InternalAssertFcn(tls, __ccgo_ts+13654, __ccgo_ts+12460, int32FromInt32(1581)) != 0 {
 		__builtin_trap(tls)
@@ -2164,21 +2164,21 @@ _4:
 	(*b2SolverStage)(unsafe.Pointer(stage)).BlockCount = jointBlockCount
 	(*b2SolverStage)(unsafe.Pointer(stage)).ColorIndex = -int32(1)
 	atomicStoreNInt32(stage+24, 0, int32FromInt32(__ATOMIC_SEQ_CST))
-	stage += uintptr(1) * 32
+	stage = stage + uintptr(1)*32
 	// Prepare contacts
 	(*b2SolverStage)(unsafe.Pointer(stage)).Type1 = int32(b2_stagePrepareContacts)
 	(*b2SolverStage)(unsafe.Pointer(stage)).Blocks = contactBlocks
 	(*b2SolverStage)(unsafe.Pointer(stage)).BlockCount = contactBlockCount
 	(*b2SolverStage)(unsafe.Pointer(stage)).ColorIndex = -int32(1)
 	atomicStoreNInt32(stage+24, 0, int32FromInt32(__ATOMIC_SEQ_CST))
-	stage += uintptr(1) * 32
+	stage = stage + uintptr(1)*32
 	// Integrate velocities
 	(*b2SolverStage)(unsafe.Pointer(stage)).Type1 = int32(b2_stageIntegrateVelocities)
 	(*b2SolverStage)(unsafe.Pointer(stage)).Blocks = bodyBlocks
 	(*b2SolverStage)(unsafe.Pointer(stage)).BlockCount = bodyBlockCount
 	(*b2SolverStage)(unsafe.Pointer(stage)).ColorIndex = -int32(1)
 	atomicStoreNInt32(stage+24, 0, int32FromInt32(__ATOMIC_SEQ_CST))
-	stage += uintptr(1) * 32
+	stage = stage + uintptr(1)*32
 	// Warm start
 	i7 = 0
 	for {
@@ -2190,11 +2190,11 @@ _4:
 		(*b2SolverStage)(unsafe.Pointer(stage)).BlockCount = colorJointBlockCounts[i7] + colorContactBlockCounts[i7]
 		(*b2SolverStage)(unsafe.Pointer(stage)).ColorIndex = activeColorIndices[i7]
 		atomicStoreNInt32(stage+24, 0, int32FromInt32(__ATOMIC_SEQ_CST))
-		stage += uintptr(1) * 32
+		stage = stage + uintptr(1)*32
 		goto _24
 	_24:
 		;
-		i7++
+		i7 = i7 + 1
 	}
 	// Solve graph
 	j3 = 0
@@ -2212,16 +2212,16 @@ _4:
 			(*b2SolverStage)(unsafe.Pointer(stage)).BlockCount = colorJointBlockCounts[i8] + colorContactBlockCounts[i8]
 			(*b2SolverStage)(unsafe.Pointer(stage)).ColorIndex = activeColorIndices[i8]
 			atomicStoreNInt32(stage+24, 0, int32FromInt32(__ATOMIC_SEQ_CST))
-			stage += uintptr(1) * 32
+			stage = stage + uintptr(1)*32
 			goto _26
 		_26:
 			;
-			i8++
+			i8 = i8 + 1
 		}
 		goto _25
 	_25:
 		;
-		j3++
+		j3 = j3 + 1
 	}
 	// Integrate positions
 	(*b2SolverStage)(unsafe.Pointer(stage)).Type1 = int32(b2_stageIntegratePositions)
@@ -2229,7 +2229,7 @@ _4:
 	(*b2SolverStage)(unsafe.Pointer(stage)).BlockCount = bodyBlockCount
 	(*b2SolverStage)(unsafe.Pointer(stage)).ColorIndex = -int32(1)
 	atomicStoreNInt32(stage+24, 0, int32FromInt32(__ATOMIC_SEQ_CST))
-	stage += uintptr(1) * 32
+	stage = stage + uintptr(1)*32
 	// Relax constraints
 	j4 = 0
 	for {
@@ -2246,16 +2246,16 @@ _4:
 			(*b2SolverStage)(unsafe.Pointer(stage)).BlockCount = colorJointBlockCounts[i9] + colorContactBlockCounts[i9]
 			(*b2SolverStage)(unsafe.Pointer(stage)).ColorIndex = activeColorIndices[i9]
 			atomicStoreNInt32(stage+24, 0, int32FromInt32(__ATOMIC_SEQ_CST))
-			stage += uintptr(1) * 32
+			stage = stage + uintptr(1)*32
 			goto _28
 		_28:
 			;
-			i9++
+			i9 = i9 + 1
 		}
 		goto _27
 	_27:
 		;
-		j4++
+		j4 = j4 + 1
 	}
 	// Restitution
 	// Note: joint blocks mixed in, could have joint limit restitution
@@ -2269,11 +2269,11 @@ _4:
 		(*b2SolverStage)(unsafe.Pointer(stage)).BlockCount = colorJointBlockCounts[i10] + colorContactBlockCounts[i10]
 		(*b2SolverStage)(unsafe.Pointer(stage)).ColorIndex = activeColorIndices[i10]
 		atomicStoreNInt32(stage+24, 0, int32FromInt32(__ATOMIC_SEQ_CST))
-		stage += uintptr(1) * 32
+		stage = stage + uintptr(1)*32
 		goto _29
 	_29:
 		;
-		i10++
+		i10 = i10 + 1
 	}
 	// Store impulses
 	(*b2SolverStage)(unsafe.Pointer(stage)).Type1 = int32(b2_stageStoreImpulses)
@@ -2281,7 +2281,7 @@ _4:
 	(*b2SolverStage)(unsafe.Pointer(stage)).BlockCount = contactBlockCount
 	(*b2SolverStage)(unsafe.Pointer(stage)).ColorIndex = -int32(1)
 	atomicStoreNInt32(stage+24, 0, int32FromInt32(__ATOMIC_SEQ_CST))
-	stage += uintptr(1) * 32
+	stage = stage + uintptr(1)*32
 	if !(int32((int64(stage)-int64(stages))/32) == stageCount) && b2InternalAssertFcn(tls, __ccgo_ts+13715, __ccgo_ts+12460, int32FromInt32(1676)) != 0 {
 		__builtin_trap(tls)
 	}
@@ -2318,7 +2318,7 @@ _4:
 		goto _30
 	_30:
 		;
-		i11++
+		i11 = i11 + 1
 	}
 	// Finish island split
 	if splitIslandTask != uintptrFromInt32(0) {
@@ -2339,7 +2339,7 @@ _4:
 		goto _32
 	_32:
 		;
-		i12++
+		i12 = i12 + 1
 	}
 	(*b2World)(unsafe.Pointer(world)).Profile.SolveConstraints = b2GetMillisecondsAndReset(tls, bp+1544)
 	transformTicks = b2GetTicks(tls)
@@ -2358,7 +2358,7 @@ _4:
 		goto _33
 	_33:
 		;
-		i13++
+		i13 = i13 + 1
 	}
 	// Finalize bodies. Must happen after the constraint solver and after island splitting.
 	finalizeBodiesTask = (*(*func(*_Stack, uintptr, int32, int32, uintptr, uintptr) uintptr)(unsafe.Pointer(&struct{ uintptr }{(*b2World)(unsafe.Pointer(world)).EnqueueTaskFcn})))(tls, __ccgo_fp(b2FinalizeBodiesTask), awakeBodyCount, int32(64), stepContext, (*b2World)(unsafe.Pointer(world)).UserTaskContext)
@@ -2404,7 +2404,7 @@ _4:
 			}
 			event = ContactHitEvent{}
 			event.ApproachSpeed = threshold
-			hit = uint8(false1)
+			hit = boolUint8(false1 != 0)
 			pointCount = (*b2ContactSim)(unsafe.Pointer(contactSim)).Manifold.PointCount
 			k3 = 0
 			for {
@@ -2417,12 +2417,12 @@ _4:
 				if approachSpeed > event.ApproachSpeed && (*ManifoldPoint)(unsafe.Pointer(mp)).TotalNormalImpulse > float32FromFloat32(0) {
 					event.ApproachSpeed = approachSpeed
 					event.Point = (*ManifoldPoint)(unsafe.Pointer(mp)).Point
-					hit = uint8(true1)
+					hit = boolUint8(true1 != 0)
 				}
 				goto _36
 			_36:
 				;
-				k3++
+				k3 = k3 + 1
 			}
 			if int32FromUint8(hit) == int32(true1) {
 				event.Normal = (*b2ContactSim)(unsafe.Pointer(contactSim)).Manifold.Normal
@@ -2470,12 +2470,12 @@ _4:
 			goto _35
 		_35:
 			;
-			j5++
+			j5 = j5 + 1
 		}
 		goto _34
 	_34:
 		;
-		i14++
+		i14 = i14 + 1
 	}
 	(*b2World)(unsafe.Pointer(world)).Profile.HitEvents = b2GetMilliseconds(tls, hitTicks)
 	refitTicks = b2GetTicks(tls)
@@ -2498,7 +2498,7 @@ _4:
 		goto _47
 	_47:
 		;
-		i15++
+		i15 = i15 + 1
 	}
 	// Enlarge broad-phase proxies and build move array
 	// Apply shape AABB changes to broad-phase. This also create the move array which must be
@@ -2560,7 +2560,7 @@ _4:
 					// A fast body may have been flagged as enlarged despite having no shapes enlarged.
 					if (*b2Shape)(unsafe.Pointer(shape1)).EnlargedAABB != 0 {
 						b2BroadPhase_EnlargeProxy(tls, broadPhase, (*b2Shape)(unsafe.Pointer(shape1)).ProxyKey, (*b2Shape)(unsafe.Pointer(shape1)).FatAABB)
-						(*b2Shape)(unsafe.Pointer(shape1)).EnlargedAABB = uint8(false1)
+						(*b2Shape)(unsafe.Pointer(shape1)).EnlargedAABB = boolUint8(false1 != 0)
 					}
 					shapeId = (*b2Shape)(unsafe.Pointer(shape1)).NextShapeId
 				}
@@ -2571,7 +2571,7 @@ _4:
 		goto _48
 	_48:
 		;
-		k4++
+		k4 = k4 + 1
 	}
 	b2ValidateBroadphase(tls, world+40)
 	(*b2World)(unsafe.Pointer(world)).Profile.Refit = b2GetMilliseconds(tls, refitTicks)
@@ -2609,7 +2609,7 @@ _56:
 				goto _57
 			}
 			// clear flag
-			(*b2BodySim)(unsafe.Pointer(bulletBodySim)).EnlargeAABB = uint8(false1)
+			(*b2BodySim)(unsafe.Pointer(bulletBodySim)).EnlargeAABB = boolUint8(false1 != 0)
 			bodyId = (*b2BodySim)(unsafe.Pointer(bulletBodySim)).BodyId
 			if !(0 <= bodyId && bodyId < (*b2World)(unsafe.Pointer(world)).Bodies.Count) && b2InternalAssertFcn(tls, __ccgo_ts+13818, __ccgo_ts+12460, int32FromInt32(1964)) != 0 {
 				__builtin_trap(tls)
@@ -2623,7 +2623,7 @@ _56:
 					continue
 				}
 				// clear flag
-				(*b2Shape)(unsafe.Pointer(shape2)).EnlargedAABB = uint8(false1)
+				(*b2Shape)(unsafe.Pointer(shape2)).EnlargedAABB = boolUint8(false1 != 0)
 				proxyKey = (*b2Shape)(unsafe.Pointer(shape2)).ProxyKey
 				proxyId = proxyKey >> int32(2)
 				if !(proxyKey&int32FromInt32(3) == int32(b2_dynamicBody)) && b2InternalAssertFcn(tls, __ccgo_ts+13862, __ccgo_ts+12460, int32FromInt32(1982)) != 0 {
@@ -2639,7 +2639,7 @@ _56:
 			goto _57
 		_57:
 			;
-			i16++
+			i16 = i16 + 1
 		}
 		(*b2World)(unsafe.Pointer(world)).Profile.Bullets = b2GetMilliseconds(tls, bulletTicks)
 	}
@@ -2677,7 +2677,7 @@ _56:
 			goto _58
 		_58:
 			;
-			i17++
+			i17 = i17 + 1
 		}
 		awakeIslandBitSet = (*b2World)(unsafe.Pointer(world)).TaskContexts.Data + 32
 		i18 = int32(1)
@@ -2689,7 +2689,7 @@ _56:
 			goto _59
 		_59:
 			;
-			i18++
+			i18 = i18 + 1
 		}
 		// Need to process in reverse because this moves islands to sleeping solver sets.
 		islands = (*b2SolverSet)(unsafe.Pointer(awakeSet)).IslandSims.Data
@@ -2703,7 +2703,7 @@ _56:
 			v62 = uint32FromInt32(islandIndex)
 			blockIndex = v62 / uint32(64)
 			if blockIndex >= (*b2BitSet)(unsafe.Pointer(v61)).BlockCount {
-				v63 = uint8(false1)
+				v63 = boolUint8(false1 != 0)
 				goto _64
 			}
 			v63 = boolUint8(*(*uint64_t)(unsafe.Pointer((*b2BitSet)(unsafe.Pointer(v61)).Bits + uintptr(blockIndex)*8))&(uint64FromInt32(1)<<(v62%uint32FromInt32(64))) != uint64(0))
@@ -2719,7 +2719,7 @@ _56:
 			goto _60
 		_60:
 			;
-			islandIndex -= int32(1)
+			islandIndex = islandIndex - int32(1)
 		}
 		b2ValidateSolverSets(tls, world)
 		(*b2World)(unsafe.Pointer(world)).Profile.SleepIslands = b2GetMilliseconds(tls, sleepTicks)
@@ -2955,7 +2955,7 @@ _12:
 		goto _13
 	_13:
 		;
-		i++
+		i = i + 1
 	}
 	// transfer touching contacts from sleeping set to contact graph
 	contactCount = (*b2SolverSet)(unsafe.Pointer(set)).ContactSims.Count
@@ -2991,7 +2991,7 @@ _12:
 		goto _42
 	_42:
 		;
-		i1++
+		i1 = i1 + 1
 	}
 	// transfer joints from sleeping set to awake set
 	jointCount = (*b2SolverSet)(unsafe.Pointer(set)).JointSims.Count
@@ -3018,7 +3018,7 @@ _12:
 		goto _47
 	_47:
 		;
-		i2++
+		i2 = i2 + 1
 	}
 	// transfer island from sleeping set to awake set
 	// Usually a sleeping set has only one island, but it is possible
@@ -3061,7 +3061,7 @@ _12:
 		goto _52
 	_52:
 		;
-		i3++
+		i3 = i3 + 1
 	}
 	// destroy the sleeping set
 	b2DestroySolverSet(tls, world, setIndex)
@@ -3144,7 +3144,7 @@ _8:
 		goto _9
 	_9:
 		;
-		i++
+		i = i + 1
 	}
 	// transfer contacts
 	contactCount = (*b2SolverSet)(unsafe.Pointer(set2)).ContactSims.Count
@@ -3187,7 +3187,7 @@ _8:
 		goto _14
 	_14:
 		;
-		i1++
+		i1 = i1 + 1
 	}
 	// transfer joints
 	jointCount = (*b2SolverSet)(unsafe.Pointer(set2)).JointSims.Count
@@ -3230,7 +3230,7 @@ _8:
 		goto _23
 	_23:
 		;
-		i2++
+		i2 = i2 + 1
 	}
 	// transfer islands
 	islandCount = (*b2SolverSet)(unsafe.Pointer(set2)).IslandSims.Count
@@ -3271,7 +3271,7 @@ _8:
 		goto _32
 	_32:
 		;
-		i3++
+		i3 = i3 + 1
 	}
 	// destroy the merged set
 	b2DestroySolverSet(tls, world, setId2)

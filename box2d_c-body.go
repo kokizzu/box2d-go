@@ -1,8 +1,8 @@
 package b2
 
 import (
-	"unsafe"
 	"reflect"
+	"unsafe"
 )
 
 var _ unsafe.Pointer
@@ -308,7 +308,7 @@ _4:
 		__builtin_trap(tls)
 	}
 	*(*int32)(unsafe.Pointer(island + 20)) -= int32(1)
-	islandDestroyed = uint8(false1)
+	islandDestroyed = boolUint8(false1 != 0)
 	if (*b2Island)(unsafe.Pointer(island)).HeadBody == (*b2Body)(unsafe.Pointer(body)).Id {
 		(*b2Island)(unsafe.Pointer(island)).HeadBody = (*b2Body)(unsafe.Pointer(body)).IslandNext
 		if (*b2Island)(unsafe.Pointer(island)).HeadBody == -int32(1) {
@@ -327,7 +327,7 @@ _4:
 			}
 			// Free the island
 			b2DestroyIsland(tls, world, (*b2Island)(unsafe.Pointer(island)).IslandId)
-			islandDestroyed = uint8(true1)
+			islandDestroyed = boolUint8(true1 != 0)
 		}
 	} else {
 		if (*b2Island)(unsafe.Pointer(island)).TailBody == (*b2Body)(unsafe.Pointer(body)).Id {
@@ -539,11 +539,11 @@ _20:
 		i = 0
 		for i < int32(31) && int32FromUint8(*(*uint8)(unsafe.Pointer((*BodyDef)(unsafe.Pointer(def)).Name + uintptr(i)))) != 0 {
 			*(*uint8)(unsafe.Pointer(body + uintptr(i))) = *(*uint8)(unsafe.Pointer((*BodyDef)(unsafe.Pointer(def)).Name + uintptr(i)))
-			i += int32(1)
+			i = i + int32(1)
 		}
 		for i < int32(32) {
 			*(*uint8)(unsafe.Pointer(body + uintptr(i))) = uint8(0)
-			i += int32(1)
+			i = i + int32(1)
 		}
 	} else {
 		memset(tls, body, 0, uint64FromInt32(32)*uint64FromInt64(1))
@@ -572,8 +572,8 @@ _20:
 	(*b2Body)(unsafe.Pointer(body)).Type1 = (*BodyDef)(unsafe.Pointer(def)).Type1
 	(*b2Body)(unsafe.Pointer(body)).EnableSleep = (*BodyDef)(unsafe.Pointer(def)).EnableSleep
 	(*b2Body)(unsafe.Pointer(body)).FixedRotation = (*BodyDef)(unsafe.Pointer(def)).FixedRotation
-	(*b2Body)(unsafe.Pointer(body)).IsSpeedCapped = uint8(false1)
-	(*b2Body)(unsafe.Pointer(body)).IsMarked = uint8(false1)
+	(*b2Body)(unsafe.Pointer(body)).IsSpeedCapped = boolUint8(false1 != 0)
+	(*b2Body)(unsafe.Pointer(body)).IsMarked = boolUint8(false1 != 0)
 	// dynamic and kinematic bodies that are enabled need a island
 	if setId >= int32(b2_awakeSet) {
 		b2CreateIslandForBody(tls, world, setId, body)
@@ -590,9 +590,9 @@ _20:
 func b2WakeBody(tls *_Stack, world uintptr, body uintptr) (r uint8) {
 	if (*b2Body)(unsafe.Pointer(body)).SetIndex >= int32(b2_firstSleepingSet) {
 		b2WakeSolverSet(tls, world, (*b2Body)(unsafe.Pointer(body)).SetIndex)
-		return uint8(true1)
+		return boolUint8(true1 != 0)
 	}
-	return uint8(false1)
+	return boolUint8(false1 != 0)
 }
 
 func b2DestroyBody(tls *_Stack, bodyId BodyId) {
@@ -606,7 +606,7 @@ func b2DestroyBody(tls *_Stack, bodyId BodyId) {
 	}
 	body = b2GetBodyFullId(tls, world, bodyId)
 	// Wake bodies attached to this body, even if this body is static.
-	wakeBodies = uint8(true1)
+	wakeBodies = boolUint8(true1 != 0)
 	// Destroy the attached joints
 	edgeKey = (*b2Body)(unsafe.Pointer(body)).HeadJointKey
 	for edgeKey != -int32(1) {
@@ -812,7 +812,7 @@ func b2Body_GetContactData(tls *_Stack, bodyId BodyId, contactData uintptr, capa
 			}
 			contactSim = b2GetContactSim(tls, world, contact)
 			(*(*ContactData)(unsafe.Pointer(contactData + uintptr(index2)*128))).Manifold = (*b2ContactSim)(unsafe.Pointer(contactSim)).Manifold
-			index2 += int32(1)
+			index2 = index2 + int32(1)
 		}
 		contactKey = (*(*b2ContactEdge)(unsafe.Pointer(contact + 12 + uintptr(edgeIndex)*12))).NextKey
 	}
@@ -1295,7 +1295,7 @@ _4:
 		(*b2Shape)(unsafe.Pointer(shape)).Aabb = aabb
 		v9 = (*b2Shape)(unsafe.Pointer(shape)).FatAABB
 		v10 = aabb
-		s = uint8(true1)
+		s = boolUint8(true1 != 0)
 		s = boolUint8(s != 0 && v9.LowerBound.X <= v10.LowerBound.X)
 		s = boolUint8(s != 0 && v9.LowerBound.Y <= v10.LowerBound.Y)
 		s = boolUint8(s != 0 && v10.UpperBound.X <= v9.UpperBound.X)
@@ -1891,7 +1891,7 @@ func b2Body_SetType(tls *_Stack, bodyId BodyId, type1 BodyType) {
 		return
 	}
 	// Destroy all contacts but don't wake bodies.
-	wakeBodies = uint8(false1)
+	wakeBodies = boolUint8(false1 != 0)
 	b2DestroyBodyContacts(tls, world, body, wakeBodies)
 	// Wake this body because we assume below that it is awake or static.
 	b2WakeBody(tls, world, body)
@@ -2014,7 +2014,7 @@ func b2Body_SetType(tls *_Stack, bodyId BodyId, type1 BodyType) {
 			shape = v27
 			shapeId = (*b2Shape)(unsafe.Pointer(shape)).NextShapeId
 			b2DestroyShapeProxy(tls, shape, world+40)
-			forcePairCreation = uint8(true1)
+			forcePairCreation = boolUint8(true1 != 0)
 			proxyType = type1
 			b2CreateShapeProxy(tls, shape, world+40, proxyType, transform, forcePairCreation)
 		}
@@ -2055,7 +2055,7 @@ func b2Body_SetType(tls *_Stack, bodyId BodyId, type1 BodyType) {
 			goto _40
 		_40:
 			bodySim = v39
-			(*b2BodySim)(unsafe.Pointer(bodySim)).IsFast = uint8(false1)
+			(*b2BodySim)(unsafe.Pointer(bodySim)).IsFast = boolUint8(false1 != 0)
 			// Maybe transfer joints to static set.
 			jointKey2 = (*b2Body)(unsafe.Pointer(body)).HeadJointKey
 			for jointKey2 != -int32(1) {
@@ -2128,7 +2128,7 @@ func b2Body_SetType(tls *_Stack, bodyId BodyId, type1 BodyType) {
 				shape1 = v51
 				shapeId1 = (*b2Shape)(unsafe.Pointer(shape1)).NextShapeId
 				b2DestroyShapeProxy(tls, shape1, world+40)
-				forcePairCreation1 = uint8(true1)
+				forcePairCreation1 = boolUint8(true1 != 0)
 				b2CreateShapeProxy(tls, shape1, world+40, int32(b2_staticBody), transform1, forcePairCreation1)
 			}
 		} else {
@@ -2154,7 +2154,7 @@ func b2Body_SetType(tls *_Stack, bodyId BodyId, type1 BodyType) {
 				shapeId2 = (*b2Shape)(unsafe.Pointer(shape2)).NextShapeId
 				b2DestroyShapeProxy(tls, shape2, world+40)
 				proxyType1 = type1
-				forcePairCreation2 = uint8(true1)
+				forcePairCreation2 = boolUint8(true1 != 0)
 				b2CreateShapeProxy(tls, shape2, world+40, proxyType1, transform2, forcePairCreation2)
 			}
 		}
@@ -2191,7 +2191,7 @@ func b2Body_SetType(tls *_Stack, bodyId BodyId, type1 BodyType) {
 		if (*b2Body)(unsafe.Pointer(body)).Type1 == int32(b2_staticBody) && (*b2Body)(unsafe.Pointer(otherBody1)).Type1 == int32(b2_staticBody) {
 			continue
 		}
-		b2LinkJoint(tls, world, joint3, uint8(false1))
+		b2LinkJoint(tls, world, joint3, boolUint8(false1 != 0))
 	}
 	b2MergeAwakeIslands(tls, world)
 	// Body type affects the mass
@@ -2215,7 +2215,7 @@ func b2Body_SetName(tls *_Stack, bodyId BodyId, name uintptr) {
 			goto _1
 		_1:
 			;
-			i++
+			i = i + 1
 		}
 		*(*uint8)(unsafe.Pointer(body + 31)) = uint8(0)
 	} else {
@@ -2540,7 +2540,7 @@ func b2Body_Disable(tls *_Stack, bodyId BodyId) {
 	}
 	// Destroy contacts and wake bodies touching this body. This avoid floating bodies.
 	// This is necessary even for static bodies.
-	wakeBodies = uint8(true1)
+	wakeBodies = boolUint8(true1 != 0)
 	b2DestroyBodyContacts(tls, world, body, wakeBodies)
 	// Disabled bodies are not in an island.
 	b2RemoveBodyFromIsland(tls, world, body)
@@ -2665,7 +2665,7 @@ _9:
 	transform = b2GetBodyTransformQuick(tls, world, body)
 	// Add shapes to broad-phase
 	proxyType = (*b2Body)(unsafe.Pointer(body)).Type1
-	forcePairCreation = uint8(true1)
+	forcePairCreation = boolUint8(true1 != 0)
 	shapeId = (*b2Body)(unsafe.Pointer(body)).HeadShapeId
 	for shapeId != -int32(1) {
 		v10 = world + 1248
@@ -2685,7 +2685,7 @@ _9:
 	}
 	// Transfer joints. If the other body is disabled, don't transfer.
 	// If the other body is sleeping, wake it.
-	mergeIslands = uint8(false1)
+	mergeIslands = boolUint8(false1 != 0)
 	jointKey = (*b2Body)(unsafe.Pointer(body)).HeadJointKey
 	for jointKey != -int32(1) {
 		jointId = jointKey >> int32(1)
@@ -2891,7 +2891,7 @@ func b2Body_GetShapes(tls *_Stack, bodyId BodyId, shapeArray uintptr, capacity i
 			Generation: (*b2Shape)(unsafe.Pointer(shape)).Generation,
 		}
 		*(*ShapeId)(unsafe.Pointer(shapeArray + uintptr(shapeCount)*8)) = id
-		shapeCount += int32(1)
+		shapeCount = shapeCount + int32(1)
 		shapeId = (*b2Shape)(unsafe.Pointer(shape)).NextShapeId
 	}
 	return shapeCount
@@ -2932,7 +2932,7 @@ func b2Body_GetJoints(tls *_Stack, bodyId BodyId, jointArray uintptr, capacity i
 			Generation: (*b2Joint)(unsafe.Pointer(joint)).Generation,
 		}
 		*(*JointId)(unsafe.Pointer(jointArray + uintptr(jointCount)*8)) = id
-		jointCount += int32(1)
+		jointCount = jointCount + int32(1)
 		jointKey = (*(*b2JointEdge)(unsafe.Pointer(joint + 20 + uintptr(edgeIndex)*12))).NextKey
 	}
 	return jointCount
@@ -2957,7 +2957,7 @@ func b2BulletBodyTask(tls *_Stack, startIndex int32, endIndex int32, threadIndex
 		goto _1
 	_1:
 		;
-		i++
+		i = i + 1
 	}
 }
 
@@ -3076,9 +3076,9 @@ func b2DefaultBodyDef(tls *_Stack) (r BodyDef) {
 	def.Rotation = b2Rot_identity
 	def.SleepThreshold = float32(float32FromFloat32(0.05) * b2_lengthUnitsPerMeter)
 	def.GravityScale = float32FromFloat32(1)
-	def.EnableSleep = uint8(true1)
-	def.IsAwake = uint8(true1)
-	def.IsEnabled = uint8(true1)
+	def.EnableSleep = boolUint8(true1 != 0)
+	def.IsAwake = boolUint8(true1 != 0)
+	def.IsEnabled = boolUint8(true1 != 0)
 	def.InternalValue = int32(_B2_SECRET_COOKIE)
 	return def
 }
@@ -3116,28 +3116,28 @@ func b2Body_IsValid(tls *_Stack, id BodyId) (r uint8) {
 	_, _ = body, world
 	if int32(_B2_MAX_WORLDS) <= int32FromUint16(id.World0) {
 		// invalid world
-		return uint8(false1)
+		return boolUint8(false1 != 0)
 	}
 	world = uintptr(unsafe.Pointer(&b2_worlds)) + uintptr(id.World0)*1792
 	if int32FromUint16((*b2World)(unsafe.Pointer(world)).WorldId) != int32FromUint16(id.World0) {
 		// world is free
-		return uint8(false1)
+		return boolUint8(false1 != 0)
 	}
 	if id.Index1 < int32(1) || (*b2World)(unsafe.Pointer(world)).Bodies.Count < id.Index1 {
 		// invalid index
-		return uint8(false1)
+		return boolUint8(false1 != 0)
 	}
 	body = (*b2World)(unsafe.Pointer(world)).Bodies.Data + uintptr(id.Index1-int32FromInt32(1))*128
 	if (*b2Body)(unsafe.Pointer(body)).SetIndex == -int32(1) {
 		// this was freed
-		return uint8(false1)
+		return boolUint8(false1 != 0)
 	}
 	if !((*b2Body)(unsafe.Pointer(body)).LocalIndex != -int32FromInt32(1)) && b2InternalAssertFcn(tls, __ccgo_ts+16112, __ccgo_ts+15342, int32FromInt32(1603)) != 0 {
 		__builtin_trap(tls)
 	}
 	if int32FromUint16((*b2Body)(unsafe.Pointer(body)).Generation) != int32FromUint16(id.Generation) {
 		// this id is orphaned
-		return uint8(false1)
+		return boolUint8(false1 != 0)
 	}
-	return uint8(true1)
+	return boolUint8(true1 != 0)
 }

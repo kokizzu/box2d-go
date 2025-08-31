@@ -62,3 +62,21 @@ func TestBounce(t *testing.T) {
 		}
 	}
 }
+
+func TestWorld_Draw(t *testing.T) {
+	w := CreateWorld(DefaultWorldDef())
+
+	b := w.CreateBody(DefaultBodyDef())
+	b.CreateSegmentShape(DefaultShapeDef(), Segment{
+		Point1: Vec2{1, 1},
+		Point2: Vec2{2, 5},
+	})
+
+	w.Draw(DebugDraw{
+		DrawSegment: func(p1 Vec2, p2 Vec2, color HexColor) {
+			fmt.Println("draw segment", p1, p2)
+		},
+
+		DrawShapes: true,
+	})
+}

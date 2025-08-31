@@ -1,8 +1,8 @@
 package b2
 
 import (
-	"unsafe"
 	"reflect"
+	"unsafe"
 )
 
 var _ unsafe.Pointer
@@ -98,7 +98,7 @@ func b2SensorQueryCallback(tls *_Stack, proxyId int32, userData uint64, context 
 	sensorShape = (*b2SensorQueryContext)(unsafe.Pointer(queryContext)).SensorShape
 	sensorShapeId = (*b2Shape)(unsafe.Pointer(sensorShape)).Id
 	if shapeId == sensorShapeId {
-		return uint8(true1)
+		return boolUint8(true1 != 0)
 	}
 	world = (*b2SensorQueryContext)(unsafe.Pointer(queryContext)).World
 	v1 = world + 1248
@@ -112,11 +112,11 @@ _4:
 	otherShape = v3
 	// Are sensor events enabled on the other shape?
 	if int32FromUint8((*b2Shape)(unsafe.Pointer(otherShape)).EnableSensorEvents) == false1 {
-		return uint8(true1)
+		return boolUint8(true1 != 0)
 	}
 	// Skip shapes on the same body
 	if (*b2Shape)(unsafe.Pointer(otherShape)).BodyId == (*b2Shape)(unsafe.Pointer(sensorShape)).BodyId {
-		return uint8(true1)
+		return boolUint8(true1 != 0)
 	}
 	// Check filter
 	v5 = (*b2Shape)(unsafe.Pointer(sensorShape)).Filter
@@ -129,19 +129,19 @@ _4:
 	goto _8
 _8:
 	if int32FromUint8(v7) == false1 {
-		return uint8(true1)
+		return boolUint8(true1 != 0)
 	}
 	otherTransform = b2GetBodyTransform(tls, world, (*b2Shape)(unsafe.Pointer(otherShape)).BodyId)
 	(*(*DistanceInput)(unsafe.Pointer(bp))).ProxyA = b2MakeShapeDistanceProxy(tls, sensorShape)
 	(*(*DistanceInput)(unsafe.Pointer(bp))).ProxyB = b2MakeShapeDistanceProxy(tls, otherShape)
 	(*(*DistanceInput)(unsafe.Pointer(bp))).TransformA = (*b2SensorQueryContext)(unsafe.Pointer(queryContext)).Transform
 	(*(*DistanceInput)(unsafe.Pointer(bp))).TransformB = otherTransform
-	(*(*DistanceInput)(unsafe.Pointer(bp))).UseRadii = uint8(true1)
+	(*(*DistanceInput)(unsafe.Pointer(bp))).UseRadii = boolUint8(true1 != 0)
 	*(*SimplexCache)(unsafe.Pointer(bp + 184)) = SimplexCache{}
 	output = b2ShapeDistance(tls, bp, bp+184, uintptrFromInt32(0), 0)
 	overlaps = boolUint8(output.Distance < float32(float32FromFloat32(10)*float32FromFloat32(1.1920928955078125e-07)))
 	if int32FromUint8(overlaps) == false1 {
-		return uint8(true1)
+		return boolUint8(true1 != 0)
 	}
 	// Record the overlap
 	sensor = (*b2SensorQueryContext)(unsafe.Pointer(queryContext)).Sensor
@@ -162,7 +162,7 @@ _12:
 	shapeRef = v11
 	(*b2ShapeRef)(unsafe.Pointer(shapeRef)).ShapeId = shapeId
 	(*b2ShapeRef)(unsafe.Pointer(shapeRef)).Generation = (*b2Shape)(unsafe.Pointer(otherShape)).Generation
-	return uint8(true1)
+	return boolUint8(true1 != 0)
 }
 
 func b2SensorTask(tls *_Stack, startIndex int32, endIndex int32, threadIndex uint32, context uintptr) {
@@ -285,13 +285,13 @@ func b2SensorTask(tls *_Stack, startIndex int32, endIndex int32, threadIndex uin
 				goto _18
 			_18:
 				;
-				i++
+				i = i + 1
 			}
 		}
 		goto _1
 	_1:
 		;
-		sensorIndex++
+		sensorIndex = sensorIndex + 1
 	}
 }
 
@@ -320,7 +320,7 @@ func b2OverlapSensors(tls *_Stack, world uintptr) {
 		goto _1
 	_1:
 		;
-		i++
+		i = i + 1
 	}
 	// Parallel-for sensors overlaps
 	minRange = int32(16)
@@ -339,7 +339,7 @@ func b2OverlapSensors(tls *_Stack, world uintptr) {
 		goto _2
 	_2:
 		;
-		i1++
+		i1 = i1 + 1
 	}
 	// Iterate sensors bits and publish events
 	// Process contact state changes. Iterate over set bits
@@ -415,7 +415,7 @@ func b2OverlapSensors(tls *_Stack, world uintptr) {
 						}
 						*(*SensorEndTouchEvent)(unsafe.Pointer((*b2SensorEndTouchEventArray)(unsafe.Pointer(v14)).Data + uintptr((*b2SensorEndTouchEventArray)(unsafe.Pointer(v14)).Count)*16)) = event
 						*(*int32)(unsafe.Pointer(v14 + 8)) += int32(1)
-						index11 += int32(1)
+						index11 = index11 + int32(1)
 					} else {
 						if int32FromUint16((*b2ShapeRef)(unsafe.Pointer(r1)).Generation) > int32FromUint16((*b2ShapeRef)(unsafe.Pointer(r2)).Generation) {
 							// begin
@@ -440,11 +440,11 @@ func b2OverlapSensors(tls *_Stack, world uintptr) {
 							}
 							*(*SensorBeginTouchEvent)(unsafe.Pointer((*b2SensorBeginTouchEventArray)(unsafe.Pointer(v16)).Data + uintptr((*b2SensorBeginTouchEventArray)(unsafe.Pointer(v16)).Count)*16)) = event1
 							*(*int32)(unsafe.Pointer(v16 + 8)) += int32(1)
-							index2 += int32(1)
+							index2 = index2 + int32(1)
 						} else {
 							// persisted
-							index11 += int32(1)
-							index2 += int32(1)
+							index11 = index11 + int32(1)
+							index2 = index2 + int32(1)
 						}
 					}
 				} else {
@@ -471,7 +471,7 @@ func b2OverlapSensors(tls *_Stack, world uintptr) {
 						}
 						*(*SensorEndTouchEvent)(unsafe.Pointer((*b2SensorEndTouchEventArray)(unsafe.Pointer(v18)).Data + uintptr((*b2SensorEndTouchEventArray)(unsafe.Pointer(v18)).Count)*16)) = event2
 						*(*int32)(unsafe.Pointer(v18 + 8)) += int32(1)
-						index11 += int32(1)
+						index11 = index11 + int32(1)
 					} else {
 						// begin
 						visitorId3 = ShapeId{
@@ -495,7 +495,7 @@ func b2OverlapSensors(tls *_Stack, world uintptr) {
 						}
 						*(*SensorBeginTouchEvent)(unsafe.Pointer((*b2SensorBeginTouchEventArray)(unsafe.Pointer(v20)).Data + uintptr((*b2SensorBeginTouchEventArray)(unsafe.Pointer(v20)).Count)*16)) = event3
 						*(*int32)(unsafe.Pointer(v20 + 8)) += int32(1)
-						index2 += int32(1)
+						index2 = index2 + int32(1)
 					}
 				}
 			}
@@ -523,7 +523,7 @@ func b2OverlapSensors(tls *_Stack, world uintptr) {
 				}
 				*(*SensorEndTouchEvent)(unsafe.Pointer((*b2SensorEndTouchEventArray)(unsafe.Pointer(v22)).Data + uintptr((*b2SensorEndTouchEventArray)(unsafe.Pointer(v22)).Count)*16)) = event4
 				*(*int32)(unsafe.Pointer(v22 + 8)) += int32(1)
-				index11 += int32(1)
+				index11 = index11 + int32(1)
 			}
 			for index2 < count2 {
 				// begin
@@ -549,7 +549,7 @@ func b2OverlapSensors(tls *_Stack, world uintptr) {
 				}
 				*(*SensorBeginTouchEvent)(unsafe.Pointer((*b2SensorBeginTouchEventArray)(unsafe.Pointer(v24)).Data + uintptr((*b2SensorBeginTouchEventArray)(unsafe.Pointer(v24)).Count)*16)) = event5
 				*(*int32)(unsafe.Pointer(v24 + 8)) += int32(1)
-				index2 += int32(1)
+				index2 = index2 + int32(1)
 			}
 			// Clear the smallest set bit
 			word = word & (word - uint64(1))
@@ -557,7 +557,7 @@ func b2OverlapSensors(tls *_Stack, world uintptr) {
 		goto _3
 	_3:
 		;
-		k++
+		k = k + 1
 	}
 }
 
@@ -608,7 +608,7 @@ _4:
 		goto _5
 	_5:
 		;
-		i++
+		i = i + 1
 	}
 	// Destroy sensor
 	b2ShapeRefArray_Destroy(tls, sensor)

@@ -1,8 +1,8 @@
 package b2
 
 import (
-	"unsafe"
 	"reflect"
+	"unsafe"
 )
 
 var _ unsafe.Pointer
@@ -29,7 +29,7 @@ func b2AssignJointColor(tls *_Stack, graph uintptr, bodyIdA int32, bodyIdB int32
 			v3 = uint32FromInt32(bodyIdA)
 			blockIndex1 = v3 / uint32(64)
 			if blockIndex1 >= (*b2BitSet)(unsafe.Pointer(v2)).BlockCount {
-				v4 = uint8(false1)
+				v4 = boolUint8(false1 != 0)
 				goto _5
 			}
 			v4 = boolUint8(*(*uint64_t)(unsafe.Pointer((*b2BitSet)(unsafe.Pointer(v2)).Bits + uintptr(blockIndex1)*8))&(uint64FromInt32(1)<<(v3%uint32FromInt32(64))) != uint64(0))
@@ -41,7 +41,7 @@ func b2AssignJointColor(tls *_Stack, graph uintptr, bodyIdA int32, bodyIdB int32
 				v7 = uint32FromInt32(bodyIdB)
 				blockIndex1 = v7 / uint32(64)
 				if blockIndex1 >= (*b2BitSet)(unsafe.Pointer(v6)).BlockCount {
-					v8 = uint8(false1)
+					v8 = boolUint8(false1 != 0)
 					goto _9
 				}
 				v8 = boolUint8(*(*uint64_t)(unsafe.Pointer((*b2BitSet)(unsafe.Pointer(v6)).Bits + uintptr(blockIndex1)*8))&(uint64FromInt32(1)<<(v7%uint32FromInt32(64))) != uint64(0))
@@ -69,7 +69,7 @@ func b2AssignJointColor(tls *_Stack, graph uintptr, bodyIdA int32, bodyIdB int32
 			goto _1
 		_1:
 			;
-			i++
+			i = i + 1
 		}
 	} else {
 		if int32FromUint8(staticA) == false1 {
@@ -83,7 +83,7 @@ func b2AssignJointColor(tls *_Stack, graph uintptr, bodyIdA int32, bodyIdB int32
 				v17 = uint32FromInt32(bodyIdA)
 				blockIndex1 = v17 / uint32(64)
 				if blockIndex1 >= (*b2BitSet)(unsafe.Pointer(v16)).BlockCount {
-					v18 = uint8(false1)
+					v18 = boolUint8(false1 != 0)
 					goto _19
 				}
 				v18 = boolUint8(*(*uint64_t)(unsafe.Pointer((*b2BitSet)(unsafe.Pointer(v16)).Bits + uintptr(blockIndex1)*8))&(uint64FromInt32(1)<<(v17%uint32FromInt32(64))) != uint64(0))
@@ -103,7 +103,7 @@ func b2AssignJointColor(tls *_Stack, graph uintptr, bodyIdA int32, bodyIdB int32
 				goto _15
 			_15:
 				;
-				i1++
+				i1 = i1 + 1
 			}
 		} else {
 			if int32FromUint8(staticB) == false1 {
@@ -117,7 +117,7 @@ func b2AssignJointColor(tls *_Stack, graph uintptr, bodyIdA int32, bodyIdB int32
 					v24 = uint32FromInt32(bodyIdB)
 					blockIndex1 = v24 / uint32(64)
 					if blockIndex1 >= (*b2BitSet)(unsafe.Pointer(v23)).BlockCount {
-						v25 = uint8(false1)
+						v25 = boolUint8(false1 != 0)
 						goto _26
 					}
 					v25 = boolUint8(*(*uint64_t)(unsafe.Pointer((*b2BitSet)(unsafe.Pointer(v23)).Bits + uintptr(blockIndex1)*8))&(uint64FromInt32(1)<<(v24%uint32FromInt32(64))) != uint64(0))
@@ -137,7 +137,7 @@ func b2AssignJointColor(tls *_Stack, graph uintptr, bodyIdA int32, bodyIdB int32
 					goto _22
 				_22:
 					;
-					i2++
+					i2 = i2 + 1
 				}
 			}
 		}
@@ -1194,7 +1194,7 @@ _32:
 			v68 = float32(v66.X*v67.Y) - float32(v66.Y*v67.X)
 			goto _69
 		_69:
-			wA -= float32(iA * v68)
+			wA = wA - float32(iA*v68)
 			v70 = vB
 			v71 = mB
 			v72 = P
@@ -1210,7 +1210,7 @@ _32:
 			v77 = float32(v75.X*v76.Y) - float32(v75.Y*v76.X)
 			goto _78
 		_78:
-			wB += float32(iB * v77)
+			wB = wB + float32(iB*v77)
 		}
 		if (*b2DistanceJoint)(unsafe.Pointer(joint)).EnableLimit != 0 {
 			// lower limit
@@ -1313,7 +1313,7 @@ _32:
 			v119 = float32(v117.X*v118.Y) - float32(v117.Y*v118.X)
 			goto _120
 		_120:
-			wA -= float32(iA * v119)
+			wA = wA - float32(iA*v119)
 			v121 = vB
 			v122 = mB
 			v123 = P1
@@ -1329,7 +1329,7 @@ _32:
 			v128 = float32(v126.X*v127.Y) - float32(v126.Y*v127.X)
 			goto _129
 		_129:
-			wB += float32(iB * v128)
+			wB = wB + float32(iB*v128)
 			// upper
 			v130 = vA
 			v131 = vB
@@ -1430,7 +1430,7 @@ _32:
 			v170 = float32(v168.X*v169.Y) - float32(v168.Y*v169.X)
 			goto _171
 		_171:
-			wA -= float32(iA * v170)
+			wA = wA - float32(iA*v170)
 			v172 = vB
 			v173 = mB
 			v174 = P2
@@ -1446,7 +1446,7 @@ _32:
 			v179 = float32(v177.X*v178.Y) - float32(v177.Y*v178.X)
 			goto _180
 		_180:
-			wB += float32(iB * v179)
+			wB = wB + float32(iB*v179)
 		}
 		if (*b2DistanceJoint)(unsafe.Pointer(joint)).EnableMotor != 0 {
 			v181 = vB
@@ -1541,7 +1541,7 @@ _32:
 			v223 = float32(v221.X*v222.Y) - float32(v221.Y*v222.X)
 			goto _224
 		_224:
-			wA -= float32(iA * v223)
+			wA = wA - float32(iA*v223)
 			v225 = vB
 			v226 = mB
 			v227 = P3
@@ -1557,7 +1557,7 @@ _32:
 			v232 = float32(v230.X*v231.Y) - float32(v230.Y*v231.X)
 			goto _233
 		_233:
-			wB += float32(iB * v232)
+			wB = wB + float32(iB*v232)
 		}
 	} else {
 		v234 = vB
@@ -1643,7 +1643,7 @@ _32:
 		v269 = float32(v267.X*v268.Y) - float32(v267.Y*v268.X)
 		goto _270
 	_270:
-		wA -= float32(iA * v269)
+		wA = wA - float32(iA*v269)
 		v271 = vB
 		v272 = mB
 		v273 = P4
@@ -1659,7 +1659,7 @@ _32:
 		v278 = float32(v276.X*v277.Y) - float32(v276.Y*v277.X)
 		goto _279
 	_279:
-		wB += float32(iB * v278)
+		wB = wB + float32(iB*v278)
 	}
 	(*b2BodyState)(unsafe.Pointer(stateA)).LinearVelocity = vA
 	(*b2BodyState)(unsafe.Pointer(stateA)).AngularVelocity = wA
@@ -1777,7 +1777,7 @@ _15:
 			}
 			goto _40
 		_40:
-			(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawSegmentFcn})))(tls, v35, v39, int32(b2_colorLightGreen), (*DebugDraw)(unsafe.Pointer(draw)).Context)
+			(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawSegmentFcn})))(tls, v35, v39, int32(b2_colorLightGreen), (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 		}
 		if (*b2DistanceJoint)(unsafe.Pointer(joint)).MaxLength < float32(float32FromFloat32(100000)*b2_lengthUnitsPerMeter) {
 			// draw->DrawPoint(pMax, 4.0f, c3, draw->context);
@@ -1797,15 +1797,15 @@ _15:
 			}
 			goto _48
 		_48:
-			(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawSegmentFcn})))(tls, v43, v47, int32(b2_colorRed), (*DebugDraw)(unsafe.Pointer(draw)).Context)
+			(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawSegmentFcn})))(tls, v43, v47, int32(b2_colorRed), (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 		}
 		if (*b2DistanceJoint)(unsafe.Pointer(joint)).MinLength > float32(float32FromFloat32(0.005)*b2_lengthUnitsPerMeter) && (*b2DistanceJoint)(unsafe.Pointer(joint)).MaxLength < float32(float32FromFloat32(100000)*b2_lengthUnitsPerMeter) {
-			(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawSegmentFcn})))(tls, pMin, pMax, int32(b2_colorGray), (*DebugDraw)(unsafe.Pointer(draw)).Context)
+			(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawSegmentFcn})))(tls, pMin, pMax, int32(b2_colorGray), (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 		}
 	}
-	(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawSegmentFcn})))(tls, pA, pB, int32(b2_colorWhite), (*DebugDraw)(unsafe.Pointer(draw)).Context)
-	(*(*func(*_Stack, Vec2, float32, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawPointFcn})))(tls, pA, float32FromFloat32(4), int32(b2_colorWhite), (*DebugDraw)(unsafe.Pointer(draw)).Context)
-	(*(*func(*_Stack, Vec2, float32, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawPointFcn})))(tls, pB, float32FromFloat32(4), int32(b2_colorWhite), (*DebugDraw)(unsafe.Pointer(draw)).Context)
+	(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawSegmentFcn})))(tls, pA, pB, int32(b2_colorWhite), (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
+	(*(*func(*_Stack, Vec2, float32, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawPointFcn})))(tls, pA, float32FromFloat32(4), int32(b2_colorWhite), (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
+	(*(*func(*_Stack, Vec2, float32, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawPointFcn})))(tls, pB, float32FromFloat32(4), int32(b2_colorWhite), (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 	if (*b2DistanceJoint)(unsafe.Pointer(joint)).Hertz > float32FromFloat32(0) && (*b2DistanceJoint)(unsafe.Pointer(joint)).EnableSpring != 0 {
 		v49 = pA
 		v50 = (*b2DistanceJoint)(unsafe.Pointer(joint)).Length
@@ -1817,7 +1817,7 @@ _15:
 		goto _53
 	_53:
 		pRest = v52
-		(*(*func(*_Stack, Vec2, float32, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawPointFcn})))(tls, pRest, float32FromFloat32(4), int32(b2_colorBlue), (*DebugDraw)(unsafe.Pointer(draw)).Context)
+		(*(*func(*_Stack, Vec2, float32, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawPointFcn})))(tls, pRest, float32FromFloat32(4), int32(b2_colorBlue), (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 	}
 }
 
@@ -2185,7 +2185,7 @@ func b2DefaultWheelJointDef(tls *_Stack) (r WheelJointDef) {
 	_ = def
 	def = WheelJointDef{}
 	def.LocalAxisA.Y = float32FromFloat32(1)
-	def.EnableSpring = uint8(true1)
+	def.EnableSpring = boolUint8(true1 != 0)
 	def.Hertz = float32FromFloat32(1)
 	def.DampingRatio = float32FromFloat32(0.7)
 	def.InternalValue = int32(_B2_SECRET_COOKIE)
@@ -2329,7 +2329,7 @@ _11:
 	(*b2Joint)(unsafe.Pointer(joint)).DrawSize = drawSize
 	(*b2Joint)(unsafe.Pointer(joint)).Type1 = type1
 	(*b2Joint)(unsafe.Pointer(joint)).CollideConnected = collideConnected
-	(*b2Joint)(unsafe.Pointer(joint)).IsMarked = uint8(false1)
+	(*b2Joint)(unsafe.Pointer(joint)).IsMarked = boolUint8(false1 != 0)
 	// Doubly linked list on bodyA
 	(*(*b2JointEdge)(unsafe.Pointer(joint + 20))).BodyId = bodyIdA
 	(*(*b2JointEdge)(unsafe.Pointer(joint + 20))).PrevKey = -int32(1)
@@ -2536,7 +2536,7 @@ _11:
 	}
 	if (*b2Joint)(unsafe.Pointer(joint)).SetIndex > int32(b2_disabledSet) {
 		// Add edge to island graph
-		mergeIslands = uint8(true1)
+		mergeIslands = boolUint8(true1 != 0)
 		b2LinkJoint(tls, world, joint, mergeIslands)
 	}
 	b2ValidateSolverSets(tls, world)
@@ -2774,7 +2774,7 @@ func b2CreateFilterJoint(tls *_Stack, worldId WorldId, def uintptr) (r JointId) 
 	}
 	bodyA = b2GetBodyFullId(tls, world, (*FilterJointDef)(unsafe.Pointer(def)).BodyIdA)
 	bodyB = b2GetBodyFullId(tls, world, (*FilterJointDef)(unsafe.Pointer(def)).BodyIdB)
-	collideConnected = uint8(false1)
+	collideConnected = boolUint8(false1 != 0)
 	pair = b2CreateJoint(tls, world, bodyA, bodyB, (*FilterJointDef)(unsafe.Pointer(def)).UserData, float32FromFloat32(1), int32(b2_filterJoint), collideConnected)
 	joint = pair.JointSim
 	(*b2JointSim)(unsafe.Pointer(joint)).Type1 = int32(b2_filterJoint)
@@ -3233,7 +3233,7 @@ func b2DestroyJoint(tls *_Stack, jointId JointId) {
 		return
 	}
 	joint = b2GetJointFullId(tls, world, jointId)
-	b2DestroyJointInternal(tls, world, joint, uint8(true1))
+	b2DestroyJointInternal(tls, world, joint, boolUint8(true1 != 0))
 }
 
 func b2Joint_GetType(tls *_Stack, jointId JointId) (r JointType) {
@@ -4342,7 +4342,7 @@ func b2PrepareOverflowJoints(tls *_Stack, context uintptr) {
 		goto _1
 	_1:
 		;
-		i++
+		i = i + 1
 	}
 }
 
@@ -4363,7 +4363,7 @@ func b2WarmStartOverflowJoints(tls *_Stack, context uintptr) {
 		goto _1
 	_1:
 		;
-		i++
+		i = i + 1
 	}
 }
 
@@ -4384,7 +4384,7 @@ func b2SolveOverflowJoints(tls *_Stack, context uintptr, useBias uint8) {
 		goto _1
 	_1:
 		;
-		i++
+		i = i + 1
 	}
 }
 
@@ -4450,12 +4450,12 @@ _16:
 	case int32(b2_mouseJoint):
 		target = (*(*b2MouseJoint)(unsafe.Add(unsafe.Pointer(jointSim), 68))).TargetA
 		c1 = int32(b2_colorGreen)
-		(*(*func(*_Stack, Vec2, float32, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawPointFcn})))(tls, target, float32FromFloat32(4), c1, (*DebugDraw)(unsafe.Pointer(draw)).Context)
-		(*(*func(*_Stack, Vec2, float32, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawPointFcn})))(tls, pB, float32FromFloat32(4), c1, (*DebugDraw)(unsafe.Pointer(draw)).Context)
+		(*(*func(*_Stack, Vec2, float32, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawPointFcn})))(tls, target, float32FromFloat32(4), c1, (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
+		(*(*func(*_Stack, Vec2, float32, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawPointFcn})))(tls, pB, float32FromFloat32(4), c1, (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 		c2 = int32(b2_colorLightGray)
-		(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawSegmentFcn})))(tls, target, pB, c2, (*DebugDraw)(unsafe.Pointer(draw)).Context)
+		(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawSegmentFcn})))(tls, target, pB, c2, (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 	case int32(b2_filterJoint):
-		(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawSegmentFcn})))(tls, pA, pB, int32(b2_colorGold), (*DebugDraw)(unsafe.Pointer(draw)).Context)
+		(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawSegmentFcn})))(tls, pA, pB, int32(b2_colorGold), (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 	case int32(b2_prismaticJoint):
 		b2DrawPrismaticJoint(tls, draw, jointSim, transformA, transformB)
 	case int32(b2_revoluteJoint):
@@ -4463,11 +4463,11 @@ _16:
 	case int32(b2_wheelJoint):
 		b2DrawWheelJoint(tls, draw, jointSim, transformA, transformB)
 	default:
-		(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawSegmentFcn})))(tls, transformA.P, pA, color, (*DebugDraw)(unsafe.Pointer(draw)).Context)
-		(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawSegmentFcn})))(tls, pA, pB, color, (*DebugDraw)(unsafe.Pointer(draw)).Context)
-		(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawSegmentFcn})))(tls, transformB.P, pB, color, (*DebugDraw)(unsafe.Pointer(draw)).Context)
+		(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawSegmentFcn})))(tls, transformA.P, pA, color, (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
+		(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawSegmentFcn})))(tls, pA, pB, color, (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
+		(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawSegmentFcn})))(tls, transformB.P, pB, color, (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 	}
-	if (*DebugDraw)(unsafe.Pointer(draw)).DrawGraphColors != 0 {
+	if (*b2DebugDraw)(unsafe.Pointer(draw)).DrawGraphColors != 0 {
 		colors = [12]b2HexColor1{
 			0:  int32(b2_colorRed),
 			1:  int32(b2_colorOrange),
@@ -4493,7 +4493,7 @@ _16:
 			goto _21
 		_21:
 			p1 = v20
-			(*(*func(*_Stack, Vec2, float32, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawPointFcn})))(tls, p1, float32FromFloat32(5), colors[colorIndex], (*DebugDraw)(unsafe.Pointer(draw)).Context)
+			(*(*func(*_Stack, Vec2, float32, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawPointFcn})))(tls, p1, float32FromFloat32(5), colors[colorIndex], (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 		}
 	}
 }
@@ -4994,8 +4994,8 @@ _8:
 _13:
 	(*b2MotorJoint)(unsafe.Pointer(joint)).AngularImpulse = v12
 	impulse = (*b2MotorJoint)(unsafe.Pointer(joint)).AngularImpulse - oldImpulse
-	wA -= float32(iA * impulse)
-	wB += float32(iB * impulse)
+	wA = wA - float32(iA*impulse)
+	wB = wB + float32(iB*impulse)
 	// linear constraint
 	v16 = (*b2BodyState)(unsafe.Pointer(bodyA)).DeltaRotation
 	v17 = (*b2MotorJoint)(unsafe.Pointer(joint)).AnchorA
@@ -5179,7 +5179,7 @@ _90:
 	v93 = float32(v91.X*v92.Y) - float32(v91.Y*v92.X)
 	goto _94
 _94:
-	wA -= float32(iA * v93)
+	wA = wA - float32(iA*v93)
 	v95 = vB
 	v96 = mB
 	v97 = impulse1
@@ -5195,7 +5195,7 @@ _99:
 	v102 = float32(v100.X*v101.Y) - float32(v100.Y*v101.X)
 	goto _103
 _103:
-	wB += float32(iB * v102)
+	wB = wB + float32(iB*v102)
 	(*b2BodyState)(unsafe.Pointer(bodyA)).LinearVelocity = vA
 	(*b2BodyState)(unsafe.Pointer(bodyA)).AngularVelocity = wA
 	(*b2BodyState)(unsafe.Pointer(bodyB)).LinearVelocity = vB
@@ -5489,7 +5489,7 @@ _9:
 	v12 = float32(v10.X*v11.Y) - float32(v10.Y*v11.X)
 	goto _13
 _13:
-	wB += float32(iB * (v12 + (*b2MouseJoint)(unsafe.Pointer(joint)).AngularImpulse))
+	wB = wB + float32(iB*(v12+(*b2MouseJoint)(unsafe.Pointer(joint)).AngularImpulse))
 	(*b2BodyState)(unsafe.Pointer(stateB)).LinearVelocity = vB
 	(*b2BodyState)(unsafe.Pointer(stateB)).AngularVelocity = wB
 }
@@ -5518,7 +5518,7 @@ func b2SolveMouseJoint(tls *_Stack, base uintptr, context uintptr) {
 	impulse = v1
 	impulse = float32(massScale*impulse) - float32(impulseScale*(*b2MouseJoint)(unsafe.Pointer(joint)).AngularImpulse)
 	*(*float32)(unsafe.Pointer(joint + 28)) += impulse
-	wB += float32(iB * impulse)
+	wB = wB + float32(iB*impulse)
 	maxImpulse = float32((*b2MouseJoint)(unsafe.Pointer(joint)).MaxForce * (*b2StepContext)(unsafe.Pointer(context)).H)
 	dqB = (*b2BodyState)(unsafe.Pointer(stateB)).DeltaRotation
 	v2 = dqB
@@ -5645,7 +5645,7 @@ _48:
 	v51 = float32(v49.X*v50.Y) - float32(v49.Y*v50.X)
 	goto _52
 _52:
-	wB += float32(iB * v51)
+	wB = wB + float32(iB*v51)
 	(*b2BodyState)(unsafe.Pointer(stateB)).LinearVelocity = vB
 	(*b2BodyState)(unsafe.Pointer(stateB)).AngularVelocity = wB
 }
@@ -6796,7 +6796,7 @@ _46:
 		goto _63
 	_63:
 		vA = v62
-		wA -= float32(iA * LA)
+		wA = wA - float32(iA*LA)
 		v64 = vB
 		v65 = mB
 		v66 = P
@@ -6807,7 +6807,7 @@ _46:
 		goto _68
 	_68:
 		vB = v67
-		wB += float32(iB * LB)
+		wB = wB + float32(iB*LB)
 	}
 	// Solve motor constraint
 	if (*b2PrismaticJoint)(unsafe.Pointer(joint)).EnableMotor != 0 {
@@ -6867,7 +6867,7 @@ _46:
 		goto _92
 	_92:
 		vA = v91
-		wA -= float32(iA * LA1)
+		wA = wA - float32(iA*LA1)
 		v93 = vB
 		v94 = mB
 		v95 = P1
@@ -6878,7 +6878,7 @@ _46:
 		goto _97
 	_97:
 		vB = v96
-		wB += float32(iB * LB1)
+		wB = wB + float32(iB*LB1)
 	}
 	if (*b2PrismaticJoint)(unsafe.Pointer(joint)).EnableLimit != 0 {
 		// Lower limit
@@ -6945,7 +6945,7 @@ _46:
 		goto _119
 	_119:
 		vA = v118
-		wA -= float32(iA * LA2)
+		wA = wA - float32(iA*LA2)
 		v120 = vB
 		v121 = mB
 		v122 = P2
@@ -6956,7 +6956,7 @@ _46:
 		goto _124
 	_124:
 		vB = v123
-		wB += float32(iB * LB2)
+		wB = wB + float32(iB*LB2)
 		// Upper limit
 		// Note: signs are flipped to keep C positive when the constraint is satisfied.
 		// This also keeps the impulse positive when the limit is active.
@@ -7026,7 +7026,7 @@ _46:
 		goto _146
 	_146:
 		vA = v145
-		wA += float32(iA * LA3)
+		wA = wA + float32(iA*LA3)
 		v147 = vB
 		v148 = mB
 		v149 = P3
@@ -7037,7 +7037,7 @@ _46:
 		goto _151
 	_151:
 		vB = v150
-		wB -= float32(iB * LB3)
+		wB = wB - float32(iB*LB3)
 	}
 	// Solve the prismatic constraint in block form
 	v152 = axisA
@@ -7182,7 +7182,7 @@ _198:
 	goto _203
 _203:
 	vA = v202
-	wA -= float32(iA * LA4)
+	wA = wA - float32(iA*LA4)
 	v204 = vB
 	v205 = mB
 	v206 = P4
@@ -7193,7 +7193,7 @@ _203:
 	goto _208
 _208:
 	vB = v207
-	wB += float32(iB * LB4)
+	wB = wB + float32(iB*LB4)
 	(*b2BodyState)(unsafe.Pointer(stateA)).LinearVelocity = vA
 	(*b2BodyState)(unsafe.Pointer(stateA)).AngularVelocity = wA
 	(*b2BodyState)(unsafe.Pointer(stateB)).LinearVelocity = vB
@@ -7248,7 +7248,7 @@ _12:
 	c3 = int32(b2_colorRed)
 	c4 = int32(b2_colorBlue)
 	c5 = int32(b2_colorDimGray)
-	(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawSegmentFcn})))(tls, pA, pB, c5, (*DebugDraw)(unsafe.Pointer(draw)).Context)
+	(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawSegmentFcn})))(tls, pA, pB, c5, (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 	if (*b2PrismaticJoint)(unsafe.Pointer(joint)).EnableLimit != 0 {
 		v13 = pA
 		v14 = (*b2PrismaticJoint)(unsafe.Pointer(joint)).LowerTranslation
@@ -7278,7 +7278,7 @@ _12:
 		goto _25
 	_25:
 		perp = v24
-		(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawSegmentFcn})))(tls, lower, upper, c1, (*DebugDraw)(unsafe.Pointer(draw)).Context)
+		(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawSegmentFcn})))(tls, lower, upper, c1, (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 		v26 = lower
 		v27 = float32FromFloat32(0.1)
 		v28 = perp
@@ -7297,7 +7297,7 @@ _12:
 		}
 		goto _35
 	_35:
-		(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawSegmentFcn})))(tls, v29, v34, c2, (*DebugDraw)(unsafe.Pointer(draw)).Context)
+		(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawSegmentFcn})))(tls, v29, v34, c2, (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 		v36 = upper
 		v37 = float32FromFloat32(0.1)
 		v38 = perp
@@ -7316,7 +7316,7 @@ _12:
 		}
 		goto _45
 	_45:
-		(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawSegmentFcn})))(tls, v39, v44, c3, (*DebugDraw)(unsafe.Pointer(draw)).Context)
+		(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawSegmentFcn})))(tls, v39, v44, c3, (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 	} else {
 		v46 = pA
 		v47 = float32FromFloat32(1)
@@ -7336,10 +7336,10 @@ _12:
 		}
 		goto _55
 	_55:
-		(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawSegmentFcn})))(tls, v49, v54, c1, (*DebugDraw)(unsafe.Pointer(draw)).Context)
+		(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawSegmentFcn})))(tls, v49, v54, c1, (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 	}
-	(*(*func(*_Stack, Vec2, float32, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawPointFcn})))(tls, pA, float32FromFloat32(5), c1, (*DebugDraw)(unsafe.Pointer(draw)).Context)
-	(*(*func(*_Stack, Vec2, float32, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawPointFcn})))(tls, pB, float32FromFloat32(5), c4, (*DebugDraw)(unsafe.Pointer(draw)).Context)
+	(*(*func(*_Stack, Vec2, float32, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawPointFcn})))(tls, pA, float32FromFloat32(5), c1, (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
+	(*(*func(*_Stack, Vec2, float32, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawPointFcn})))(tls, pB, float32FromFloat32(5), c4, (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 }
 
 func b2RevoluteJoint_EnableSpring(tls *_Stack, jointId JointId, enableSpring uint8) {
@@ -7917,8 +7917,8 @@ func b2SolveRevoluteJoint(tls *_Stack, base uintptr, context uintptr, useBias ui
 		Cdot = wB - wA
 		impulse = float32(float32(-massScale*(*b2RevoluteJoint)(unsafe.Pointer(joint)).AxialMass)*(Cdot+bias)) - float32(impulseScale*(*b2RevoluteJoint)(unsafe.Pointer(joint)).SpringImpulse)
 		*(*float32)(unsafe.Pointer(joint + 8)) += impulse
-		wA -= float32(iA * impulse)
-		wB += float32(iB * impulse)
+		wA = wA - float32(iA*impulse)
+		wB = wB + float32(iB*impulse)
 	}
 	// Solve motor constraint.
 	if (*b2RevoluteJoint)(unsafe.Pointer(joint)).EnableMotor != 0 && int32FromUint8(fixedRotation) == false1 {
@@ -7944,8 +7944,8 @@ func b2SolveRevoluteJoint(tls *_Stack, base uintptr, context uintptr, useBias ui
 	_13:
 		(*b2RevoluteJoint)(unsafe.Pointer(joint)).MotorImpulse = v12
 		impulse1 = (*b2RevoluteJoint)(unsafe.Pointer(joint)).MotorImpulse - oldImpulse
-		wA -= float32(iA * impulse1)
-		wB += float32(iB * impulse1)
+		wA = wA - float32(iA*impulse1)
+		wB = wB + float32(iB*impulse1)
 	}
 	if (*b2RevoluteJoint)(unsafe.Pointer(joint)).EnableLimit != 0 && int32FromUint8(fixedRotation) == false1 {
 		v16 = dqB
@@ -7990,8 +7990,8 @@ func b2SolveRevoluteJoint(tls *_Stack, base uintptr, context uintptr, useBias ui
 	_25:
 		(*b2RevoluteJoint)(unsafe.Pointer(joint)).LowerImpulse = v24
 		impulse2 = (*b2RevoluteJoint)(unsafe.Pointer(joint)).LowerImpulse - oldImpulse1
-		wA -= float32(iA * impulse2)
-		wB += float32(iB * impulse2)
+		wA = wA - float32(iA*impulse2)
+		wB = wB + float32(iB*impulse2)
 		// Upper limit
 		// Note: signs are flipped to keep C positive when the constraint is satisfied.
 		// This also keeps the impulse positive when the limit is active.
@@ -8026,8 +8026,8 @@ func b2SolveRevoluteJoint(tls *_Stack, base uintptr, context uintptr, useBias ui
 		(*b2RevoluteJoint)(unsafe.Pointer(joint)).UpperImpulse = v29
 		impulse3 = (*b2RevoluteJoint)(unsafe.Pointer(joint)).UpperImpulse - oldImpulse2
 		// sign flipped on applied impulse
-		wA += float32(iA * impulse3)
-		wB -= float32(iB * impulse3)
+		wA = wA + float32(iA*impulse3)
+		wB = wB - float32(iB*impulse3)
 	}
 	// Solve point-to-point constraint
 	v32 = (*b2BodyState)(unsafe.Pointer(stateA)).DeltaRotation
@@ -8194,7 +8194,7 @@ _92:
 	v95 = float32(v93.X*v94.Y) - float32(v93.Y*v94.X)
 	goto _96
 _96:
-	wA -= float32(iA * v95)
+	wA = wA - float32(iA*v95)
 	v97 = vB
 	v98 = mB
 	v99 = impulse4
@@ -8210,7 +8210,7 @@ _101:
 	v104 = float32(v102.X*v103.Y) - float32(v102.Y*v103.X)
 	goto _105
 _105:
-	wB += float32(iB * v104)
+	wB = wB + float32(iB*v104)
 	(*b2BodyState)(unsafe.Pointer(stateA)).LinearVelocity = vA
 	(*b2BodyState)(unsafe.Pointer(stateA)).AngularVelocity = wA
 	(*b2BodyState)(unsafe.Pointer(stateB)).LinearVelocity = vB
@@ -8261,7 +8261,7 @@ _8:
 	L = drawSize
 	// draw->drawPoint(pA, 3.0f, b2_colorGray40, draw->context);
 	// draw->drawPoint(pB, 3.0f, b2_colorLightBlue, draw->context);
-	(*(*func(*_Stack, Vec2, float32, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawCircleFcn})))(tls, pB, L, c1, (*DebugDraw)(unsafe.Pointer(draw)).Context)
+	(*(*func(*_Stack, Vec2, float32, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawCircleFcn})))(tls, pB, L, c1, (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 	v9 = transformB.Q
 	v10 = transformA.Q
 	s = float32(v9.S*v10.C) - float32(v9.C*v10.S)
@@ -8291,14 +8291,14 @@ _14:
 	goto _18
 _18:
 	pC = v17
-	(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawSegmentFcn})))(tls, pB, pC, c1, (*DebugDraw)(unsafe.Pointer(draw)).Context)
-	if (*DebugDraw)(unsafe.Pointer(draw)).DrawJointExtras != 0 {
+	(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawSegmentFcn})))(tls, pB, pC, c1, (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
+	if (*b2DebugDraw)(unsafe.Pointer(draw)).DrawJointExtras != 0 {
 		v19 = __builtin_remainderf(tls, angle-(*b2RevoluteJoint)(unsafe.Pointer(joint)).ReferenceAngle, float32(float32FromFloat32(2)*float32FromFloat32(3.14159265359)))
 		goto _20
 	_20:
 		jointAngle = v19
 		__builtin_snprintf(tls, bp, uint64(32), __ccgo_ts+10741, vaList(bp+40, float64(float32(float32FromFloat32(180)*jointAngle)/float32FromFloat32(3.14159265359))))
-		(*(*func(*_Stack, Vec2, uintptr, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawStringFcn})))(tls, pC, bp, int32(b2_colorWhite), (*DebugDraw)(unsafe.Pointer(draw)).Context)
+		(*(*func(*_Stack, Vec2, uintptr, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawStringFcn})))(tls, pC, bp, int32(b2_colorWhite), (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 	}
 	lowerAngle = (*b2RevoluteJoint)(unsafe.Pointer(joint)).LowerAngle + (*b2RevoluteJoint)(unsafe.Pointer(joint)).ReferenceAngle
 	upperAngle = (*b2RevoluteJoint)(unsafe.Pointer(joint)).UpperAngle + (*b2RevoluteJoint)(unsafe.Pointer(joint)).ReferenceAngle
@@ -8335,7 +8335,7 @@ _18:
 		}
 		goto _28
 	_28:
-		(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawSegmentFcn})))(tls, pB, v27, c2, (*DebugDraw)(unsafe.Pointer(draw)).Context)
+		(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawSegmentFcn})))(tls, pB, v27, c2, (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 		v29 = pB
 		v30 = rhi
 		v31 = Vec2{
@@ -8344,7 +8344,7 @@ _18:
 		}
 		goto _32
 	_32:
-		(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawSegmentFcn})))(tls, pB, v31, c3, (*DebugDraw)(unsafe.Pointer(draw)).Context)
+		(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawSegmentFcn})))(tls, pB, v31, c3, (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 		cs = b2ComputeCosSin(tls, (*b2RevoluteJoint)(unsafe.Pointer(joint)).ReferenceAngle)
 		v33 = Rot{
 			C: cs.Cosine,
@@ -8365,12 +8365,12 @@ _18:
 		}
 		goto _38
 	_38:
-		(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawSegmentFcn})))(tls, pB, v37, int32(b2_colorBlue), (*DebugDraw)(unsafe.Pointer(draw)).Context)
+		(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawSegmentFcn})))(tls, pB, v37, int32(b2_colorBlue), (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 	}
 	color = int32(b2_colorGold)
-	(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawSegmentFcn})))(tls, transformA.P, pA, color, (*DebugDraw)(unsafe.Pointer(draw)).Context)
-	(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawSegmentFcn})))(tls, pA, pB, color, (*DebugDraw)(unsafe.Pointer(draw)).Context)
-	(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawSegmentFcn})))(tls, transformB.P, pB, color, (*DebugDraw)(unsafe.Pointer(draw)).Context)
+	(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawSegmentFcn})))(tls, transformA.P, pA, color, (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
+	(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawSegmentFcn})))(tls, pA, pB, color, (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
+	(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawSegmentFcn})))(tls, transformB.P, pB, color, (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 	// char buffer[32];
 	// sprintf(buffer, "%.1f", b2Length(joint->impulse));
 	// draw->DrawString(pA, buffer, draw->context);
@@ -8391,7 +8391,7 @@ func b2PrepareJointsTask(tls *_Stack, startIndex int32, endIndex int32, context 
 		goto _1
 	_1:
 		;
-		i++
+		i = i + 1
 	}
 }
 
@@ -8417,7 +8417,7 @@ func b2WarmStartJointsTask(tls *_Stack, startIndex int32, endIndex int32, contex
 		goto _1
 	_1:
 		;
-		i++
+		i = i + 1
 	}
 }
 
@@ -8443,7 +8443,7 @@ func b2SolveJointsTask(tls *_Stack, startIndex int32, endIndex int32, context ui
 		goto _1
 	_1:
 		;
-		i++
+		i = i + 1
 	}
 }
 
@@ -8997,8 +8997,8 @@ func b2SolveWeldJoint(tls *_Stack, base uintptr, context uintptr, useBias uint8)
 	Cdot = wB - wA
 	impulse = float32(float32(-massScale*(*b2WeldJoint)(unsafe.Pointer(joint)).AxialMass)*(Cdot+bias)) - float32(impulseScale*(*b2WeldJoint)(unsafe.Pointer(joint)).AngularImpulse)
 	*(*float32)(unsafe.Pointer(joint + 52)) += impulse
-	wA -= float32(iA * impulse)
-	wB += float32(iB * impulse)
+	wA = wA - float32(iA*impulse)
+	wB = wB + float32(iB*impulse)
 	// linear constraint
 	v7 = (*b2BodyState)(unsafe.Pointer(stateA)).DeltaRotation
 	v8 = (*b2WeldJoint)(unsafe.Pointer(joint)).AnchorA
@@ -9168,7 +9168,7 @@ _71:
 	v74 = float32(v72.X*v73.Y) - float32(v72.Y*v73.X)
 	goto _75
 _75:
-	wA -= float32(iA * v74)
+	wA = wA - float32(iA*v74)
 	v76 = vB
 	v77 = mB
 	v78 = impulse1
@@ -9184,7 +9184,7 @@ _80:
 	v83 = float32(v81.X*v82.Y) - float32(v81.Y*v82.X)
 	goto _84
 _84:
-	wB += float32(iB * v83)
+	wB = wB + float32(iB*v83)
 	(*b2BodyState)(unsafe.Pointer(stateA)).LinearVelocity = vA
 	(*b2BodyState)(unsafe.Pointer(stateA)).AngularVelocity = wA
 	(*b2BodyState)(unsafe.Pointer(stateB)).LinearVelocity = vB
@@ -10029,8 +10029,8 @@ _46:
 	_51:
 		(*b2WheelJoint)(unsafe.Pointer(joint)).MotorImpulse = v50
 		impulse = (*b2WheelJoint)(unsafe.Pointer(joint)).MotorImpulse - oldImpulse
-		wA -= float32(iA * impulse)
-		wB += float32(iB * impulse)
+		wA = wA - float32(iA*impulse)
+		wB = wB + float32(iB*impulse)
 	}
 	// spring constraint
 	if (*b2WheelJoint)(unsafe.Pointer(joint)).EnableSpring != 0 {
@@ -10076,7 +10076,7 @@ _46:
 		goto _70
 	_70:
 		vA = v69
-		wA -= float32(iA * LA)
+		wA = wA - float32(iA*LA)
 		v71 = vB
 		v72 = mB
 		v73 = P
@@ -10087,7 +10087,7 @@ _46:
 		goto _75
 	_75:
 		vB = v74
-		wB += float32(iB * LB)
+		wB = wB + float32(iB*LB)
 	}
 	if (*b2WheelJoint)(unsafe.Pointer(joint)).EnableLimit != 0 {
 		// Lower limit
@@ -10154,7 +10154,7 @@ _46:
 		goto _97
 	_97:
 		vA = v96
-		wA -= float32(iA * LA1)
+		wA = wA - float32(iA*LA1)
 		v98 = vB
 		v99 = mB
 		v100 = P1
@@ -10165,7 +10165,7 @@ _46:
 		goto _102
 	_102:
 		vB = v101
-		wB += float32(iB * LB1)
+		wB = wB + float32(iB*LB1)
 		// Upper limit
 		// Note: signs are flipped to keep C positive when the constraint is satisfied.
 		// This also keeps the impulse positive when the limit is active.
@@ -10235,7 +10235,7 @@ _46:
 		goto _124
 	_124:
 		vA = v123
-		wA += float32(iA * LA2)
+		wA = wA + float32(iA*LA2)
 		v125 = vB
 		v126 = mB
 		v127 = P2
@@ -10246,7 +10246,7 @@ _46:
 		goto _129
 	_129:
 		vB = v128
-		wB -= float32(iB * LB2)
+		wB = wB - float32(iB*LB2)
 	}
 	// point to line constraint
 	v130 = axisA
@@ -10328,7 +10328,7 @@ _160:
 	goto _165
 _165:
 	vA = v164
-	wA -= float32(iA * LA3)
+	wA = wA - float32(iA*LA3)
 	v166 = vB
 	v167 = mB
 	v168 = P3
@@ -10339,7 +10339,7 @@ _165:
 	goto _170
 _170:
 	vB = v169
-	wB += float32(iB * LB3)
+	wB = wB + float32(iB*LB3)
 	(*b2BodyState)(unsafe.Pointer(stateA)).LinearVelocity = vA
 	(*b2BodyState)(unsafe.Pointer(stateA)).AngularVelocity = wA
 	(*b2BodyState)(unsafe.Pointer(stateB)).LinearVelocity = vB
@@ -10394,7 +10394,7 @@ _12:
 	c3 = int32(b2_colorRed)
 	c4 = int32(b2_colorDimGray)
 	c5 = int32(b2_colorBlue)
-	(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawSegmentFcn})))(tls, pA, pB, c5, (*DebugDraw)(unsafe.Pointer(draw)).Context)
+	(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawSegmentFcn})))(tls, pA, pB, c5, (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 	if (*b2WheelJoint)(unsafe.Pointer(joint)).EnableLimit != 0 {
 		v13 = pA
 		v14 = (*b2WheelJoint)(unsafe.Pointer(joint)).LowerTranslation
@@ -10424,7 +10424,7 @@ _12:
 		goto _25
 	_25:
 		perp = v24
-		(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawSegmentFcn})))(tls, lower, upper, c1, (*DebugDraw)(unsafe.Pointer(draw)).Context)
+		(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawSegmentFcn})))(tls, lower, upper, c1, (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 		v26 = lower
 		v27 = float32FromFloat32(0.1)
 		v28 = perp
@@ -10443,7 +10443,7 @@ _12:
 		}
 		goto _35
 	_35:
-		(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawSegmentFcn})))(tls, v29, v34, c2, (*DebugDraw)(unsafe.Pointer(draw)).Context)
+		(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawSegmentFcn})))(tls, v29, v34, c2, (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 		v36 = upper
 		v37 = float32FromFloat32(0.1)
 		v38 = perp
@@ -10462,7 +10462,7 @@ _12:
 		}
 		goto _45
 	_45:
-		(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawSegmentFcn})))(tls, v39, v44, c3, (*DebugDraw)(unsafe.Pointer(draw)).Context)
+		(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawSegmentFcn})))(tls, v39, v44, c3, (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 	} else {
 		v46 = pA
 		v47 = float32FromFloat32(1)
@@ -10482,10 +10482,10 @@ _12:
 		}
 		goto _55
 	_55:
-		(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawSegmentFcn})))(tls, v49, v54, c1, (*DebugDraw)(unsafe.Pointer(draw)).Context)
+		(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawSegmentFcn})))(tls, v49, v54, c1, (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 	}
-	(*(*func(*_Stack, Vec2, float32, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawPointFcn})))(tls, pA, float32FromFloat32(5), c1, (*DebugDraw)(unsafe.Pointer(draw)).Context)
-	(*(*func(*_Stack, Vec2, float32, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawPointFcn})))(tls, pB, float32FromFloat32(5), c4, (*DebugDraw)(unsafe.Pointer(draw)).Context)
+	(*(*func(*_Stack, Vec2, float32, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawPointFcn})))(tls, pA, float32FromFloat32(5), c1, (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
+	(*(*func(*_Stack, Vec2, float32, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawPointFcn})))(tls, pB, float32FromFloat32(5), c4, (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 }
 
 func b2Joint_IsValid(tls *_Stack, id JointId) (r uint8) {
@@ -10493,21 +10493,21 @@ func b2Joint_IsValid(tls *_Stack, id JointId) (r uint8) {
 	var jointId int32
 	_, _, _ = joint, jointId, world
 	if int32(_B2_MAX_WORLDS) <= int32FromUint16(id.World0) {
-		return uint8(false1)
+		return boolUint8(false1 != 0)
 	}
 	world = uintptr(unsafe.Pointer(&b2_worlds)) + uintptr(id.World0)*1792
 	if int32FromUint16((*b2World)(unsafe.Pointer(world)).WorldId) != int32FromUint16(id.World0) {
 		// world is free
-		return uint8(false1)
+		return boolUint8(false1 != 0)
 	}
 	jointId = id.Index1 - int32(1)
 	if jointId < 0 || (*b2World)(unsafe.Pointer(world)).Joints.Count <= jointId {
-		return uint8(false1)
+		return boolUint8(false1 != 0)
 	}
 	joint = (*b2World)(unsafe.Pointer(world)).Joints.Data + uintptr(jointId)*72
 	if (*b2Joint)(unsafe.Pointer(joint)).JointId == -int32(1) {
 		// joint is free
-		return uint8(false1)
+		return boolUint8(false1 != 0)
 	}
 	if !((*b2Joint)(unsafe.Pointer(joint)).JointId == jointId) && b2InternalAssertFcn(tls, __ccgo_ts+8933, __ccgo_ts+15342, int32FromInt32(1705)) != 0 {
 		__builtin_trap(tls)

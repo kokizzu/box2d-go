@@ -1,8 +1,8 @@
 package b2
 
 import (
-	"unsafe"
 	"reflect"
+	"unsafe"
 )
 
 var _ unsafe.Pointer
@@ -36,7 +36,7 @@ func b2CreateBroadPhase(tls *_Stack, bp uintptr) {
 		goto _1
 	_1:
 		;
-		i++
+		i = i + 1
 	}
 }
 
@@ -52,7 +52,7 @@ func b2DestroyBroadPhase(tls *_Stack, bp uintptr) {
 		goto _1
 	_1:
 		;
-		i++
+		i = i + 1
 	}
 	b2DestroySet(tls, bp+216)
 	b2IntArray_Destroy(tls, bp+232)
@@ -250,7 +250,7 @@ func b2UpdateBroadPhasePairs(tls *_Stack, world uintptr) {
 		goto _1
 	_1:
 		;
-		i++
+		i = i + 1
 	}
 	// if (s_file != NULL)
 	//{
@@ -286,8 +286,8 @@ _4:
 }
 
 func b2BroadPhase_RebuildTrees(tls *_Stack, bp uintptr) {
-	b2DynamicTree_Rebuild(tls, bp+uintptr(b2_dynamicBody)*72, uint8(false1))
-	b2DynamicTree_Rebuild(tls, bp+uintptr(b2_kinematicBody)*72, uint8(false1))
+	b2DynamicTree_Rebuild(tls, bp+uintptr(b2_dynamicBody)*72, boolUint8(false1 != 0))
+	b2DynamicTree_Rebuild(tls, bp+uintptr(b2_kinematicBody)*72, boolUint8(false1 != 0))
 }
 
 func b2BroadPhase_GetShapeIndex(tls *_Stack, bp uintptr, proxyKey int32) (r int32) {

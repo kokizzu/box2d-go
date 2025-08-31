@@ -1,8 +1,8 @@
 package b2
 
 import (
-	"unsafe"
 	"reflect"
+	"unsafe"
 )
 
 var _ unsafe.Pointer
@@ -21,7 +21,7 @@ func b2CollideMoverAndCircle(tls *_Stack, shape uintptr, mover uintptr) (r Plane
 	(*(*DistanceInput)(unsafe.Pointer(bp))).ProxyB = b2MakeProxy(tls, mover, int32(2), (*Capsule)(unsafe.Pointer(mover)).Radius)
 	(*(*DistanceInput)(unsafe.Pointer(bp))).TransformA = b2Transform_identity
 	(*(*DistanceInput)(unsafe.Pointer(bp))).TransformB = b2Transform_identity
-	(*(*DistanceInput)(unsafe.Pointer(bp))).UseRadii = uint8(false1)
+	(*(*DistanceInput)(unsafe.Pointer(bp))).UseRadii = boolUint8(false1 != 0)
 	totalRadius = (*Capsule)(unsafe.Pointer(mover)).Radius + (*Circle)(unsafe.Pointer(shape)).Radius
 	*(*SimplexCache)(unsafe.Pointer(bp + 184)) = SimplexCache{}
 	distanceOutput = b2ShapeDistance(tls, bp, bp+184, uintptrFromInt32(0), 0)
@@ -33,7 +33,7 @@ func b2CollideMoverAndCircle(tls *_Stack, shape uintptr, mover uintptr) (r Plane
 		return PlaneResult{
 			Plane: plane,
 			Point: distanceOutput.PointA,
-			Hit:   uint8(true1),
+			Hit:   boolUint8(true1 != 0),
 		}
 	}
 	return PlaneResult{}
@@ -52,7 +52,7 @@ func b2CollideMoverAndCapsule(tls *_Stack, shape uintptr, mover uintptr) (r Plan
 	(*(*DistanceInput)(unsafe.Pointer(bp))).ProxyB = b2MakeProxy(tls, mover, int32(2), (*Capsule)(unsafe.Pointer(mover)).Radius)
 	(*(*DistanceInput)(unsafe.Pointer(bp))).TransformA = b2Transform_identity
 	(*(*DistanceInput)(unsafe.Pointer(bp))).TransformB = b2Transform_identity
-	(*(*DistanceInput)(unsafe.Pointer(bp))).UseRadii = uint8(false1)
+	(*(*DistanceInput)(unsafe.Pointer(bp))).UseRadii = boolUint8(false1 != 0)
 	totalRadius = (*Capsule)(unsafe.Pointer(mover)).Radius + (*Capsule)(unsafe.Pointer(shape)).Radius
 	*(*SimplexCache)(unsafe.Pointer(bp + 184)) = SimplexCache{}
 	distanceOutput = b2ShapeDistance(tls, bp, bp+184, uintptrFromInt32(0), 0)
@@ -64,7 +64,7 @@ func b2CollideMoverAndCapsule(tls *_Stack, shape uintptr, mover uintptr) (r Plan
 		return PlaneResult{
 			Plane: plane,
 			Point: distanceOutput.PointA,
-			Hit:   uint8(true1),
+			Hit:   boolUint8(true1 != 0),
 		}
 	}
 	return PlaneResult{}
@@ -83,7 +83,7 @@ func b2CollideMoverAndPolygon(tls *_Stack, shape uintptr, mover uintptr) (r Plan
 	(*(*DistanceInput)(unsafe.Pointer(bp))).ProxyB = b2MakeProxy(tls, mover, int32(2), (*Capsule)(unsafe.Pointer(mover)).Radius)
 	(*(*DistanceInput)(unsafe.Pointer(bp))).TransformA = b2Transform_identity
 	(*(*DistanceInput)(unsafe.Pointer(bp))).TransformB = b2Transform_identity
-	(*(*DistanceInput)(unsafe.Pointer(bp))).UseRadii = uint8(false1)
+	(*(*DistanceInput)(unsafe.Pointer(bp))).UseRadii = boolUint8(false1 != 0)
 	totalRadius = (*Capsule)(unsafe.Pointer(mover)).Radius + (*Polygon)(unsafe.Pointer(shape)).Radius
 	*(*SimplexCache)(unsafe.Pointer(bp + 184)) = SimplexCache{}
 	distanceOutput = b2ShapeDistance(tls, bp, bp+184, uintptrFromInt32(0), 0)
@@ -95,7 +95,7 @@ func b2CollideMoverAndPolygon(tls *_Stack, shape uintptr, mover uintptr) (r Plan
 		return PlaneResult{
 			Plane: plane,
 			Point: distanceOutput.PointA,
-			Hit:   uint8(true1),
+			Hit:   boolUint8(true1 != 0),
 		}
 	}
 	return PlaneResult{}
@@ -114,7 +114,7 @@ func b2CollideMoverAndSegment(tls *_Stack, shape uintptr, mover uintptr) (r Plan
 	(*(*DistanceInput)(unsafe.Pointer(bp))).ProxyB = b2MakeProxy(tls, mover, int32(2), (*Capsule)(unsafe.Pointer(mover)).Radius)
 	(*(*DistanceInput)(unsafe.Pointer(bp))).TransformA = b2Transform_identity
 	(*(*DistanceInput)(unsafe.Pointer(bp))).TransformB = b2Transform_identity
-	(*(*DistanceInput)(unsafe.Pointer(bp))).UseRadii = uint8(false1)
+	(*(*DistanceInput)(unsafe.Pointer(bp))).UseRadii = boolUint8(false1 != 0)
 	totalRadius = (*Capsule)(unsafe.Pointer(mover)).Radius
 	*(*SimplexCache)(unsafe.Pointer(bp + 184)) = SimplexCache{}
 	distanceOutput = b2ShapeDistance(tls, bp, bp+184, uintptrFromInt32(0), 0)
@@ -126,7 +126,7 @@ func b2CollideMoverAndSegment(tls *_Stack, shape uintptr, mover uintptr) (r Plan
 		return PlaneResult{
 			Plane: plane,
 			Point: distanceOutput.PointA,
-			Hit:   uint8(true1),
+			Hit:   boolUint8(true1 != 0),
 		}
 	}
 	return PlaneResult{}
@@ -631,7 +631,7 @@ _20:
 		goto _21
 	_21:
 		;
-		i++
+		i = i + 1
 	}
 	if separation > radius+speculativeDistance {
 		return *(*Manifold)(unsafe.Pointer(bp))
@@ -1938,7 +1938,7 @@ _321:
 		goto _322
 	_322:
 		;
-		i++
+		i = i + 1
 	}
 	return *(*Manifold)(unsafe.Pointer(bp))
 }
@@ -2077,7 +2077,7 @@ _24:
 		goto _25
 	_25:
 		;
-		i++
+		i = i + 1
 	}
 	(*(*Polygon)(unsafe.Pointer(bp + 144))).Count = (*Polygon)(unsafe.Pointer(polygonB)).Count
 	(*(*Polygon)(unsafe.Pointer(bp + 144))).Radius = (*Polygon)(unsafe.Pointer(polygonB)).Radius
@@ -2109,7 +2109,7 @@ _24:
 		goto _30
 	_30:
 		;
-		i1++
+		i1 = i1 + 1
 	}
 	*(*int32)(unsafe.Pointer(bp + 288)) = 0
 	separationA = b2FindMaxSeparation(tls, bp+288, bp, bp+144)
@@ -2120,7 +2120,7 @@ _24:
 		return Manifold{}
 	}
 	if separationA >= separationB {
-		flip = uint8(false1)
+		flip = boolUint8(false1 != 0)
 		searchDirection = *(*Vec2)(unsafe.Pointer(bp + 64 + uintptr(*(*int32)(unsafe.Pointer(bp + 288)))*8))
 		// Find the incident edge on polyB
 		count = (*(*Polygon)(unsafe.Pointer(bp + 144))).Count
@@ -2145,10 +2145,10 @@ _24:
 			goto _39
 		_39:
 			;
-			i2++
+			i2 = i2 + 1
 		}
 	} else {
-		flip = uint8(true1)
+		flip = boolUint8(true1 != 0)
 		searchDirection1 = *(*Vec2)(unsafe.Pointer(bp + 144 + 64 + uintptr(*(*int32)(unsafe.Pointer(bp + 292)))*8))
 		// Find the incident edge on polyA
 		count1 = (*(*Polygon)(unsafe.Pointer(bp))).Count
@@ -2173,7 +2173,7 @@ _24:
 			goto _44
 		_44:
 			;
-			i3++
+			i3 = i3 + 1
 		}
 	}
 	*(*Manifold)(unsafe.Pointer(bp + 296)) = Manifold{}
@@ -2232,7 +2232,7 @@ _24:
 			goto _51
 		_51:
 			;
-			i4++
+			i4 = i4 + 1
 		}
 		// Does vertex-vertex have substantially larger separation?
 		if separation+float32(float32FromFloat32(0.1)*linearSlop) < minSeparation {
@@ -2504,7 +2504,7 @@ _24:
 			goto _137
 		_137:
 			;
-			i5++
+			i5 = i5 + 1
 		}
 	}
 	return *(*Manifold)(unsafe.Pointer(bp + 296))
@@ -3034,8 +3034,8 @@ _62:
 	goto _66
 _66:
 	behind1 = boolUint8(v65 < float32FromFloat32(0))
-	behind0 = uint8(true1)
-	behind2 = uint8(true1)
+	behind0 = boolUint8(true1 != 0)
+	behind2 = boolUint8(true1 != 0)
 	if smoothParams.Convex1 != 0 {
 		v67 = centroidB
 		v68 = p11
@@ -3102,13 +3102,13 @@ _66:
 		goto _83
 	_83:
 		;
-		i++
+		i = i + 1
 	}
 	(*(*DistanceInput)(unsafe.Pointer(bp + 176))).ProxyA = b2MakeProxy(tls, segmentA+8, int32(2), float32FromFloat32(0))
 	(*(*DistanceInput)(unsafe.Pointer(bp + 176))).ProxyB = b2MakeProxy(tls, bp+112, count, float32FromFloat32(0))
 	(*(*DistanceInput)(unsafe.Pointer(bp + 176))).TransformA = b2Transform_identity
 	(*(*DistanceInput)(unsafe.Pointer(bp + 176))).TransformB = b2Transform_identity
-	(*(*DistanceInput)(unsafe.Pointer(bp + 176))).UseRadii = uint8(false1)
+	(*(*DistanceInput)(unsafe.Pointer(bp + 176))).UseRadii = boolUint8(false1 != 0)
 	output = b2ShapeDistance(tls, bp+176, cache, uintptrFromInt32(0), 0)
 	if output.Distance > radiusB+float32(float32FromFloat32(4)*float32(float32FromFloat32(0.005)*b2_lengthUnitsPerMeter)) {
 		return *(*Manifold)(unsafe.Pointer(bp))
@@ -3499,7 +3499,7 @@ _66:
 			goto _222
 		_222:
 			;
-			i1++
+			i1 = i1 + 1
 		}
 		// Check convex neighbor for edge separation
 		if smoothParams.Convex1 != 0 {
@@ -3529,7 +3529,7 @@ _66:
 				goto _231
 			_231:
 				;
-				i2++
+				i2 = i2 + 1
 			}
 			if s0 > edgeSeparation {
 				edgeSeparation = s0
@@ -3565,7 +3565,7 @@ _66:
 				goto _240
 			_240:
 				;
-				i3++
+				i3 = i3 + 1
 			}
 			if s21 > edgeSeparation {
 				edgeSeparation = s21
@@ -3643,7 +3643,7 @@ _66:
 			goto _249
 		_249:
 			;
-			i4++
+			i4 = i4 + 1
 		}
 		if polygonSeparation > edgeSeparation {
 			ia11 = referenceIndex
@@ -4135,7 +4135,7 @@ func b2CollideTask(tls *_Stack, startIndex int32, endIndex int32, threadIndex ui
 		goto _1
 	_1:
 		;
-		contactIndex++
+		contactIndex = contactIndex + 1
 	}
 }
 
@@ -4175,14 +4175,14 @@ func b2Collide(tls *_Stack, context uintptr) {
 		if !(i < int32(_B2_GRAPH_COLOR_COUNT)) {
 			break
 		}
-		contactCount += (*(*b2GraphColor)(unsafe.Pointer(graphColors + uintptr(i)*56))).ContactSims.Count
+		contactCount = contactCount + (*(*b2GraphColor)(unsafe.Pointer(graphColors + uintptr(i)*56))).ContactSims.Count
 		goto _2
 	_2:
 		;
-		i++
+		i = i + 1
 	}
 	nonTouchingCount = (*(*b2SolverSet)(unsafe.Pointer((*b2World)(unsafe.Pointer(world)).SolverSets.Data + uintptr(b2_awakeSet)*88))).ContactSims.Count
-	contactCount += nonTouchingCount
+	contactCount = contactCount + nonTouchingCount
 	if contactCount == 0 {
 		return
 	}
@@ -4202,16 +4202,16 @@ func b2Collide(tls *_Stack, context uintptr) {
 				break
 			}
 			*(*uintptr)(unsafe.Pointer(contactSims + uintptr(contactIndex)*8)) = base + uintptr(j)*176
-			contactIndex += int32(1)
+			contactIndex = contactIndex + int32(1)
 			goto _4
 		_4:
 			;
-			j++
+			j = j + 1
 		}
 		goto _3
 	_3:
 		;
-		i1++
+		i1 = i1 + 1
 	}
 	base1 = (*(*b2SolverSet)(unsafe.Pointer((*b2World)(unsafe.Pointer(world)).SolverSets.Data + uintptr(b2_awakeSet)*88))).ContactSims.Data
 	i2 = 0
@@ -4220,11 +4220,11 @@ func b2Collide(tls *_Stack, context uintptr) {
 			break
 		}
 		*(*uintptr)(unsafe.Pointer(contactSims + uintptr(contactIndex)*8)) = base1 + uintptr(i2)*176
-		contactIndex += int32(1)
+		contactIndex = contactIndex + int32(1)
 		goto _5
 	_5:
 		;
-		i2++
+		i2 = i2 + 1
 	}
 	if !(contactIndex == contactCount) && b2InternalAssertFcn(tls, __ccgo_ts+15819, __ccgo_ts+15342, int32FromInt32(544)) != 0 {
 		__builtin_trap(tls)
@@ -4244,7 +4244,7 @@ _7:
 		goto _8
 	_8:
 		;
-		i3++
+		i3 = i3 + 1
 	}
 	// Task should take at least 40us on a 4GHz CPU (10K cycles)
 	minRange = int32(64)
@@ -4269,7 +4269,7 @@ _7:
 		goto _9
 	_9:
 		;
-		i4++
+		i4 = i4 + 1
 	}
 	v10 = world + 1064
 	v11 = int32(b2_awakeSet)
@@ -4353,7 +4353,7 @@ _13:
 			simFlags = (*b2ContactSim)(unsafe.Pointer(contactSim)).SimFlags
 			if simFlags&uint32(b2_simDisjoint) != 0 {
 				// Bounding boxes no longer overlap
-				b2DestroyContact(tls, world, contact, uint8(false1))
+				b2DestroyContact(tls, world, contact, boolUint8(false1 != 0))
 				contact = uintptrFromInt32(0)
 				contactSim = uintptrFromInt32(0)
 			} else {
@@ -4453,7 +4453,7 @@ _13:
 		goto _14
 	_14:
 		;
-		k++
+		k = k + 1
 	}
 	b2ValidateSolverSets(tls, world)
 	b2ValidateContacts(tls, world)

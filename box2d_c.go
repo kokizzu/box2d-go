@@ -1363,16 +1363,16 @@ const b2_colorBox2DBlue = 3190463
 const b2_colorBox2DGreen = 9226532
 const b2_colorBox2DYellow = 16772748
 
-type DebugDraw struct {
-	ｆDrawPolygonFcn      uintptr
-	ｆDrawSolidPolygonFcn uintptr
-	ｆDrawCircleFcn       uintptr
-	ｆDrawSolidCircleFcn  uintptr
-	ｆDrawSolidCapsuleFcn uintptr
-	ｆDrawSegmentFcn      uintptr
-	ｆDrawTransformFcn    uintptr
-	ｆDrawPointFcn        uintptr
-	ｆDrawStringFcn       uintptr
+type b2DebugDraw struct {
+	DrawPolygonFcn       uintptr
+	DrawSolidPolygonFcn  uintptr
+	DrawCircleFcn        uintptr
+	DrawSolidCircleFcn   uintptr
+	DrawSolidCapsuleFcn  uintptr
+	DrawSegmentFcn       uintptr
+	DrawTransformFcn     uintptr
+	DrawPointFcn         uintptr
+	DrawStringFcn        uintptr
 	DrawingBounds        AABB
 	UseDrawingBounds     uint8
 	DrawShapes           uint8
@@ -1566,7 +1566,7 @@ _15:
 	goto _30
 _30:
 	output.Point = v29
-	output.Hit = uint8(true1)
+	output.Hit = boolUint8(true1 != 0)
 	return output
 }
 
@@ -1809,13 +1809,13 @@ func b2AllocateArenaItem(tls *_Stack, alloc uintptr, size int32, name uintptr) (
 	if (*b2ArenaAllocator)(unsafe.Pointer(alloc)).Index+size32 > (*b2ArenaAllocator)(unsafe.Pointer(alloc)).Capacity {
 		// fall back to the heap (undesirable)
 		entry.Data = b2Alloc(tls, size32)
-		entry.UsedMalloc = uint8(true1)
+		entry.UsedMalloc = boolUint8(true1 != 0)
 		if !(uint64(entry.Data)&uint64FromInt32(0x1F) == uint64FromInt32(0)) && b2InternalAssertFcn(tls, __ccgo_ts+47, __ccgo_ts+14, int32FromInt32(47)) != 0 {
 			__builtin_trap(tls)
 		}
 	} else {
 		entry.Data = (*b2ArenaAllocator)(unsafe.Pointer(alloc)).Data + uintptr((*b2ArenaAllocator)(unsafe.Pointer(alloc)).Index)
-		entry.UsedMalloc = uint8(false1)
+		entry.UsedMalloc = boolUint8(false1 != 0)
 		*(*int32)(unsafe.Pointer(alloc + 12)) += size32
 		if !(uint64(entry.Data)&uint64FromInt32(0x1F) == uint64FromInt32(0)) && b2InternalAssertFcn(tls, __ccgo_ts+47, __ccgo_ts+14, int32FromInt32(55)) != 0 {
 			__builtin_trap(tls)
@@ -1999,7 +1999,7 @@ func b2InPlaceUnion(tls *_Stack, setA uintptr, setB uintptr) {
 		goto _1
 	_1:
 		;
-		i++
+		i = i + 1
 	}
 }
 
@@ -2674,7 +2674,7 @@ func b2ShouldBodiesCollide(tls *_Stack, world uintptr, bodyA uintptr, bodyB uint
 	var joint, v1, v3 uintptr
 	_, _, _, _, _, _, _, _, _ = edgeIndex, joint, jointId, jointKey, otherBodyId, otherEdgeIndex, v1, v2, v3
 	if (*b2Body)(unsafe.Pointer(bodyA)).Type1 != int32(b2_dynamicBody) && (*b2Body)(unsafe.Pointer(bodyB)).Type1 != int32(b2_dynamicBody) {
-		return uint8(false1)
+		return boolUint8(false1 != 0)
 	}
 	if (*b2Body)(unsafe.Pointer(bodyA)).JointCount < (*b2Body)(unsafe.Pointer(bodyB)).JointCount {
 		jointKey = (*b2Body)(unsafe.Pointer(bodyA)).HeadJointKey
@@ -2697,11 +2697,11 @@ func b2ShouldBodiesCollide(tls *_Stack, world uintptr, bodyA uintptr, bodyB uint
 	_4:
 		joint = v3
 		if int32FromUint8((*b2Joint)(unsafe.Pointer(joint)).CollideConnected) == false1 && (*(*b2JointEdge)(unsafe.Pointer(joint + 20 + uintptr(otherEdgeIndex)*12))).BodyId == otherBodyId {
-			return uint8(false1)
+			return boolUint8(false1 != 0)
 		}
 		jointKey = (*(*b2JointEdge)(unsafe.Pointer(joint + 20 + uintptr(edgeIndex)*12))).NextKey
 	}
-	return uint8(true1)
+	return boolUint8(true1 != 0)
 }
 
 const _UINT64_MAX1 = 18446744073709551615
@@ -2759,7 +2759,7 @@ func b2UnBufferMove(tls *_Stack, bp uintptr, proxyKey int32) {
 			goto _1
 		_1:
 			;
-			i++
+			i = i + 1
 		}
 	}
 }
@@ -2792,7 +2792,7 @@ func b2PairQueryCallback(tls *_Stack, proxyId int32, userData uint64, context ui
 	queryProxyKey = (*b2QueryPairContext)(unsafe.Pointer(queryContext)).QueryProxyKey
 	// A proxy cannot form a pair with itself.
 	if proxyKey == (*b2QueryPairContext)(unsafe.Pointer(queryContext)).QueryProxyKey {
-		return uint8(true1)
+		return boolUint8(true1 != 0)
 	}
 	treeType = (*b2QueryPairContext)(unsafe.Pointer(queryContext)).QueryTreeType
 	queryProxyType = queryProxyKey & int32FromInt32(3)
@@ -2812,7 +2812,7 @@ func b2PairQueryCallback(tls *_Stack, proxyId int32, userData uint64, context ui
 			moved = b2ContainsKey(tls, broadPhase+216, uint64FromInt32(proxyKey+int32(1)))
 			if moved != 0 {
 				// Both proxies are moving. Avoid duplicate pairs.
-				return uint8(true1)
+				return boolUint8(true1 != 0)
 			}
 		}
 	} else {
@@ -2822,7 +2822,7 @@ func b2PairQueryCallback(tls *_Stack, proxyId int32, userData uint64, context ui
 		moved1 = b2ContainsKey(tls, broadPhase+216, uint64FromInt32(proxyKey+int32(1)))
 		if moved1 != 0 {
 			// Both proxies are moving. Avoid duplicate pairs.
-			return uint8(true1)
+			return boolUint8(true1 != 0)
 		}
 	}
 	if shapeId < (*b2QueryPairContext)(unsafe.Pointer(queryContext)).QueryShapeIndex {
@@ -2833,7 +2833,7 @@ func b2PairQueryCallback(tls *_Stack, proxyId int32, userData uint64, context ui
 	pairKey = v1
 	if b2ContainsKey(tls, broadPhase+272, pairKey) != 0 {
 		// contact exists
-		return uint8(true1)
+		return boolUint8(true1 != 0)
 	}
 	if proxyKey < queryProxyKey {
 		shapeIdA = shapeId
@@ -2865,11 +2865,11 @@ _9:
 	bodyIdB = (*b2Shape)(unsafe.Pointer(shapeB)).BodyId
 	// Are the shapes on the same body?
 	if bodyIdA == bodyIdB {
-		return uint8(true1)
+		return boolUint8(true1 != 0)
 	}
 	// Sensors are handled elsewhere
 	if (*b2Shape)(unsafe.Pointer(shapeA)).SensorIndex != -int32(1) || (*b2Shape)(unsafe.Pointer(shapeB)).SensorIndex != -int32(1) {
-		return uint8(true1)
+		return boolUint8(true1 != 0)
 	}
 	v10 = (*b2Shape)(unsafe.Pointer(shapeA)).Filter
 	v11 = (*b2Shape)(unsafe.Pointer(shapeB)).Filter
@@ -2881,7 +2881,7 @@ _9:
 	goto _13
 _13:
 	if int32FromUint8(v12) == false1 {
-		return uint8(true1)
+		return boolUint8(true1 != 0)
 	}
 	v14 = world + 1024
 	v15 = bodyIdA
@@ -2903,7 +2903,7 @@ _17:
 _21:
 	bodyB = v20
 	if int32FromUint8(b2ShouldBodiesCollide(tls, world, bodyA, bodyB)) == false1 {
-		return uint8(true1)
+		return boolUint8(true1 != 0)
 	}
 	// Custom user filter
 	customFilterFcn = (*b2World)(unsafe.Pointer((*b2QueryPairContext)(unsafe.Pointer(queryContext)).World)).CustomFilterFcn
@@ -2920,7 +2920,7 @@ _21:
 		}
 		shouldCollide = (*(*func(*_Stack, ShapeId, ShapeId, uintptr) uint8)(unsafe.Pointer(&struct{ uintptr }{customFilterFcn})))(tls, idA, idB, (*b2World)(unsafe.Pointer((*b2QueryPairContext)(unsafe.Pointer(queryContext)).World)).CustomFilterContext)
 		if int32FromUint8(shouldCollide) == false1 {
-			return uint8(true1)
+			return boolUint8(true1 != 0)
 		}
 	}
 	v22 = __atomic_fetch_addInt32(tls, broadPhase+268, int32(1), int32FromInt32(__ATOMIC_SEQ_CST))
@@ -2930,17 +2930,17 @@ _23:
 	pairIndex = v22
 	if pairIndex < (*b2BroadPhase)(unsafe.Pointer(broadPhase)).MovePairCapacity {
 		pair = (*b2BroadPhase)(unsafe.Pointer(broadPhase)).MovePairs + uintptr(pairIndex)*24
-		(*b2MovePair)(unsafe.Pointer(pair)).Heap = uint8(false1)
+		(*b2MovePair)(unsafe.Pointer(pair)).Heap = boolUint8(false1 != 0)
 	} else {
 		pair = b2Alloc(tls, int32(24))
-		(*b2MovePair)(unsafe.Pointer(pair)).Heap = uint8(true1)
+		(*b2MovePair)(unsafe.Pointer(pair)).Heap = boolUint8(true1 != 0)
 	}
 	(*b2MovePair)(unsafe.Pointer(pair)).ShapeIndexA = shapeIdA
 	(*b2MovePair)(unsafe.Pointer(pair)).ShapeIndexB = shapeIdB
 	(*b2MovePair)(unsafe.Pointer(pair)).Next = (*b2MoveResult)(unsafe.Pointer((*b2QueryPairContext)(unsafe.Pointer(queryContext)).MoveResult)).PairList
 	(*b2MoveResult)(unsafe.Pointer((*b2QueryPairContext)(unsafe.Pointer(queryContext)).MoveResult)).PairList = pair
 	// continue the query
-	return uint8(true1)
+	return boolUint8(true1 != 0)
 }
 
 // Warning: writing to these globals significantly slows multithreading performance
@@ -3003,7 +3003,7 @@ func b2FindPairsTask(tls *_Stack, startIndex int32, endIndex int32, threadIndex 
 		goto _1
 	_1:
 		;
-		i++
+		i = i + 1
 	}
 }
 
@@ -3055,7 +3055,7 @@ _4:
 		goto _6
 	_6:
 		;
-		i++
+		i = i + 1
 	}
 }
 
@@ -3079,7 +3079,7 @@ func b2DestroyGraph(tls *_Stack, graph uintptr) {
 		goto _1
 	_1:
 		;
-		i++
+		i = i + 1
 	}
 }
 
@@ -3142,7 +3142,7 @@ _8:
 			v11 = uint32FromInt32(bodyIdA)
 			blockIndex1 = v11 / uint32(64)
 			if blockIndex1 >= (*b2BitSet)(unsafe.Pointer(v10)).BlockCount {
-				v12 = uint8(false1)
+				v12 = boolUint8(false1 != 0)
 				goto _13
 			}
 			v12 = boolUint8(*(*uint64_t)(unsafe.Pointer((*b2BitSet)(unsafe.Pointer(v10)).Bits + uintptr(blockIndex1)*8))&(uint64FromInt32(1)<<(v11%uint32FromInt32(64))) != uint64(0))
@@ -3154,7 +3154,7 @@ _8:
 				v15 = uint32FromInt32(bodyIdB)
 				blockIndex1 = v15 / uint32(64)
 				if blockIndex1 >= (*b2BitSet)(unsafe.Pointer(v14)).BlockCount {
-					v16 = uint8(false1)
+					v16 = boolUint8(false1 != 0)
 					goto _17
 				}
 				v16 = boolUint8(*(*uint64_t)(unsafe.Pointer((*b2BitSet)(unsafe.Pointer(v14)).Bits + uintptr(blockIndex1)*8))&(uint64FromInt32(1)<<(v15%uint32FromInt32(64))) != uint64(0))
@@ -3183,7 +3183,7 @@ _8:
 			goto _9
 		_9:
 			;
-			i++
+			i = i + 1
 		}
 	} else {
 		if int32FromUint8(staticA) == false1 {
@@ -3198,7 +3198,7 @@ _8:
 				v25 = uint32FromInt32(bodyIdA)
 				blockIndex1 = v25 / uint32(64)
 				if blockIndex1 >= (*b2BitSet)(unsafe.Pointer(v24)).BlockCount {
-					v26 = uint8(false1)
+					v26 = boolUint8(false1 != 0)
 					goto _27
 				}
 				v26 = boolUint8(*(*uint64_t)(unsafe.Pointer((*b2BitSet)(unsafe.Pointer(v24)).Bits + uintptr(blockIndex1)*8))&(uint64FromInt32(1)<<(v25%uint32FromInt32(64))) != uint64(0))
@@ -3219,7 +3219,7 @@ _8:
 				goto _23
 			_23:
 				;
-				i1++
+				i1 = i1 + 1
 			}
 		} else {
 			if int32FromUint8(staticB) == false1 {
@@ -3234,7 +3234,7 @@ _8:
 					v32 = uint32FromInt32(bodyIdB)
 					blockIndex1 = v32 / uint32(64)
 					if blockIndex1 >= (*b2BitSet)(unsafe.Pointer(v31)).BlockCount {
-						v33 = uint8(false1)
+						v33 = boolUint8(false1 != 0)
 						goto _34
 					}
 					v33 = boolUint8(*(*uint64_t)(unsafe.Pointer((*b2BitSet)(unsafe.Pointer(v31)).Bits + uintptr(blockIndex1)*8))&(uint64FromInt32(1)<<(v32%uint32FromInt32(64))) != uint64(0))
@@ -3255,7 +3255,7 @@ _8:
 					goto _30
 				_30:
 					;
-					i2++
+					i2 = i2 + 1
 				}
 			}
 		}
@@ -3486,7 +3486,7 @@ type b2ContactRegister struct {
 }
 
 var s_registers [5][5]b2ContactRegister
-var s_initialized = uint8(false1)
+var s_initialized = boolUint8(false1 != 0)
 
 func b2CircleManifold(tls *_Stack, shapeA uintptr, xfA Transform, shapeB uintptr, xfB Transform, cache uintptr) (r Manifold) {
 	_ = uint64FromInt64(4)
@@ -3554,10 +3554,10 @@ func b2AddType(tls *_Stack, __ccgo_fp_fcn uintptr, type1 ShapeType, type2 ShapeT
 		__builtin_trap(tls)
 	}
 	(*(*b2ContactRegister)(unsafe.Pointer(uintptr(unsafe.Pointer(&s_registers)) + uintptr(type1)*80 + uintptr(type2)*16))).Fcn = __ccgo_fp_fcn
-	(*(*b2ContactRegister)(unsafe.Pointer(uintptr(unsafe.Pointer(&s_registers)) + uintptr(type1)*80 + uintptr(type2)*16))).Primary = uint8(true1)
+	(*(*b2ContactRegister)(unsafe.Pointer(uintptr(unsafe.Pointer(&s_registers)) + uintptr(type1)*80 + uintptr(type2)*16))).Primary = boolUint8(true1 != 0)
 	if type1 != type2 {
 		(*(*b2ContactRegister)(unsafe.Pointer(uintptr(unsafe.Pointer(&s_registers)) + uintptr(type2)*80 + uintptr(type1)*16))).Fcn = __ccgo_fp_fcn
-		(*(*b2ContactRegister)(unsafe.Pointer(uintptr(unsafe.Pointer(&s_registers)) + uintptr(type2)*80 + uintptr(type1)*16))).Primary = uint8(false1)
+		(*(*b2ContactRegister)(unsafe.Pointer(uintptr(unsafe.Pointer(&s_registers)) + uintptr(type2)*80 + uintptr(type1)*16))).Primary = boolUint8(false1 != 0)
 	}
 }
 
@@ -3575,7 +3575,7 @@ func b2InitializeContactRegisters(tls *_Stack) {
 		b2AddType(tls, __ccgo_fp(b2ChainSegmentAndCircleManifold), int32(b2_chainSegmentShape), int32(b2_circleShape))
 		b2AddType(tls, __ccgo_fp(b2ChainSegmentAndCapsuleManifold), int32(b2_chainSegmentShape), int32(b2_capsuleShape))
 		b2AddType(tls, __ccgo_fp(b2ChainSegmentAndPolygonManifold), int32(b2_chainSegmentShape), int32(b2_polygonShape))
-		s_initialized = uint8(true1)
+		s_initialized = boolUint8(true1 != 0)
 	}
 }
 
@@ -3680,7 +3680,7 @@ _18:
 	(*b2Contact)(unsafe.Pointer(contact)).IslandNext = -int32(1)
 	(*b2Contact)(unsafe.Pointer(contact)).ShapeIdA = shapeIdA
 	(*b2Contact)(unsafe.Pointer(contact)).ShapeIdB = shapeIdB
-	(*b2Contact)(unsafe.Pointer(contact)).IsMarked = uint8(false1)
+	(*b2Contact)(unsafe.Pointer(contact)).IsMarked = boolUint8(false1 != 0)
 	(*b2Contact)(unsafe.Pointer(contact)).Flags = uint32(0)
 	if !((*b2Shape)(unsafe.Pointer(shapeA)).SensorIndex == -int32(1) && (*b2Shape)(unsafe.Pointer(shapeB)).SensorIndex == -int32(1)) && b2InternalAssertFcn(tls, __ccgo_ts+3560, __ccgo_ts+3357, int32FromInt32(251)) != 0 {
 		__builtin_trap(tls)
@@ -4202,7 +4202,7 @@ func b2UpdateContact(tls *_Stack, world uintptr, contactSim uintptr, shapeA uint
 		(*ManifoldPoint)(unsafe.Pointer(mp2)).TangentImpulse = float32FromFloat32(0)
 		(*ManifoldPoint)(unsafe.Pointer(mp2)).TotalNormalImpulse = float32FromFloat32(0)
 		(*ManifoldPoint)(unsafe.Pointer(mp2)).NormalVelocity = float32FromFloat32(0)
-		(*ManifoldPoint)(unsafe.Pointer(mp2)).Persisted = uint8(false1)
+		(*ManifoldPoint)(unsafe.Pointer(mp2)).Persisted = boolUint8(false1 != 0)
 		id2 = (*ManifoldPoint)(unsafe.Pointer(mp2)).Id
 		j = 0
 		for {
@@ -4213,7 +4213,7 @@ func b2UpdateContact(tls *_Stack, world uintptr, contactSim uintptr, shapeA uint
 			if int32FromUint16((*ManifoldPoint)(unsafe.Pointer(mp1)).Id) == int32FromUint16(id2) {
 				(*ManifoldPoint)(unsafe.Pointer(mp2)).NormalImpulse = (*ManifoldPoint)(unsafe.Pointer(mp1)).NormalImpulse
 				(*ManifoldPoint)(unsafe.Pointer(mp2)).TangentImpulse = (*ManifoldPoint)(unsafe.Pointer(mp1)).TangentImpulse
-				(*ManifoldPoint)(unsafe.Pointer(mp2)).Persisted = uint8(true1)
+				(*ManifoldPoint)(unsafe.Pointer(mp2)).Persisted = boolUint8(true1 != 0)
 				// clear old impulse
 				(*ManifoldPoint)(unsafe.Pointer(mp1)).NormalImpulse = float32FromFloat32(0)
 				(*ManifoldPoint)(unsafe.Pointer(mp1)).TangentImpulse = float32FromFloat32(0)
@@ -4222,18 +4222,18 @@ func b2UpdateContact(tls *_Stack, world uintptr, contactSim uintptr, shapeA uint
 			goto _26
 		_26:
 			;
-			j++
+			j = j + 1
 		}
 		if (*ManifoldPoint)(unsafe.Pointer(mp2)).Persisted != 0 {
 			v27 = 0
 		} else {
 			v27 = int32(1)
 		}
-		unmatchedCount += v27
+		unmatchedCount = unmatchedCount + v27
 		goto _17
 	_17:
 		;
-		i++
+		i = i + 1
 	}
 	_ = uint64FromInt64(4)
 	if touching != 0 {
@@ -4535,12 +4535,12 @@ func b2PrepareOverflowContacts(tls *_Stack, context uintptr) {
 			goto _7
 		_7:
 			;
-			j++
+			j = j + 1
 		}
 		goto _2
 	_2:
 		;
-		i++
+		i = i + 1
 	}
 }
 
@@ -4648,7 +4648,7 @@ _4:
 			v26 = float32(v24.X*v25.Y) - float32(v24.Y*v25.X)
 			goto _27
 		_27:
-			wA -= float32(iA * v26)
+			wA = wA - float32(iA*v26)
 			v28 = vA
 			v29 = -mA
 			v30 = P
@@ -4664,7 +4664,7 @@ _4:
 			v35 = float32(v33.X*v34.Y) - float32(v33.Y*v34.X)
 			goto _36
 		_36:
-			wB += float32(iB * v35)
+			wB = wB + float32(iB*v35)
 			v37 = vB
 			v38 = mB
 			v39 = P
@@ -4678,10 +4678,10 @@ _4:
 			goto _11
 		_11:
 			;
-			j++
+			j = j + 1
 		}
-		wA -= float32(iA * (*b2ContactConstraint)(unsafe.Pointer(constraint)).RollingImpulse)
-		wB += float32(iB * (*b2ContactConstraint)(unsafe.Pointer(constraint)).RollingImpulse)
+		wA = wA - float32(iA*(*b2ContactConstraint)(unsafe.Pointer(constraint)).RollingImpulse)
+		wB = wB + float32(iB*(*b2ContactConstraint)(unsafe.Pointer(constraint)).RollingImpulse)
 		(*b2BodyState)(unsafe.Pointer(stateA)).LinearVelocity = vA
 		(*b2BodyState)(unsafe.Pointer(stateA)).AngularVelocity = wA
 		(*b2BodyState)(unsafe.Pointer(stateB)).LinearVelocity = vB
@@ -4689,7 +4689,7 @@ _4:
 		goto _5
 	_5:
 		;
-		i++
+		i = i + 1
 	}
 }
 
@@ -4863,7 +4863,7 @@ _4:
 			v49 = float32(v47.X*v48.Y) - float32(v47.Y*v48.X)
 			goto _50
 		_50:
-			wA -= float32(iA * v49)
+			wA = wA - float32(iA*v49)
 			v51 = vB
 			v52 = mB
 			v53 = P
@@ -4879,11 +4879,11 @@ _4:
 			v58 = float32(v56.X*v57.Y) - float32(v56.Y*v57.X)
 			goto _59
 		_59:
-			wB += float32(iB * v58)
+			wB = wB + float32(iB*v58)
 			goto _8
 		_8:
 			;
-			j++
+			j = j + 1
 		}
 		(*b2BodyState)(unsafe.Pointer(stateA)).LinearVelocity = vA
 		(*b2BodyState)(unsafe.Pointer(stateA)).AngularVelocity = wA
@@ -4892,7 +4892,7 @@ _4:
 		goto _5
 	_5:
 		;
-		i++
+		i = i + 1
 	}
 }
 
@@ -4926,13 +4926,13 @@ func b2StoreOverflowImpulses(tls *_Stack, context uintptr) {
 			goto _2
 		_2:
 			;
-			j++
+			j = j + 1
 		}
 		(*Manifold)(unsafe.Pointer(manifold)).RollingImpulse = (*b2ContactConstraint)(unsafe.Pointer(constraint)).RollingImpulse
 		goto _1
 	_1:
 		;
-		i++
+		i = i + 1
 	}
 }
 
@@ -4950,16 +4950,16 @@ type b2FloatW struct {
 //
 //	// Wide vec2
 type b2Vec2W struct {
-	ｆX b2FloatW
-	ｆY b2FloatW
+	X b2FloatW
+	Y b2FloatW
 }
 
 // C documentation
 //
 //	// Wide rotation
 type b2RotW struct {
-	ｆC b2FloatW
-	ｆS b2FloatW
+	C b2FloatW
+	S b2FloatW
 }
 
 func b2ZeroW(tls *_Stack) (r b2FloatW) {
@@ -5292,17 +5292,17 @@ func b2BlendW(tls *_Stack, a b2FloatW, b b2FloatW, mask b2FloatW) (r1 b2FloatW) 
 }
 
 func b2DotW(tls *_Stack, a b2Vec2W, b b2Vec2W) (r b2FloatW) {
-	return b2AddW(tls, b2MulW(tls, a.ｆX, b.ｆX), b2MulW(tls, a.ｆY, b.ｆY))
+	return b2AddW(tls, b2MulW(tls, a.X, b.X), b2MulW(tls, a.Y, b.Y))
 }
 
 func b2CrossW(tls *_Stack, a b2Vec2W, b b2Vec2W) (r b2FloatW) {
-	return b2SubW(tls, b2MulW(tls, a.ｆX, b.ｆY), b2MulW(tls, a.ｆY, b.ｆX))
+	return b2SubW(tls, b2MulW(tls, a.X, b.Y), b2MulW(tls, a.Y, b.X))
 }
 
 func b2RotateVectorW(tls *_Stack, q b2RotW, v b2Vec2W) (r b2Vec2W) {
 	return b2Vec2W{
-		ｆX: b2SubW(tls, b2MulW(tls, q.ｆC, v.ｆX), b2MulW(tls, q.ｆS, v.ｆY)),
-		ｆY: b2AddW(tls, b2MulW(tls, q.ｆS, v.ｆX), b2MulW(tls, q.ｆC, v.ｆY)),
+		X: b2SubW(tls, b2MulW(tls, q.C, v.X), b2MulW(tls, q.S, v.Y)),
+		Y: b2AddW(tls, b2MulW(tls, q.S, v.X), b2MulW(tls, q.C, v.Y)),
 	}
 }
 
@@ -5355,13 +5355,13 @@ func b2GatherBodies(tls *_Stack, states uintptr, indices uintptr) (r b2BodyState
 		v4 = *(*b2BodyState)(unsafe.Pointer(states + uintptr(*(*int32)(unsafe.Pointer(indices + 3*4)))*32))
 	}
 	s4 = v4
-	simdBody.V.ｆX = b2FloatW{
+	simdBody.V.X = b2FloatW{
 		X: s1.LinearVelocity.X,
 		Y: s2.LinearVelocity.X,
 		Z: s3.LinearVelocity.X,
 		W: s4.LinearVelocity.X,
 	}
-	simdBody.V.ｆY = b2FloatW{
+	simdBody.V.Y = b2FloatW{
 		X: s1.LinearVelocity.Y,
 		Y: s2.LinearVelocity.Y,
 		Z: s3.LinearVelocity.Y,
@@ -5379,25 +5379,25 @@ func b2GatherBodies(tls *_Stack, states uintptr, indices uintptr) (r b2BodyState
 		Z: float32(s3.Flags),
 		W: float32(s4.Flags),
 	}
-	simdBody.Dp.ｆX = b2FloatW{
+	simdBody.Dp.X = b2FloatW{
 		X: s1.DeltaPosition.X,
 		Y: s2.DeltaPosition.X,
 		Z: s3.DeltaPosition.X,
 		W: s4.DeltaPosition.X,
 	}
-	simdBody.Dp.ｆY = b2FloatW{
+	simdBody.Dp.Y = b2FloatW{
 		X: s1.DeltaPosition.Y,
 		Y: s2.DeltaPosition.Y,
 		Z: s3.DeltaPosition.Y,
 		W: s4.DeltaPosition.Y,
 	}
-	simdBody.Dq.ｆC = b2FloatW{
+	simdBody.Dq.C = b2FloatW{
 		X: s1.DeltaRotation.C,
 		Y: s2.DeltaRotation.C,
 		Z: s3.DeltaRotation.C,
 		W: s4.DeltaRotation.C,
 	}
-	simdBody.Dq.ｆS = b2FloatW{
+	simdBody.Dq.S = b2FloatW{
 		X: s1.DeltaRotation.S,
 		Y: s2.DeltaRotation.S,
 		Z: s3.DeltaRotation.S,
@@ -5415,26 +5415,26 @@ func b2ScatterBodies(tls *_Stack, states uintptr, indices uintptr, simdBody uint
 	// todo somehow skip writing to kinematic bodies
 	if *(*int32)(unsafe.Pointer(indices)) != -int32(1) {
 		state = states + uintptr(*(*int32)(unsafe.Pointer(indices)))*32
-		(*b2BodyState)(unsafe.Pointer(state)).LinearVelocity.X = (*b2BodyStateW)(unsafe.Pointer(simdBody)).V.ｆX.X
-		(*b2BodyState)(unsafe.Pointer(state)).LinearVelocity.Y = (*b2BodyStateW)(unsafe.Pointer(simdBody)).V.ｆY.X
+		(*b2BodyState)(unsafe.Pointer(state)).LinearVelocity.X = (*b2BodyStateW)(unsafe.Pointer(simdBody)).V.X.X
+		(*b2BodyState)(unsafe.Pointer(state)).LinearVelocity.Y = (*b2BodyStateW)(unsafe.Pointer(simdBody)).V.Y.X
 		(*b2BodyState)(unsafe.Pointer(state)).AngularVelocity = (*b2BodyStateW)(unsafe.Pointer(simdBody)).W.X
 	}
 	if *(*int32)(unsafe.Pointer(indices + 1*4)) != -int32(1) {
 		state1 = states + uintptr(*(*int32)(unsafe.Pointer(indices + 1*4)))*32
-		(*b2BodyState)(unsafe.Pointer(state1)).LinearVelocity.X = (*b2BodyStateW)(unsafe.Pointer(simdBody)).V.ｆX.Y
-		(*b2BodyState)(unsafe.Pointer(state1)).LinearVelocity.Y = (*b2BodyStateW)(unsafe.Pointer(simdBody)).V.ｆY.Y
+		(*b2BodyState)(unsafe.Pointer(state1)).LinearVelocity.X = (*b2BodyStateW)(unsafe.Pointer(simdBody)).V.X.Y
+		(*b2BodyState)(unsafe.Pointer(state1)).LinearVelocity.Y = (*b2BodyStateW)(unsafe.Pointer(simdBody)).V.Y.Y
 		(*b2BodyState)(unsafe.Pointer(state1)).AngularVelocity = (*b2BodyStateW)(unsafe.Pointer(simdBody)).W.Y
 	}
 	if *(*int32)(unsafe.Pointer(indices + 2*4)) != -int32(1) {
 		state2 = states + uintptr(*(*int32)(unsafe.Pointer(indices + 2*4)))*32
-		(*b2BodyState)(unsafe.Pointer(state2)).LinearVelocity.X = (*b2BodyStateW)(unsafe.Pointer(simdBody)).V.ｆX.Z
-		(*b2BodyState)(unsafe.Pointer(state2)).LinearVelocity.Y = (*b2BodyStateW)(unsafe.Pointer(simdBody)).V.ｆY.Z
+		(*b2BodyState)(unsafe.Pointer(state2)).LinearVelocity.X = (*b2BodyStateW)(unsafe.Pointer(simdBody)).V.X.Z
+		(*b2BodyState)(unsafe.Pointer(state2)).LinearVelocity.Y = (*b2BodyStateW)(unsafe.Pointer(simdBody)).V.Y.Z
 		(*b2BodyState)(unsafe.Pointer(state2)).AngularVelocity = (*b2BodyStateW)(unsafe.Pointer(simdBody)).W.Z
 	}
 	if *(*int32)(unsafe.Pointer(indices + 3*4)) != -int32(1) {
 		state3 = states + uintptr(*(*int32)(unsafe.Pointer(indices + 3*4)))*32
-		(*b2BodyState)(unsafe.Pointer(state3)).LinearVelocity.X = (*b2BodyStateW)(unsafe.Pointer(simdBody)).V.ｆX.W
-		(*b2BodyState)(unsafe.Pointer(state3)).LinearVelocity.Y = (*b2BodyStateW)(unsafe.Pointer(simdBody)).V.ｆY.W
+		(*b2BodyState)(unsafe.Pointer(state3)).LinearVelocity.X = (*b2BodyStateW)(unsafe.Pointer(simdBody)).V.X.W
+		(*b2BodyState)(unsafe.Pointer(state3)).LinearVelocity.Y = (*b2BodyStateW)(unsafe.Pointer(simdBody)).V.Y.W
 		(*b2BodyState)(unsafe.Pointer(state3)).AngularVelocity = (*b2BodyStateW)(unsafe.Pointer(simdBody)).W.W
 	}
 }
@@ -5817,12 +5817,12 @@ func b2PrepareContactsTask(tls *_Stack, startIndex int32, endIndex int32, contex
 			goto _3
 		_3:
 			;
-			j++
+			j = j + 1
 		}
 		goto _2
 	_2:
 		;
-		i++
+		i = i + 1
 	}
 }
 
@@ -5846,30 +5846,30 @@ func b2WarmStartContactsTask(tls *_Stack, startIndex int32, endIndex int32, cont
 		c = constraints + uintptr(i)*624
 		*(*b2BodyStateW)(unsafe.Pointer(bp)) = b2GatherBodies(tls, states, c)
 		*(*b2BodyStateW)(unsafe.Pointer(bp + 128)) = b2GatherBodies(tls, states, c+16)
-		tangentX = (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).Normal.ｆY
-		tangentY = b2SubW(tls, b2ZeroW(tls), (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).Normal.ｆX)
+		tangentX = (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).Normal.Y
+		tangentY = b2SubW(tls, b2ZeroW(tls), (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).Normal.X)
 		// fixed anchors
 		rA = (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).AnchorA1
 		rB = (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).AnchorB1
-		P.ｆX = b2AddW(tls, b2MulW(tls, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).NormalImpulse1, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).Normal.ｆX), b2MulW(tls, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).TangentImpulse1, tangentX))
-		P.ｆY = b2AddW(tls, b2MulW(tls, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).NormalImpulse1, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).Normal.ｆY), b2MulW(tls, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).TangentImpulse1, tangentY))
+		P.X = b2AddW(tls, b2MulW(tls, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).NormalImpulse1, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).Normal.X), b2MulW(tls, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).TangentImpulse1, tangentX))
+		P.Y = b2AddW(tls, b2MulW(tls, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).NormalImpulse1, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).Normal.Y), b2MulW(tls, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).TangentImpulse1, tangentY))
 		(*(*b2BodyStateW)(unsafe.Pointer(bp))).W = b2MulSubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).W, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvIA, b2CrossW(tls, rA, P))
-		(*(*b2BodyStateW)(unsafe.Pointer(bp))).V.ｆX = b2MulSubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).V.ｆX, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassA, P.ｆX)
-		(*(*b2BodyStateW)(unsafe.Pointer(bp))).V.ｆY = b2MulSubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).V.ｆY, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassA, P.ｆY)
+		(*(*b2BodyStateW)(unsafe.Pointer(bp))).V.X = b2MulSubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).V.X, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassA, P.X)
+		(*(*b2BodyStateW)(unsafe.Pointer(bp))).V.Y = b2MulSubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).V.Y, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassA, P.Y)
 		(*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).W = b2MulAddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).W, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvIB, b2CrossW(tls, rB, P))
-		(*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.ｆX = b2MulAddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.ｆX, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassB, P.ｆX)
-		(*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.ｆY = b2MulAddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.ｆY, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassB, P.ｆY)
+		(*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.X = b2MulAddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.X, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassB, P.X)
+		(*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.Y = b2MulAddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.Y, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassB, P.Y)
 		// fixed anchors
 		rA1 = (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).AnchorA2
 		rB1 = (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).AnchorB2
-		P1.ｆX = b2AddW(tls, b2MulW(tls, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).NormalImpulse2, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).Normal.ｆX), b2MulW(tls, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).TangentImpulse2, tangentX))
-		P1.ｆY = b2AddW(tls, b2MulW(tls, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).NormalImpulse2, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).Normal.ｆY), b2MulW(tls, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).TangentImpulse2, tangentY))
+		P1.X = b2AddW(tls, b2MulW(tls, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).NormalImpulse2, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).Normal.X), b2MulW(tls, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).TangentImpulse2, tangentX))
+		P1.Y = b2AddW(tls, b2MulW(tls, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).NormalImpulse2, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).Normal.Y), b2MulW(tls, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).TangentImpulse2, tangentY))
 		(*(*b2BodyStateW)(unsafe.Pointer(bp))).W = b2MulSubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).W, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvIA, b2CrossW(tls, rA1, P1))
-		(*(*b2BodyStateW)(unsafe.Pointer(bp))).V.ｆX = b2MulSubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).V.ｆX, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassA, P1.ｆX)
-		(*(*b2BodyStateW)(unsafe.Pointer(bp))).V.ｆY = b2MulSubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).V.ｆY, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassA, P1.ｆY)
+		(*(*b2BodyStateW)(unsafe.Pointer(bp))).V.X = b2MulSubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).V.X, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassA, P1.X)
+		(*(*b2BodyStateW)(unsafe.Pointer(bp))).V.Y = b2MulSubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).V.Y, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassA, P1.Y)
 		(*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).W = b2MulAddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).W, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvIB, b2CrossW(tls, rB1, P1))
-		(*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.ｆX = b2MulAddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.ｆX, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassB, P1.ｆX)
-		(*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.ｆY = b2MulAddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.ｆY, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassB, P1.ｆY)
+		(*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.X = b2MulAddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.X, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassB, P1.X)
+		(*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.Y = b2MulAddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.Y, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassB, P1.Y)
 		(*(*b2BodyStateW)(unsafe.Pointer(bp))).W = b2MulSubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).W, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvIA, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).RollingImpulse)
 		(*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).W = b2MulAddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).W, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvIB, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).RollingImpulse)
 		b2ScatterBodies(tls, states, c, bp)
@@ -5877,7 +5877,7 @@ func b2WarmStartContactsTask(tls *_Stack, startIndex int32, endIndex int32, cont
 		goto _1
 	_1:
 		;
-		i++
+		i = i + 1
 	}
 }
 
@@ -5920,9 +5920,9 @@ func b2ApplyRestitutionTask(tls *_Stack, startIndex int32, endIndex int32, conte
 		rA = (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).AnchorA1
 		rB = (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).AnchorB1
 		// Relative velocity at contact
-		dvx = b2SubW(tls, b2SubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.ｆX, b2MulW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).W, rB.ｆY)), b2SubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).V.ｆX, b2MulW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).W, rA.ｆY)))
-		dvy = b2SubW(tls, b2AddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.ｆY, b2MulW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).W, rB.ｆX)), b2AddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).V.ｆY, b2MulW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).W, rA.ｆX)))
-		vn = b2AddW(tls, b2MulW(tls, dvx, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).Normal.ｆX), b2MulW(tls, dvy, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).Normal.ｆY))
+		dvx = b2SubW(tls, b2SubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.X, b2MulW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).W, rB.Y)), b2SubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).V.X, b2MulW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).W, rA.Y)))
+		dvy = b2SubW(tls, b2AddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.Y, b2MulW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).W, rB.X)), b2AddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).V.Y, b2MulW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).W, rA.X)))
+		vn = b2AddW(tls, b2MulW(tls, dvx, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).Normal.X), b2MulW(tls, dvy, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).Normal.Y))
 		// Compute normal impulse
 		negImpulse = b2MulW(tls, mass, b2AddW(tls, vn, b2MulW(tls, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).Restitution, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).RelativeVelocity1)))
 		// Clamp the accumulated impulse
@@ -5930,14 +5930,14 @@ func b2ApplyRestitutionTask(tls *_Stack, startIndex int32, endIndex int32, conte
 		impulse = b2SubW(tls, newImpulse, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).NormalImpulse1)
 		(*b2ContactConstraintSIMD)(unsafe.Pointer(c)).NormalImpulse1 = newImpulse
 		// Apply contact impulse
-		Px = b2MulW(tls, impulse, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).Normal.ｆX)
-		Py = b2MulW(tls, impulse, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).Normal.ｆY)
-		(*(*b2BodyStateW)(unsafe.Pointer(bp))).V.ｆX = b2MulSubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).V.ｆX, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassA, Px)
-		(*(*b2BodyStateW)(unsafe.Pointer(bp))).V.ｆY = b2MulSubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).V.ｆY, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassA, Py)
-		(*(*b2BodyStateW)(unsafe.Pointer(bp))).W = b2MulSubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).W, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvIA, b2SubW(tls, b2MulW(tls, rA.ｆX, Py), b2MulW(tls, rA.ｆY, Px)))
-		(*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.ｆX = b2MulAddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.ｆX, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassB, Px)
-		(*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.ｆY = b2MulAddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.ｆY, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassB, Py)
-		(*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).W = b2MulAddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).W, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvIB, b2SubW(tls, b2MulW(tls, rB.ｆX, Py), b2MulW(tls, rB.ｆY, Px)))
+		Px = b2MulW(tls, impulse, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).Normal.X)
+		Py = b2MulW(tls, impulse, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).Normal.Y)
+		(*(*b2BodyStateW)(unsafe.Pointer(bp))).V.X = b2MulSubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).V.X, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassA, Px)
+		(*(*b2BodyStateW)(unsafe.Pointer(bp))).V.Y = b2MulSubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).V.Y, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassA, Py)
+		(*(*b2BodyStateW)(unsafe.Pointer(bp))).W = b2MulSubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).W, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvIA, b2SubW(tls, b2MulW(tls, rA.X, Py), b2MulW(tls, rA.Y, Px)))
+		(*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.X = b2MulAddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.X, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassB, Px)
+		(*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.Y = b2MulAddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.Y, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassB, Py)
+		(*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).W = b2MulAddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).W, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvIB, b2SubW(tls, b2MulW(tls, rB.X, Py), b2MulW(tls, rB.Y, Px)))
 		// second point non-penetration constraint
 		// Set effective mass to zero if restitution should not be applied
 		mask12 = b2GreaterThanW(tls, b2AddW(tls, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).RelativeVelocity2, threshold), zero)
@@ -5948,9 +5948,9 @@ func b2ApplyRestitutionTask(tls *_Stack, startIndex int32, endIndex int32, conte
 		rA1 = (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).AnchorA2
 		rB1 = (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).AnchorB2
 		// Relative velocity at contact
-		dvx1 = b2SubW(tls, b2SubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.ｆX, b2MulW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).W, rB1.ｆY)), b2SubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).V.ｆX, b2MulW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).W, rA1.ｆY)))
-		dvy1 = b2SubW(tls, b2AddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.ｆY, b2MulW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).W, rB1.ｆX)), b2AddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).V.ｆY, b2MulW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).W, rA1.ｆX)))
-		vn1 = b2AddW(tls, b2MulW(tls, dvx1, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).Normal.ｆX), b2MulW(tls, dvy1, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).Normal.ｆY))
+		dvx1 = b2SubW(tls, b2SubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.X, b2MulW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).W, rB1.Y)), b2SubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).V.X, b2MulW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).W, rA1.Y)))
+		dvy1 = b2SubW(tls, b2AddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.Y, b2MulW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).W, rB1.X)), b2AddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).V.Y, b2MulW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).W, rA1.X)))
+		vn1 = b2AddW(tls, b2MulW(tls, dvx1, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).Normal.X), b2MulW(tls, dvy1, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).Normal.Y))
 		// Compute normal impulse
 		negImpulse1 = b2MulW(tls, mass1, b2AddW(tls, vn1, b2MulW(tls, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).Restitution, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).RelativeVelocity2)))
 		// Clamp the accumulated impulse
@@ -5958,20 +5958,20 @@ func b2ApplyRestitutionTask(tls *_Stack, startIndex int32, endIndex int32, conte
 		impulse1 = b2SubW(tls, newImpulse1, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).NormalImpulse2)
 		(*b2ContactConstraintSIMD)(unsafe.Pointer(c)).NormalImpulse2 = newImpulse1
 		// Apply contact impulse
-		Px1 = b2MulW(tls, impulse1, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).Normal.ｆX)
-		Py1 = b2MulW(tls, impulse1, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).Normal.ｆY)
-		(*(*b2BodyStateW)(unsafe.Pointer(bp))).V.ｆX = b2MulSubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).V.ｆX, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassA, Px1)
-		(*(*b2BodyStateW)(unsafe.Pointer(bp))).V.ｆY = b2MulSubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).V.ｆY, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassA, Py1)
-		(*(*b2BodyStateW)(unsafe.Pointer(bp))).W = b2MulSubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).W, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvIA, b2SubW(tls, b2MulW(tls, rA1.ｆX, Py1), b2MulW(tls, rA1.ｆY, Px1)))
-		(*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.ｆX = b2MulAddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.ｆX, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassB, Px1)
-		(*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.ｆY = b2MulAddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.ｆY, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassB, Py1)
-		(*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).W = b2MulAddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).W, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvIB, b2SubW(tls, b2MulW(tls, rB1.ｆX, Py1), b2MulW(tls, rB1.ｆY, Px1)))
+		Px1 = b2MulW(tls, impulse1, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).Normal.X)
+		Py1 = b2MulW(tls, impulse1, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).Normal.Y)
+		(*(*b2BodyStateW)(unsafe.Pointer(bp))).V.X = b2MulSubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).V.X, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassA, Px1)
+		(*(*b2BodyStateW)(unsafe.Pointer(bp))).V.Y = b2MulSubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).V.Y, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassA, Py1)
+		(*(*b2BodyStateW)(unsafe.Pointer(bp))).W = b2MulSubW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp))).W, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvIA, b2SubW(tls, b2MulW(tls, rA1.X, Py1), b2MulW(tls, rA1.Y, Px1)))
+		(*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.X = b2MulAddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.X, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassB, Px1)
+		(*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.Y = b2MulAddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).V.Y, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvMassB, Py1)
+		(*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).W = b2MulAddW(tls, (*(*b2BodyStateW)(unsafe.Pointer(bp + 128))).W, (*b2ContactConstraintSIMD)(unsafe.Pointer(c)).InvIB, b2SubW(tls, b2MulW(tls, rB1.X, Py1), b2MulW(tls, rB1.Y, Px1)))
 		b2ScatterBodies(tls, states, c, bp)
 		b2ScatterBodies(tls, states, c+16, bp+128)
 		goto _1
 	_1:
 		;
-		i++
+		i = i + 1
 	}
 }
 
@@ -6024,12 +6024,12 @@ func b2StoreImpulsesTask(tls *_Stack, startIndex int32, endIndex int32, context 
 			goto _2
 		_2:
 			;
-			laneIndex++
+			laneIndex = laneIndex + 1
 		}
 		goto _1
 	_1:
 		;
-		constraintIndex++
+		constraintIndex = constraintIndex + 1
 	}
 }
 
@@ -6549,7 +6549,7 @@ _4:
 		goto _6
 	_6:
 		;
-		i++
+		i = i + 1
 	}
 	(*(*ShapeProxy)(unsafe.Pointer(bp))).Count = count
 	(*(*ShapeProxy)(unsafe.Pointer(bp))).Radius = radius
@@ -6599,7 +6599,7 @@ _4:
 		goto _6
 	_6:
 		;
-		i++
+		i = i + 1
 	}
 	(*(*ShapeProxy)(unsafe.Pointer(bp))).Count = count
 	(*(*ShapeProxy)(unsafe.Pointer(bp))).Radius = radius
@@ -6653,7 +6653,7 @@ _4:
 		goto _5
 	_5:
 		;
-		i++
+		i = i + 1
 	}
 	return bestIndex
 }
@@ -6701,7 +6701,7 @@ func b2MakeSimplexFromCache(tls *_Stack, cache uintptr, proxyA uintptr, proxyB u
 		goto _1
 	_1:
 		;
-		i++
+		i = i + 1
 	}
 	// If the cache is empty or invalid ...
 	if (*(*Simplex)(unsafe.Pointer(bp))).Count == 0 {
@@ -6745,7 +6745,7 @@ func b2MakeSimplexCache(tls *_Stack, cache uintptr, simplex uintptr) {
 		goto _1
 	_1:
 		;
-		i++
+		i = i + 1
 	}
 }
 
@@ -7558,7 +7558,7 @@ _18:
 	*(*SimplexCache)(unsafe.Pointer(bp + 80)) = SimplexCache{}
 	(*(*DistanceInput)(unsafe.Pointer(bp + 88))).ProxyA = (*TOIInput)(unsafe.Pointer(input)).ProxyA
 	(*(*DistanceInput)(unsafe.Pointer(bp + 88))).ProxyB = (*TOIInput)(unsafe.Pointer(input)).ProxyB
-	(*(*DistanceInput)(unsafe.Pointer(bp + 88))).UseRadii = uint8(false1)
+	(*(*DistanceInput)(unsafe.Pointer(bp + 88))).UseRadii = boolUint8(false1 != 0)
 	// The outer loop progressively attempts to compute new separating axes.
 	// This loop terminates when an axis is repeated (no progress is made).
 	for {
@@ -7583,7 +7583,7 @@ _18:
 		//		target = b2MaxFloat( target, 2.0f * tolerance );
 		//	}
 		//}
-		distanceIterations += int32(1)
+		distanceIterations = distanceIterations + int32(1)
 		// If the shapes are overlapped, we give up on continuous collision.
 		if distanceOutput.Distance <= float32FromFloat32(0) {
 			// Failure!
@@ -7601,7 +7601,7 @@ _18:
 		*(*b2SeparationFunction)(unsafe.Pointer(bp + 272)) = b2MakeSeparationFunction(tls, bp+80, proxyA, bp, proxyB, bp+40, t1)
 		// Compute the TOI on the separating axis. We do this by successively
 		// resolving the deepest point. This loop is bounded by the number of vertices.
-		done = uint8(false1)
+		done = boolUint8(false1 != 0)
 		t2 = tMax
 		pushBackIterations = 0
 		for {
@@ -7611,7 +7611,7 @@ _18:
 				// Victory!
 				output.State = int32(b2_toiStateSeparated)
 				output.Fraction = tMax
-				done = uint8(true1)
+				done = boolUint8(true1 != 0)
 				break
 			}
 			// Has the separation reached tolerance?
@@ -7627,7 +7627,7 @@ _18:
 			if s1 < target-tolerance {
 				output.State = int32(b2_toiStateFailed)
 				output.Fraction = t1
-				done = uint8(true1)
+				done = boolUint8(true1 != 0)
 				break
 			}
 			// Check for touching
@@ -7635,7 +7635,7 @@ _18:
 				// Victory! t1 should hold the TOI (could be 0.0).
 				output.State = int32(b2_toiStateHit)
 				output.Fraction = t1
-				done = uint8(true1)
+				done = boolUint8(true1 != 0)
 				break
 			}
 			// Compute 1D root of: f(x) - target = 0
@@ -7650,7 +7650,7 @@ _18:
 					// Bisection to guarantee progress.
 					t = float32(float32FromFloat32(0.5) * (a11 + a2))
 				}
-				rootIterationCount += int32(1)
+				rootIterationCount = rootIterationCount + int32(1)
 				s = b2EvaluateSeparation(tls, bp+272, *(*int32)(unsafe.Pointer(bp + 392)), *(*int32)(unsafe.Pointer(bp + 396)), t)
 				v23 = s - target
 				if v23 < float32FromInt32(0) {
@@ -7680,7 +7680,7 @@ _18:
 				goto _22
 			_22:
 			}
-			pushBackIterations += int32(1)
+			pushBackIterations = pushBackIterations + int32(1)
 			if pushBackIterations == int32(_B2_MAX_POLYGON_VERTICES) {
 				break
 			}
@@ -7811,7 +7811,7 @@ func b2AllocateNode(tls *_Stack, tree uintptr) (r int32) {
 			goto _1
 		_1:
 			;
-			i++
+			i = i + 1
 		}
 		*(*int32_t)(unsafe.Add(unsafe.Pointer(&*(*b2TreeNode)(unsafe.Pointer((*DynamicTree)(unsafe.Pointer(tree)).Nodes + uintptr((*DynamicTree)(unsafe.Pointer(tree)).NodeCapacity-int32(1))*40))), 32)) = -int32FromInt32(1)
 		(*DynamicTree)(unsafe.Pointer(tree)).FreeList = (*DynamicTree)(unsafe.Pointer(tree)).NodeCount
@@ -7821,7 +7821,7 @@ func b2AllocateNode(tls *_Stack, tree uintptr) (r int32) {
 	node = (*DynamicTree)(unsafe.Pointer(tree)).Nodes + uintptr(nodeIndex)*40
 	(*DynamicTree)(unsafe.Pointer(tree)).FreeList = *(*int32_t)(unsafe.Add(unsafe.Pointer(node), 32))
 	*(*b2TreeNode)(unsafe.Pointer(node)) = b2_defaultTreeNode
-	(*DynamicTree)(unsafe.Pointer(tree)).NodeCount++
+	(*DynamicTree)(unsafe.Pointer(tree)).NodeCount = (*DynamicTree)(unsafe.Pointer(tree)).NodeCount + 1
 	return nodeIndex
 }
 
@@ -7838,7 +7838,7 @@ func b2FreeNode(tls *_Stack, tree uintptr, nodeId int32) {
 	*(*int32_t)(unsafe.Add(unsafe.Pointer(&*(*b2TreeNode)(unsafe.Pointer((*DynamicTree)(unsafe.Pointer(tree)).Nodes + uintptr(nodeId)*40))), 32)) = (*DynamicTree)(unsafe.Pointer(tree)).FreeList
 	(*(*b2TreeNode)(unsafe.Pointer((*DynamicTree)(unsafe.Pointer(tree)).Nodes + uintptr(nodeId)*40))).Flags = uint16(0)
 	(*DynamicTree)(unsafe.Pointer(tree)).FreeList = nodeId
-	(*DynamicTree)(unsafe.Pointer(tree)).NodeCount--
+	(*DynamicTree)(unsafe.Pointer(tree)).NodeCount = (*DynamicTree)(unsafe.Pointer(tree)).NodeCount - 1
 }
 
 // Greedy algorithm for sibling selection using the SAH
@@ -7969,7 +7969,7 @@ _36:
 			bestCost = cost
 		}
 		// Inheritance cost seen by children
-		inheritedCost += directCost - areaBase
+		inheritedCost = inheritedCost + (directCost - areaBase)
 		leaf1 = boolUint8(int32FromUint16((*(*b2TreeNode)(unsafe.Pointer(nodes + uintptr(child1)*40))).Height) == 0)
 		leaf2 = boolUint8(int32FromUint16((*(*b2TreeNode)(unsafe.Pointer(nodes + uintptr(child2)*40))).Height) == 0)
 		// Cost of descending into child 1
@@ -9359,7 +9359,7 @@ func b2PartitionMid(tls *_Stack, indices uintptr, centers uintptr, count int32) 
 		goto _1
 	_1:
 		;
-		i++
+		i = i + 1
 	}
 	v30 = upperBound
 	v31 = lowerBound
@@ -9383,10 +9383,10 @@ _33:
 		pivot = c2.X
 		for i1 < i2 {
 			for i1 < i2 && (*(*Vec2)(unsafe.Pointer(centers + uintptr(i1)*8))).X < pivot {
-				i1 += int32(1)
+				i1 = i1 + int32(1)
 			}
 			for i1 < i2 && (*(*Vec2)(unsafe.Pointer(centers + uintptr(i2-int32(1))*8))).X >= pivot {
-				i2 -= int32(1)
+				i2 = i2 - int32(1)
 			}
 			if i1 < i2 {
 				// Swap indices
@@ -9397,18 +9397,18 @@ _33:
 				temp1 = *(*Vec2)(unsafe.Pointer(centers + uintptr(i1)*8))
 				*(*Vec2)(unsafe.Pointer(centers + uintptr(i1)*8)) = *(*Vec2)(unsafe.Pointer(centers + uintptr(i2-int32(1))*8))
 				*(*Vec2)(unsafe.Pointer(centers + uintptr(i2-int32(1))*8)) = temp1
-				i1 += int32(1)
-				i2 -= int32(1)
+				i1 = i1 + int32(1)
+				i2 = i2 - int32(1)
 			}
 		}
 	} else {
 		pivot1 = c2.Y
 		for i1 < i2 {
 			for i1 < i2 && (*(*Vec2)(unsafe.Pointer(centers + uintptr(i1)*8))).Y < pivot1 {
-				i1 += int32(1)
+				i1 = i1 + int32(1)
 			}
 			for i1 < i2 && (*(*Vec2)(unsafe.Pointer(centers + uintptr(i2-int32(1))*8))).Y >= pivot1 {
-				i2 -= int32(1)
+				i2 = i2 - int32(1)
 			}
 			if i1 < i2 {
 				// Swap indices
@@ -9419,8 +9419,8 @@ _33:
 				temp3 = *(*Vec2)(unsafe.Pointer(centers + uintptr(i1)*8))
 				*(*Vec2)(unsafe.Pointer(centers + uintptr(i1)*8)) = *(*Vec2)(unsafe.Pointer(centers + uintptr(i2-int32(1))*8))
 				*(*Vec2)(unsafe.Pointer(centers + uintptr(i2-int32(1))*8)) = temp3
-				i1 += int32(1)
-				i2 -= int32(1)
+				i1 = i1 + int32(1)
+				i2 = i2 - int32(1)
 			}
 		}
 	}
@@ -9558,7 +9558,7 @@ func b2BuildTree(tls *_Stack, tree uintptr, leafCount int32) (r int32) {
 			(*b2TreeNode)(unsafe.Pointer(node)).Height = uint16FromInt32(int32(1) + int32FromUint16(b2MaxUInt16(tls, (*b2TreeNode)(unsafe.Pointer(child1)).Height, (*b2TreeNode)(unsafe.Pointer(child2)).Height)))
 			(*b2TreeNode)(unsafe.Pointer(node)).CategoryBits = (*b2TreeNode)(unsafe.Pointer(child1)).CategoryBits | (*b2TreeNode)(unsafe.Pointer(child2)).CategoryBits
 			// Pop stack
-			top -= int32(1)
+			top = top - int32(1)
 		} else {
 			if (*b2RebuildItem)(unsafe.Pointer(item)).ChildCount == 0 {
 				startIndex = (*b2RebuildItem)(unsafe.Pointer(item)).StartIndex
@@ -9600,7 +9600,7 @@ func b2BuildTree(tls *_Stack, tree uintptr, leafCount int32) (r int32) {
 				if !(top < int32FromInt32(_B2_TREE_STACK_SIZE)) && b2InternalAssertFcn(tls, __ccgo_ts+6304, __ccgo_ts+4746, int32FromInt32(1837)) != 0 {
 					__builtin_trap(tls)
 				}
-				top += int32(1)
+				top = top + int32(1)
 				newItem = bp + uintptr(top)*20
 				(*b2RebuildItem)(unsafe.Pointer(newItem)).NodeIndex = b2AllocateNode(tls, tree)
 				(*b2RebuildItem)(unsafe.Pointer(newItem)).ChildCount = -int32(1)
@@ -9716,7 +9716,7 @@ func b2MakePolygon(tls *_Stack, hull uintptr, radius float32) (r Polygon) {
 		goto _1
 	_1:
 		;
-		i++
+		i = i + 1
 	}
 	// Compute normals. Ensure the edges have non-zero length.
 	i1 = 0
@@ -9775,7 +9775,7 @@ func b2MakePolygon(tls *_Stack, hull uintptr, radius float32) (r Polygon) {
 		goto _2
 	_2:
 		;
-		i1++
+		i1 = i1 + 1
 	}
 	(*(*Polygon)(unsafe.Pointer(bp))).Centroid = b2ComputePolygonCentroid(tls, bp, (*(*Polygon)(unsafe.Pointer(bp))).Count)
 	return *(*Polygon)(unsafe.Pointer(bp))
@@ -9828,7 +9828,7 @@ func b2MakeOffsetRoundedPolygon(tls *_Stack, hull uintptr, position Vec2, rotati
 		goto _1
 	_1:
 		;
-		i++
+		i = i + 1
 	}
 	// Compute normals. Ensure the edges have non-zero length.
 	i1 = 0
@@ -9887,7 +9887,7 @@ func b2MakeOffsetRoundedPolygon(tls *_Stack, hull uintptr, position Vec2, rotati
 		goto _6
 	_6:
 		;
-		i1++
+		i1 = i1 + 1
 	}
 	(*(*Polygon)(unsafe.Pointer(bp))).Centroid = b2ComputePolygonCentroid(tls, bp, (*(*Polygon)(unsafe.Pointer(bp))).Count)
 	return *(*Polygon)(unsafe.Pointer(bp))
@@ -10235,7 +10235,7 @@ func b2TransformPolygon(tls *_Stack, transform Transform, polygon uintptr) (r Po
 		goto _1
 	_1:
 		;
-		i++
+		i = i + 1
 	}
 	v10 = transform
 	v11 = (*(*Polygon)(unsafe.Pointer(bp))).Centroid
@@ -10375,7 +10375,7 @@ func b2PointInPolygon(tls *_Stack, _point Vec2, shape uintptr) (r uint8) {
 	(*(*DistanceInput)(unsafe.Pointer(bp + 8))).ProxyB = b2MakeProxy(tls, bp, int32(1), float32FromFloat32(0))
 	(*(*DistanceInput)(unsafe.Pointer(bp + 8))).TransformA = b2Transform_identity
 	(*(*DistanceInput)(unsafe.Pointer(bp + 8))).TransformB = b2Transform_identity
-	(*(*DistanceInput)(unsafe.Pointer(bp + 8))).UseRadii = uint8(false1)
+	(*(*DistanceInput)(unsafe.Pointer(bp + 8))).UseRadii = boolUint8(false1 != 0)
 	*(*SimplexCache)(unsafe.Pointer(bp + 192)) = SimplexCache{}
 	output = b2ShapeDistance(tls, bp+8, bp+192, uintptrFromInt32(0), 0)
 	return boolUint8(output.Distance <= (*Polygon)(unsafe.Pointer(shape)).Radius)
@@ -10436,7 +10436,7 @@ _8:
 		if v10 < rr {
 			// initial overlap
 			output.Point = (*RayCastInput)(unsafe.Pointer(input)).Origin
-			output.Hit = uint8(true1)
+			output.Hit = boolUint8(true1 != 0)
 		}
 		return output
 	}
@@ -10481,7 +10481,7 @@ _24:
 		if v26 < rr {
 			// initial overlap
 			output.Point = (*RayCastInput)(unsafe.Pointer(input)).Origin
-			output.Hit = uint8(true1)
+			output.Hit = boolUint8(true1 != 0)
 		}
 		return output
 	}
@@ -10522,7 +10522,7 @@ _35:
 	goto _40
 _40:
 	output.Point = v39
-	output.Hit = uint8(true1)
+	output.Hit = boolUint8(true1 != 0)
 	return output
 }
 
@@ -10635,7 +10635,7 @@ _25:
 		}
 		// ray starts inside capsule -> no hit
 		output.Point = (*RayCastInput)(unsafe.Pointer(input)).Origin
-		output.Hit = uint8(true1)
+		output.Hit = boolUint8(true1 != 0)
 		return output
 	}
 	// Perpendicular to capsule axis, pointing right
@@ -10762,7 +10762,7 @@ _39:
 		_55:
 			output.Point = v54
 			output.Normal = n1
-			output.Hit = uint8(true1)
+			output.Hit = boolUint8(true1 != 0)
 			return output
 		}
 	}
@@ -10932,7 +10932,7 @@ _48:
 	output1.Fraction = t
 	output1.Point = p
 	output1.Normal = normal
-	output1.Hit = uint8(true1)
+	output1.Hit = boolUint8(true1 != 0)
 	return output1
 }
 
@@ -11032,7 +11032,7 @@ func b2RayCastPolygon(tls *_Stack, input uintptr, shape uintptr) (r CastOutput) 
 			goto _5
 		_5:
 			;
-			i++
+			i = i + 1
 		}
 		if !(float32FromFloat32(0) <= lower && lower <= (*RayCastInput)(unsafe.Pointer(input)).MaxFraction) && b2InternalAssertFcn(tls, __ccgo_ts+6801, __ccgo_ts+6524, int32FromInt32(862)) != 0 {
 			__builtin_trap(tls)
@@ -11050,11 +11050,11 @@ func b2RayCastPolygon(tls *_Stack, input uintptr, shape uintptr) (r CastOutput) 
 			goto _26
 		_26:
 			output.Point = v25
-			output.Hit = uint8(true1)
+			output.Hit = boolUint8(true1 != 0)
 		} else {
 			// initial overlap
 			output.Point = (*RayCastInput)(unsafe.Pointer(input)).Origin
-			output.Hit = uint8(true1)
+			output.Hit = boolUint8(true1 != 0)
 		}
 		return output
 	}
@@ -11064,7 +11064,7 @@ func b2RayCastPolygon(tls *_Stack, input uintptr, shape uintptr) (r CastOutput) 
 	(*(*ShapeCastPairInput)(unsafe.Pointer(bp))).TransformB = b2Transform_identity
 	(*(*ShapeCastPairInput)(unsafe.Pointer(bp))).TranslationB = (*RayCastInput)(unsafe.Pointer(input)).Translation
 	(*(*ShapeCastPairInput)(unsafe.Pointer(bp))).MaxFraction = (*RayCastInput)(unsafe.Pointer(input)).MaxFraction
-	(*(*ShapeCastPairInput)(unsafe.Pointer(bp))).CanEncroach = uint8(false1)
+	(*(*ShapeCastPairInput)(unsafe.Pointer(bp))).CanEncroach = boolUint8(false1 != 0)
 	return b2ShapeCast(tls, bp)
 }
 
@@ -11143,7 +11143,7 @@ _15:
 	bestDistance = v14
 	if bestDistance > float32FromFloat32(0) {
 		v16 = rightCount
-		rightCount++
+		rightCount = rightCount + 1
 		(*(*[8]Vec2)(unsafe.Pointer(bp + 68)))[v16] = *(*Vec2)(unsafe.Pointer(ps + uintptr(bestIndex)*8))
 	}
 	i = int32(1)
@@ -11171,13 +11171,13 @@ _15:
 		}
 		if distance > float32FromFloat32(0) {
 			v26 = rightCount
-			rightCount++
+			rightCount = rightCount + 1
 			(*(*[8]Vec2)(unsafe.Pointer(bp + 68)))[v26] = *(*Vec2)(unsafe.Pointer(ps + uintptr(i)*8))
 		}
 		goto _17
 	_17:
 		;
-		i++
+		i = i + 1
 	}
 	if bestDistance < float32(float32FromFloat32(2)*float32(float32FromFloat32(0.005)*b2_lengthUnitsPerMeter)) {
 		return *(*Hull)(unsafe.Pointer(bp))
@@ -11195,16 +11195,16 @@ _15:
 		}
 		v29 = bp + 64
 		v28 = *(*int32)(unsafe.Pointer(v29))
-		*(*int32)(unsafe.Pointer(v29))++
+		*(*int32)(unsafe.Pointer(v29)) = *(*int32)(unsafe.Pointer(v29)) + 1
 		*(*Vec2)(unsafe.Pointer(bp + uintptr(v28)*8)) = *(*Vec2)(unsafe.Pointer(bp + 132 + uintptr(i1)*8))
 		goto _27
 	_27:
 		;
-		i1++
+		i1 = i1 + 1
 	}
 	v31 = bp + 64
 	v30 = *(*int32)(unsafe.Pointer(v31))
-	*(*int32)(unsafe.Pointer(v31))++
+	*(*int32)(unsafe.Pointer(v31)) = *(*int32)(unsafe.Pointer(v31)) + 1
 	*(*Vec2)(unsafe.Pointer(bp + uintptr(v30)*8)) = bestPoint
 	i2 = 0
 	for {
@@ -11213,12 +11213,12 @@ _15:
 		}
 		v34 = bp + 64
 		v33 = *(*int32)(unsafe.Pointer(v34))
-		*(*int32)(unsafe.Pointer(v34))++
+		*(*int32)(unsafe.Pointer(v34)) = *(*int32)(unsafe.Pointer(v34)) + 1
 		*(*Vec2)(unsafe.Pointer(bp + uintptr(v33)*8)) = *(*Vec2)(unsafe.Pointer(bp + 200 + uintptr(i2)*8))
 		goto _32
 	_32:
 		;
-		i2++
+		i2 = i2 + 1
 	}
 	if !((*(*Hull)(unsafe.Pointer(bp))).Count < int32FromInt32(_B2_MAX_POLYGON_VERTICES)) && b2InternalAssertFcn(tls, __ccgo_ts+6846, __ccgo_ts+6883, int32FromInt32(78)) != 0 {
 		__builtin_trap(tls)
@@ -11232,7 +11232,7 @@ func b2ValidateHull(tls *_Stack, hull uintptr) (r uint8) {
 	var i, i1, i11, i12, i2, i21, i3, j, v2 int32
 	_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ = distance, distance1, e, e1, i, i1, i11, i12, i2, i21, i3, invLength, j, length, linearSlop, n, p, p1, p2, p3, v11, v12, v13, v15, v16, v17, v2, v20, v21, v22, v24, v25, v27, v28, v29, v3, v31, v32, v33, v4, v5, v7, v8
 	if (*Hull)(unsafe.Pointer(hull)).Count < int32(3) || int32(_B2_MAX_POLYGON_VERTICES) < (*Hull)(unsafe.Pointer(hull)).Count {
-		return uint8(false1)
+		return boolUint8(false1 != 0)
 	}
 	// test that every point is behind every edge
 	i = 0
@@ -11296,17 +11296,17 @@ func b2ValidateHull(tls *_Stack, hull uintptr) (r uint8) {
 		_18:
 			distance = v17
 			if distance >= float32FromFloat32(0) {
-				return uint8(false1)
+				return boolUint8(false1 != 0)
 			}
 			goto _10
 		_10:
 			;
-			j++
+			j = j + 1
 		}
 		goto _1
 	_1:
 		;
-		i++
+		i = i + 1
 	}
 	// test for collinear points
 	linearSlop = float32(float32FromFloat32(0.005) * b2_lengthUnitsPerMeter)
@@ -11360,14 +11360,14 @@ func b2ValidateHull(tls *_Stack, hull uintptr) (r uint8) {
 		distance1 = v33
 		if distance1 <= linearSlop {
 			// p1-p2-p3 are collinear
-			return uint8(false1)
+			return boolUint8(false1 != 0)
 		}
 		goto _19
 	_19:
 		;
-		i1++
+		i1 = i1 + 1
 	}
-	return uint8(true1)
+	return boolUint8(true1 != 0)
 }
 
 const _FLT_MAX5 = 3.40282346638528859812e+38
@@ -12175,7 +12175,7 @@ _4:
 		goto _5
 	_5:
 		;
-		i++
+		i = i + 1
 	}
 	// Step 2: merge every awake island into its parent (which must be a root island)
 	// Reverse to support removal from awake array.
@@ -12203,7 +12203,7 @@ _4:
 		goto _14
 	_14:
 		;
-		i1--
+		i1 = i1 - 1
 	}
 	b2ValidateConnectivity(tls, world)
 }
@@ -12243,11 +12243,11 @@ _4:
 	nextBody = (*b2Island)(unsafe.Pointer(baseIsland)).HeadBody
 	for nextBody != -int32(1) {
 		v5 = index3
-		index3++
+		index3 = index3 + 1
 		*(*int32)(unsafe.Pointer(bodyIds + uintptr(v5)*4)) = nextBody
 		body = bodies + uintptr(nextBody)*128
 		// Clear visitation mark
-		(*b2Body)(unsafe.Pointer(body)).IsMarked = uint8(false1)
+		(*b2Body)(unsafe.Pointer(body)).IsMarked = boolUint8(false1 != 0)
 		nextBody = (*b2Body)(unsafe.Pointer(body)).IslandNext
 	}
 	if !(index3 == bodyCount) && b2InternalAssertFcn(tls, __ccgo_ts+8809, __ccgo_ts+7079, int32FromInt32(644)) != 0 {
@@ -12266,7 +12266,7 @@ _4:
 		goto _9
 	_9:
 		contact = v8
-		(*b2Contact)(unsafe.Pointer(contact)).IsMarked = uint8(false1)
+		(*b2Contact)(unsafe.Pointer(contact)).IsMarked = boolUint8(false1 != 0)
 		nextContactId = (*b2Contact)(unsafe.Pointer(contact)).IslandNext
 	}
 	// Clear joint island flags.
@@ -12281,7 +12281,7 @@ _4:
 		goto _13
 	_13:
 		joint = v12
-		(*b2Joint)(unsafe.Pointer(joint)).IsMarked = uint8(false1)
+		(*b2Joint)(unsafe.Pointer(joint)).IsMarked = boolUint8(false1 != 0)
 		nextJoint = (*b2Joint)(unsafe.Pointer(joint)).IslandNext
 	}
 	// Done with the base split island.
@@ -12303,9 +12303,9 @@ _4:
 		}
 		stackCount = 0
 		v15 = stackCount
-		stackCount++
+		stackCount = stackCount + 1
 		*(*int32)(unsafe.Pointer(stack + uintptr(v15)*4)) = seedIndex
-		(*b2Body)(unsafe.Pointer(seed)).IsMarked = uint8(true1)
+		(*b2Body)(unsafe.Pointer(seed)).IsMarked = boolUint8(true1 != 0)
 		// Create new island
 		// No lock needed because only a single island can split per time step. No islands are being used during the constraint
 		// solve. However, islands are touched during body finalization.
@@ -12313,7 +12313,7 @@ _4:
 		islandId = (*b2Island)(unsafe.Pointer(island)).IslandId
 		// Perform a depth first search (DFS) on the constraint graph.
 		for stackCount > 0 {
-			stackCount--
+			stackCount = stackCount - 1
 			v16 = stackCount
 			// Grab the next body off the stack and add it to the island.
 			bodyId = *(*int32)(unsafe.Pointer(stack + uintptr(v16)*4))
@@ -12363,7 +12363,7 @@ _4:
 				if (*b2Contact)(unsafe.Pointer(contact1)).Flags&uint32(b2_contactTouchingFlag) == uint32(0) {
 					continue
 				}
-				(*b2Contact)(unsafe.Pointer(contact1)).IsMarked = uint8(true1)
+				(*b2Contact)(unsafe.Pointer(contact1)).IsMarked = boolUint8(true1 != 0)
 				otherEdgeIndex = edgeIndex ^ int32(1)
 				otherBodyId = (*(*b2ContactEdge)(unsafe.Pointer(contact1 + 12 + uintptr(otherEdgeIndex)*12))).BodyId
 				otherBody = bodies + uintptr(otherBodyId)*128
@@ -12373,9 +12373,9 @@ _4:
 						__builtin_trap(tls)
 					}
 					v21 = stackCount
-					stackCount++
+					stackCount = stackCount + 1
 					*(*int32)(unsafe.Pointer(stack + uintptr(v21)*4)) = otherBodyId
-					(*b2Body)(unsafe.Pointer(otherBody)).IsMarked = uint8(true1)
+					(*b2Body)(unsafe.Pointer(otherBody)).IsMarked = boolUint8(true1 != 0)
 				}
 				// Add contact to island
 				(*b2Contact)(unsafe.Pointer(contact1)).IslandId = islandId
@@ -12422,7 +12422,7 @@ _4:
 				if (*b2Joint)(unsafe.Pointer(joint1)).IsMarked != 0 {
 					continue
 				}
-				(*b2Joint)(unsafe.Pointer(joint1)).IsMarked = uint8(true1)
+				(*b2Joint)(unsafe.Pointer(joint1)).IsMarked = boolUint8(true1 != 0)
 				otherEdgeIndex1 = edgeIndex1 ^ int32(1)
 				otherBodyId1 = (*(*b2JointEdge)(unsafe.Pointer(joint1 + 20 + uintptr(otherEdgeIndex1)*12))).BodyId
 				otherBody1 = bodies + uintptr(otherBodyId1)*128
@@ -12436,9 +12436,9 @@ _4:
 						__builtin_trap(tls)
 					}
 					v30 = stackCount
-					stackCount++
+					stackCount = stackCount + 1
 					*(*int32)(unsafe.Pointer(stack + uintptr(v30)*4)) = otherBodyId1
-					(*b2Body)(unsafe.Pointer(otherBody1)).IsMarked = uint8(true1)
+					(*b2Body)(unsafe.Pointer(otherBody1)).IsMarked = boolUint8(true1 != 0)
 				}
 				// Add joint to island
 				(*b2Joint)(unsafe.Pointer(joint1)).IslandId = islandId
@@ -12467,7 +12467,7 @@ _4:
 		goto _14
 	_14:
 		;
-		i++
+		i = i + 1
 	}
 	b2FreeArenaItem(tls, alloc, bodyIds)
 	b2FreeArenaItem(tls, alloc, stack)
@@ -12538,7 +12538,7 @@ func b2DestroyContactsBetweenBodies(tls *_Stack, world uintptr, bodyA uintptr, b
 		otherBodyId = (*b2Body)(unsafe.Pointer(bodyA)).Id
 	}
 	// no need to wake bodies when a joint removes collision between them
-	wakeBodies = uint8(false1)
+	wakeBodies = boolUint8(false1 != 0)
 	// destroy the contacts
 	for contactKey != -int32(1) {
 		contactId = contactKey >> int32(1)
@@ -12841,7 +12841,7 @@ _68:
 		(*ManifoldPoint)(unsafe.Pointer(cp)).Separation = separationLower - radius
 		(*ManifoldPoint)(unsafe.Pointer(cp)).Id = uint16FromInt32(int32FromUint8(uint8FromInt32(i11))<<int32FromInt32(8) | int32FromUint8(uint8FromInt32(i22)))
 		(*(*Manifold)(unsafe.Pointer(bp))).PointCount += int32(1)
-		cp += uintptr(1) * 48
+		cp = cp + uintptr(1)*48
 		(*ManifoldPoint)(unsafe.Pointer(cp)).AnchorA = vUpper
 		(*ManifoldPoint)(unsafe.Pointer(cp)).Separation = separationUpper - radius
 		(*ManifoldPoint)(unsafe.Pointer(cp)).Id = uint16FromInt32(int32FromUint8(uint8FromInt32(i12))<<int32FromInt32(8) | int32FromUint8(uint8FromInt32(i21)))
@@ -12860,7 +12860,7 @@ _68:
 		(*ManifoldPoint)(unsafe.Pointer(cp1)).Separation = separationUpper - radius
 		(*ManifoldPoint)(unsafe.Pointer(cp1)).Id = uint16FromInt32(int32FromUint8(uint8FromInt32(i21))<<int32FromInt32(8) | int32FromUint8(uint8FromInt32(i12)))
 		(*(*Manifold)(unsafe.Pointer(bp))).PointCount += int32(1)
-		cp1 += uintptr(1) * 48
+		cp1 = cp1 + uintptr(1)*48
 		(*ManifoldPoint)(unsafe.Pointer(cp1)).AnchorA = vLower
 		(*ManifoldPoint)(unsafe.Pointer(cp1)).Separation = separationLower - radius
 		(*ManifoldPoint)(unsafe.Pointer(cp1)).Id = uint16FromInt32(int32FromUint8(uint8FromInt32(i22))<<int32FromInt32(8) | int32FromUint8(uint8FromInt32(i11)))
@@ -12920,7 +12920,7 @@ func b2FindMaxSeparation(tls *_Stack, edgeIndex uintptr, poly1 uintptr, poly2 ui
 			goto _2
 		_2:
 			;
-			j++
+			j = j + 1
 		}
 		if si > maxSeparation {
 			maxSeparation = si
@@ -12929,7 +12929,7 @@ func b2FindMaxSeparation(tls *_Stack, edgeIndex uintptr, poly1 uintptr, poly2 ui
 		goto _1
 	_1:
 		;
-		i++
+		i = i + 1
 	}
 	*(*int32)(unsafe.Pointer(edgeIndex)) = bestIndex
 	return maxSeparation
@@ -13179,16 +13179,16 @@ func b2IsValidFloat(tls *_Stack, a float32) (r uint8) {
 	goto _2
 _2:
 	if boolInt32(v1&uint32(0x7fffffff) > uint32(0x7f800000)) != 0 {
-		return uint8(false1)
+		return boolUint8(false1 != 0)
 	}
 	*(*float32)(unsafe.Pointer(bp)) = a
 	v3 = *(*uint32)(unsafe.Pointer(bp))
 	goto _4
 _4:
 	if boolInt32(v3&uint32(0x7fffffff) == uint32(0x7f800000)) != 0 {
-		return uint8(false1)
+		return boolUint8(false1 != 0)
 	}
-	return uint8(true1)
+	return boolUint8(true1 != 0)
 }
 
 func b2IsValidVec2(tls *_Stack, v Vec2) (r uint8) {
@@ -13213,7 +13213,7 @@ _2:
 	_4:
 	}
 	if v5 || boolInt32(v3&uint32(0x7fffffff) > uint32(0x7f800000)) != 0 {
-		return uint8(false1)
+		return boolUint8(false1 != 0)
 	}
 	*(*float32)(unsafe.Pointer(bp)) = v.X
 	v6 = *(*uint32)(unsafe.Pointer(bp))
@@ -13227,9 +13227,9 @@ _7:
 	_9:
 	}
 	if v10 || boolInt32(v8&uint32(0x7fffffff) == uint32(0x7f800000)) != 0 {
-		return uint8(false1)
+		return boolUint8(false1 != 0)
 	}
-	return uint8(true1)
+	return boolUint8(true1 != 0)
 }
 
 func b2IsValidRotation(tls *_Stack, q1 Rot) (r uint8) {
@@ -13257,7 +13257,7 @@ _2:
 	_4:
 	}
 	if v5 || boolInt32(v3&uint32(0x7fffffff) > uint32(0x7f800000)) != 0 {
-		return uint8(false1)
+		return boolUint8(false1 != 0)
 	}
 	*(*float32)(unsafe.Pointer(bp)) = q1.S
 	v6 = *(*uint32)(unsafe.Pointer(bp))
@@ -13271,7 +13271,7 @@ _7:
 	_9:
 	}
 	if v10 || boolInt32(v8&uint32(0x7fffffff) == uint32(0x7f800000)) != 0 {
-		return uint8(false1)
+		return boolUint8(false1 != 0)
 	}
 	v11 = q1
 	qq = float32(v11.S*v11.S) + float32(v11.C*v11.C)
@@ -13441,7 +13441,7 @@ func b2ClipVector(tls *_Stack, vector Vec2, planes uintptr, count int32) (r Vec2
 		goto _1
 	_1:
 		;
-		planeIndex++
+		planeIndex = planeIndex + 1
 	}
 	return v
 }
@@ -13562,15 +13562,15 @@ _6:
 		goto _8
 	_8:
 		;
-		i++
+		i = i + 1
 	}
 	(*b2Body)(unsafe.Pointer(body)).HeadChainId = chainId
 	*(*ShapeDef)(unsafe.Pointer(bp)) = b2DefaultShapeDef(tls)
 	(*(*ShapeDef)(unsafe.Pointer(bp))).UserData = (*ChainDef)(unsafe.Pointer(def)).UserData
 	(*(*ShapeDef)(unsafe.Pointer(bp))).Filter = (*ChainDef)(unsafe.Pointer(def)).Filter
 	(*(*ShapeDef)(unsafe.Pointer(bp))).EnableSensorEvents = (*ChainDef)(unsafe.Pointer(def)).EnableSensorEvents
-	(*(*ShapeDef)(unsafe.Pointer(bp))).EnableContactEvents = uint8(false1)
-	(*(*ShapeDef)(unsafe.Pointer(bp))).EnableHitEvents = uint8(false1)
+	(*(*ShapeDef)(unsafe.Pointer(bp))).EnableContactEvents = boolUint8(false1 != 0)
+	(*(*ShapeDef)(unsafe.Pointer(bp))).EnableHitEvents = boolUint8(false1 != 0)
 	points = (*ChainDef)(unsafe.Pointer(def)).Points
 	n = (*ChainDef)(unsafe.Pointer(def)).Count
 	if (*ChainDef)(unsafe.Pointer(def)).IsLoop != 0 {
@@ -13600,7 +13600,7 @@ _6:
 			goto _9
 		_9:
 			;
-			i1++
+			i1 = i1 + 1
 		}
 		(*(*ChainSegment)(unsafe.Pointer(bp + 80))).Ghost1 = *(*Vec2)(unsafe.Pointer(points + uintptr(n-int32(3))*8))
 		(*(*ChainSegment)(unsafe.Pointer(bp + 80))).Segment.Point1 = *(*Vec2)(unsafe.Pointer(points + uintptr(n-int32(2))*8))
@@ -13656,7 +13656,7 @@ _6:
 			goto _13
 		_13:
 			;
-			i2++
+			i2 = i2 + 1
 		}
 	}
 	id = ChainId{
@@ -13695,11 +13695,11 @@ _4:
 	body = v3
 	// Remove the chain from the body's singly linked list.
 	chainIdPtr = body + 64
-	found = uint8(false1)
+	found = boolUint8(false1 != 0)
 	for *(*int32)(unsafe.Pointer(chainIdPtr)) != -int32(1) {
 		if *(*int32)(unsafe.Pointer(chainIdPtr)) == (*b2ChainShape)(unsafe.Pointer(chain)).Id {
 			*(*int32)(unsafe.Pointer(chainIdPtr)) = (*b2ChainShape)(unsafe.Pointer(chain)).NextChainId
-			found = uint8(true1)
+			found = boolUint8(true1 != 0)
 			break
 		}
 		chainIdPtr = (*b2World)(unsafe.Pointer(world)).ChainShapes.Data + uintptr(*(*int32)(unsafe.Pointer(chainIdPtr)))*48 + 8
@@ -13726,12 +13726,12 @@ _4:
 		goto _9
 	_9:
 		shape = v8
-		wakeBodies = uint8(true1)
+		wakeBodies = boolUint8(true1 != 0)
 		b2DestroyShapeInternal(tls, world, shape, body, wakeBodies)
 		goto _5
 	_5:
 		;
-		i++
+		i = i + 1
 	}
 	b2FreeChainData(tls, chain)
 	// Return chain to free list.
@@ -13804,7 +13804,7 @@ _4:
 		goto _6
 	_6:
 		;
-		i++
+		i = i + 1
 	}
 	return count
 }
@@ -13851,7 +13851,7 @@ _4:
 		b2UpdateShapeAABBs(tls, shape, transform, proxyType)
 		if destroyProxy != 0 {
 			b2BroadPhase_DestroyProxy(tls, world+40, (*b2Shape)(unsafe.Pointer(shape)).ProxyKey)
-			forcePairCreation = uint8(true1)
+			forcePairCreation = boolUint8(true1 != 0)
 			(*b2Shape)(unsafe.Pointer(shape)).ProxyKey = b2BroadPhase_CreateProxy(tls, world+40, proxyType, (*b2Shape)(unsafe.Pointer(shape)).FatAABB, (*b2Shape)(unsafe.Pointer(shape)).Filter.CategoryBits, shapeId, forcePairCreation)
 		} else {
 			b2BroadPhase_MoveProxy(tls, world+40, (*b2Shape)(unsafe.Pointer(shape)).ProxyKey, (*b2Shape)(unsafe.Pointer(shape)).FatAABB)
@@ -13885,7 +13885,7 @@ func b2Chain_SetFriction(tls *_Stack, chainId ChainId, friction float32) {
 		goto _1
 	_1:
 		;
-		i++
+		i = i + 1
 	}
 	count = (*b2ChainShape)(unsafe.Pointer(chainShape)).Count
 	i1 = 0
@@ -13907,7 +13907,7 @@ func b2Chain_SetFriction(tls *_Stack, chainId ChainId, friction float32) {
 		goto _2
 	_2:
 		;
-		i1++
+		i1 = i1 + 1
 	}
 }
 
@@ -13941,7 +13941,7 @@ func b2Chain_SetRestitution(tls *_Stack, chainId ChainId, restitution float32) {
 		goto _1
 	_1:
 		;
-		i++
+		i = i + 1
 	}
 	count = (*b2ChainShape)(unsafe.Pointer(chainShape)).Count
 	i1 = 0
@@ -13963,7 +13963,7 @@ func b2Chain_SetRestitution(tls *_Stack, chainId ChainId, restitution float32) {
 		goto _2
 	_2:
 		;
-		i1++
+		i1 = i1 + 1
 	}
 }
 
@@ -13994,7 +13994,7 @@ func b2Chain_SetMaterial(tls *_Stack, chainId ChainId, material int32) {
 		goto _1
 	_1:
 		;
-		i++
+		i = i + 1
 	}
 	count = (*b2ChainShape)(unsafe.Pointer(chainShape)).Count
 	i1 = 0
@@ -14016,7 +14016,7 @@ func b2Chain_SetMaterial(tls *_Stack, chainId ChainId, material int32) {
 		goto _2
 	_2:
 		;
-		i1++
+		i1 = i1 + 1
 	}
 }
 
@@ -14252,7 +14252,7 @@ func b2IntegrateVelocitiesTask(tls *_Stack, startIndex int32, endIndex int32, co
 			goto _30
 		_30:
 			v2 = v29
-			(*b2BodySim)(unsafe.Pointer(sim)).IsSpeedCapped = uint8(true1)
+			(*b2BodySim)(unsafe.Pointer(sim)).IsSpeedCapped = boolUint8(true1 != 0)
 		}
 		// Clamp to max angular speed
 		if float32(w*w) > maxAngularSpeedSquared && int32FromUint8((*b2BodySim)(unsafe.Pointer(sim)).AllowFastRotation) == false1 {
@@ -14266,15 +14266,15 @@ func b2IntegrateVelocitiesTask(tls *_Stack, startIndex int32, endIndex int32, co
 			goto _33
 		_33:
 			ratio1 = maxAngularSpeed / v32
-			w *= ratio1
-			(*b2BodySim)(unsafe.Pointer(sim)).IsSpeedCapped = uint8(true1)
+			w = w * ratio1
+			(*b2BodySim)(unsafe.Pointer(sim)).IsSpeedCapped = boolUint8(true1 != 0)
 		}
 		(*b2BodyState)(unsafe.Pointer(state)).LinearVelocity = v2
 		(*b2BodyState)(unsafe.Pointer(state)).AngularVelocity = w
 		goto _1
 	_1:
 		;
-		i++
+		i = i + 1
 	}
 }
 
@@ -14330,7 +14330,7 @@ func b2IntegratePositionsTask(tls *_Stack, startIndex int32, endIndex int32, con
 		goto _1
 	_1:
 		;
-		i++
+		i = i + 1
 	}
 }
 
@@ -14373,7 +14373,7 @@ func b2ContinuousQueryCallback(tls *_Stack, proxyId int32, userData uint64, cont
 	fastBodySim = (*b2ContinuousContext)(unsafe.Pointer(continuousContext)).FastBodySim
 	// Skip same shape
 	if shapeId == (*b2Shape)(unsafe.Pointer(fastShape)).Id {
-		return uint8(true1)
+		return boolUint8(true1 != 0)
 	}
 	world = (*b2ContinuousContext)(unsafe.Pointer(continuousContext)).World
 	v1 = world + 1248
@@ -14387,11 +14387,11 @@ _4:
 	shape = v3
 	// Skip same body
 	if (*b2Shape)(unsafe.Pointer(shape)).BodyId == (*b2Shape)(unsafe.Pointer(fastShape)).BodyId {
-		return uint8(true1)
+		return boolUint8(true1 != 0)
 	}
 	// Skip sensors
 	if (*b2Shape)(unsafe.Pointer(shape)).SensorIndex != -int32(1) {
-		return uint8(true1)
+		return boolUint8(true1 != 0)
 	}
 	v5 = (*b2Shape)(unsafe.Pointer(fastShape)).Filter
 	v6 = (*b2Shape)(unsafe.Pointer(shape)).Filter
@@ -14405,7 +14405,7 @@ _8:
 	// Skip filtered shapes
 	canCollide = v7
 	if int32FromUint8(canCollide) == false1 {
-		return uint8(true1)
+		return boolUint8(true1 != 0)
 	}
 	v9 = world + 1024
 	v10 = (*b2Shape)(unsafe.Pointer(shape)).BodyId
@@ -14422,7 +14422,7 @@ _12:
 	}
 	// Skip bullets
 	if (*b2BodySim)(unsafe.Pointer(bodySim1)).IsBullet != 0 {
-		return uint8(true1)
+		return boolUint8(true1 != 0)
 	}
 	v13 = world + 1024
 	v14 = (*b2BodySim)(unsafe.Pointer(fastBodySim)).BodyId
@@ -14436,7 +14436,7 @@ _16:
 	fastBody = v15
 	canCollide = b2ShouldBodiesCollide(tls, world, fastBody, body)
 	if int32FromUint8(canCollide) == false1 {
-		return uint8(true1)
+		return boolUint8(true1 != 0)
 	}
 	// Custom user filtering
 	customFilterFcn = (*b2World)(unsafe.Pointer(world)).CustomFilterFcn
@@ -14453,7 +14453,7 @@ _16:
 		}
 		canCollide = (*(*func(*_Stack, ShapeId, ShapeId, uintptr) uint8)(unsafe.Pointer(&struct{ uintptr }{customFilterFcn})))(tls, idA, idB, (*b2World)(unsafe.Pointer(world)).CustomFilterContext)
 		if int32FromUint8(canCollide) == false1 {
-			return uint8(true1)
+			return boolUint8(true1 != 0)
 		}
 	}
 	// Prevent pausing on chain segment junctions
@@ -14541,7 +14541,7 @@ _16:
 			allowedFraction = float32FromFloat32(0.25)
 			if offset1 < float32FromFloat32(0) || offset1-offset2 < float32(allowedFraction*(*b2BodySim)(unsafe.Pointer(fastBodySim)).MinExtent) {
 				// Minimal clipping
-				return uint8(true1)
+				return boolUint8(true1 != 0)
 			}
 		}
 	}
@@ -14560,11 +14560,11 @@ _51:
 	(*(*TOIInput)(unsafe.Pointer(bp + 4))).SweepB = (*b2ContinuousContext)(unsafe.Pointer(continuousContext)).Sweep
 	(*(*TOIInput)(unsafe.Pointer(bp + 4))).MaxFraction = (*b2ContinuousContext)(unsafe.Pointer(continuousContext)).Fraction
 	hitFraction = (*b2ContinuousContext)(unsafe.Pointer(continuousContext)).Fraction
-	didHit = uint8(false1)
+	didHit = boolUint8(false1 != 0)
 	output = b2TimeOfImpact(tls, bp+4)
 	if float32FromFloat32(0) < output.Fraction && output.Fraction < (*b2ContinuousContext)(unsafe.Pointer(continuousContext)).Fraction {
 		hitFraction = output.Fraction
-		didHit = uint8(true1)
+		didHit = boolUint8(true1 != 0)
 	} else {
 		if float32FromFloat32(0) == output.Fraction {
 			// fallback to TOI of a small circle around the fast shape centroid
@@ -14575,7 +14575,7 @@ _51:
 			output = b2TimeOfImpact(tls, bp+4)
 			if float32FromFloat32(0) < output.Fraction && output.Fraction < (*b2ContinuousContext)(unsafe.Pointer(continuousContext)).Fraction {
 				hitFraction = output.Fraction
-				didHit = uint8(true1)
+				didHit = boolUint8(true1 != 0)
 			}
 		}
 	}
@@ -14601,7 +14601,7 @@ _51:
 	if didHit != 0 {
 		(*b2ContinuousContext)(unsafe.Pointer(continuousContext)).Fraction = hitFraction
 	}
-	return uint8(true1)
+	return boolUint8(true1 != 0)
 }
 
 func b2FinalizeBodiesTask(tls *_Stack, startIndex int32, endIndex int32, threadIndex uint32, context uintptr) {
@@ -14759,19 +14759,19 @@ func b2FinalizeBodiesTask(tls *_Stack, startIndex int32, endIndex int32, threadI
 			Generation: (*b2Body)(unsafe.Pointer(body)).Generation,
 		}
 		(*(*BodyMoveEvent)(unsafe.Pointer(moveEvents + uintptr(simIndex)*40))).UserData = (*b2Body)(unsafe.Pointer(body)).UserData
-		(*(*BodyMoveEvent)(unsafe.Pointer(moveEvents + uintptr(simIndex)*40))).FellAsleep = uint8(false1)
+		(*(*BodyMoveEvent)(unsafe.Pointer(moveEvents + uintptr(simIndex)*40))).FellAsleep = boolUint8(false1 != 0)
 		// reset applied force and torque
 		(*b2BodySim)(unsafe.Pointer(sim)).Force = b2Vec2_zero
 		(*b2BodySim)(unsafe.Pointer(sim)).Torque = float32FromFloat32(0)
 		(*b2Body)(unsafe.Pointer(body)).IsSpeedCapped = (*b2BodySim)(unsafe.Pointer(sim)).IsSpeedCapped
-		(*b2BodySim)(unsafe.Pointer(sim)).IsSpeedCapped = uint8(false1)
-		(*b2BodySim)(unsafe.Pointer(sim)).IsFast = uint8(false1)
+		(*b2BodySim)(unsafe.Pointer(sim)).IsSpeedCapped = boolUint8(false1 != 0)
+		(*b2BodySim)(unsafe.Pointer(sim)).IsFast = boolUint8(false1 != 0)
 		if int32FromUint8(enableSleep) == false1 || int32FromUint8((*b2Body)(unsafe.Pointer(body)).EnableSleep) == false1 || sleepVelocity > (*b2Body)(unsafe.Pointer(body)).SleepThreshold {
 			// Body is not sleepy
 			(*b2Body)(unsafe.Pointer(body)).SleepTime = float32FromFloat32(0)
 			if (*b2Body)(unsafe.Pointer(body)).Type1 == int32(b2_dynamicBody) && enableContinuous != 0 && float32(maxVelocity*timeStep) > float32(float32FromFloat32(0.5)*(*b2BodySim)(unsafe.Pointer(sim)).MinExtent) {
 				// This flag is only retained for debug draw
-				(*b2BodySim)(unsafe.Pointer(sim)).IsFast = uint8(true1)
+				(*b2BodySim)(unsafe.Pointer(sim)).IsFast = boolUint8(true1 != 0)
 				// Store in fast array for the continuous collision stage
 				// This is deterministic because the order of TOI sweeps doesn't matter
 				if (*b2BodySim)(unsafe.Pointer(sim)).IsBullet != 0 {
@@ -14862,7 +14862,7 @@ func b2FinalizeBodiesTask(tls *_Stack, startIndex int32, endIndex int32, threadI
 				}
 				v55 = (*b2Shape)(unsafe.Pointer(shape)).FatAABB
 				v56 = aabb
-				s = uint8(true1)
+				s = boolUint8(true1 != 0)
 				s = boolUint8(s != 0 && v55.LowerBound.X <= v56.LowerBound.X)
 				s = boolUint8(s != 0 && v55.LowerBound.Y <= v56.LowerBound.Y)
 				s = boolUint8(s != 0 && v56.UpperBound.X <= v55.UpperBound.X)
@@ -14876,7 +14876,7 @@ func b2FinalizeBodiesTask(tls *_Stack, startIndex int32, endIndex int32, threadI
 					fatAABB.UpperBound.X = aabb.UpperBound.X + aabbMargin
 					fatAABB.UpperBound.Y = aabb.UpperBound.Y + aabbMargin
 					(*b2Shape)(unsafe.Pointer(shape)).FatAABB = fatAABB
-					(*b2Shape)(unsafe.Pointer(shape)).EnlargedAABB = uint8(true1)
+					(*b2Shape)(unsafe.Pointer(shape)).EnlargedAABB = boolUint8(true1 != 0)
 					// Bit-set to keep the move array sorted
 					v59 = enlargedSimBitSet
 					v60 = uint32FromInt32(simIndex)
@@ -14892,7 +14892,7 @@ func b2FinalizeBodiesTask(tls *_Stack, startIndex int32, endIndex int32, threadI
 		goto _1
 	_1:
 		;
-		simIndex++
+		simIndex = simIndex + 1
 	}
 }
 
@@ -14946,20 +14946,20 @@ func b2ExecuteBlock(tls *_Stack, stage uintptr, context uintptr, block uintptr) 
 		}
 	case int32(b2_stageSolve):
 		if blockType == int32(b2_graphContactBlock) {
-			b2SolveContactsTask(tls, startIndex, endIndex, context, (*b2SolverStage)(unsafe.Pointer(stage)).ColorIndex, uint8(true1))
+			b2SolveContactsTask(tls, startIndex, endIndex, context, (*b2SolverStage)(unsafe.Pointer(stage)).ColorIndex, boolUint8(true1 != 0))
 		} else {
 			if blockType == int32(b2_graphJointBlock) {
-				b2SolveJointsTask(tls, startIndex, endIndex, context, (*b2SolverStage)(unsafe.Pointer(stage)).ColorIndex, uint8(true1))
+				b2SolveJointsTask(tls, startIndex, endIndex, context, (*b2SolverStage)(unsafe.Pointer(stage)).ColorIndex, boolUint8(true1 != 0))
 			}
 		}
 	case int32(b2_stageIntegratePositions):
 		b2IntegratePositionsTask(tls, startIndex, endIndex, context)
 	case int32(b2_stageRelax):
 		if blockType == int32(b2_graphContactBlock) {
-			b2SolveContactsTask(tls, startIndex, endIndex, context, (*b2SolverStage)(unsafe.Pointer(stage)).ColorIndex, uint8(false1))
+			b2SolveContactsTask(tls, startIndex, endIndex, context, (*b2SolverStage)(unsafe.Pointer(stage)).ColorIndex, boolUint8(false1 != 0))
 		} else {
 			if blockType == int32(b2_graphJointBlock) {
-				b2SolveJointsTask(tls, startIndex, endIndex, context, (*b2SolverStage)(unsafe.Pointer(stage)).ColorIndex, uint8(false1))
+				b2SolveJointsTask(tls, startIndex, endIndex, context, (*b2SolverStage)(unsafe.Pointer(stage)).ColorIndex, boolUint8(false1 != 0))
 			}
 		}
 	case int32(b2_stageRestitution):
@@ -15020,7 +15020,7 @@ func b2ExecuteStage(tls *_Stack, stage uintptr, context uintptr, previousSyncInd
 	for {
 		v1 = expectedSyncIndex
 		*(*int32)(unsafe.Pointer(bp)) = v1
-		v2 = __builtin___atomic_compare_exchange_n(tls, blocks+uintptr(blockIndex)*12+8, bp, syncIndex, uint8(false1), int32(__ATOMIC_SEQ_CST), int32(__ATOMIC_SEQ_CST))
+		v2 = __builtin___atomic_compare_exchange_n(tls, blocks+uintptr(blockIndex)*12+8, bp, syncIndex, boolUint8(false1 != 0), int32(__ATOMIC_SEQ_CST), int32(__ATOMIC_SEQ_CST))
 		goto _3
 	_3:
 		if !(int32FromUint8(v2) == int32(true1)) {
@@ -15033,8 +15033,8 @@ func b2ExecuteStage(tls *_Stack, stage uintptr, context uintptr, previousSyncInd
 			__builtin_trap(tls)
 		}
 		b2ExecuteBlock(tls, stage, context, blocks+uintptr(blockIndex)*12)
-		completedCount += int32(1)
-		blockIndex += int32(1)
+		completedCount = completedCount + int32(1)
+		blockIndex = blockIndex + int32(1)
 		if blockIndex >= blockCount {
 			// Keep looking for work
 			blockIndex = 0
@@ -15050,15 +15050,15 @@ func b2ExecuteStage(tls *_Stack, stage uintptr, context uintptr, previousSyncInd
 		expectedSyncIndex = previousSyncIndex
 		v4 = expectedSyncIndex
 		*(*int32)(unsafe.Pointer(bp)) = v4
-		v5 = __builtin___atomic_compare_exchange_n(tls, blocks+uintptr(blockIndex)*12+8, bp, syncIndex, uint8(false1), int32(__ATOMIC_SEQ_CST), int32(__ATOMIC_SEQ_CST))
+		v5 = __builtin___atomic_compare_exchange_n(tls, blocks+uintptr(blockIndex)*12+8, bp, syncIndex, boolUint8(false1 != 0), int32(__ATOMIC_SEQ_CST), int32(__ATOMIC_SEQ_CST))
 		goto _6
 	_6:
 		if int32FromUint8(v5) == false1 {
 			break
 		}
 		b2ExecuteBlock(tls, stage, context, blocks+uintptr(blockIndex)*12)
-		completedCount += int32(1)
-		blockIndex -= int32(1)
+		completedCount = completedCount + int32(1)
+		blockIndex = blockIndex - int32(1)
 	}
 	_ = __atomic_fetch_addInt32(tls, stage+24, completedCount, int32FromInt32(__ATOMIC_SEQ_CST))
 	goto _7
@@ -15223,7 +15223,7 @@ _18:
 			if !(int32FromUint16((*BodyMoveEvent)(unsafe.Pointer(moveEvent)).BodyId.Generation) == int32FromUint16((*b2Body)(unsafe.Pointer(body)).Generation)) && b2InternalAssertFcn(tls, __ccgo_ts+14520, __ccgo_ts+14063, int32FromInt32(210)) != 0 {
 				__builtin_trap(tls)
 			}
-			(*BodyMoveEvent)(unsafe.Pointer(moveEvent)).FellAsleep = uint8(true1)
+			(*BodyMoveEvent)(unsafe.Pointer(moveEvent)).FellAsleep = boolUint8(true1 != 0)
 			(*b2Body)(unsafe.Pointer(body)).BodyMoveIndex = -int32(1)
 		}
 		awakeBodyIndex = (*b2Body)(unsafe.Pointer(body)).LocalIndex
@@ -15754,11 +15754,11 @@ func b2KeyHash(tls *_Stack, key uint64) (r uint32) {
 	_ = h
 	// Murmur hash
 	h = key
-	h ^= h >> int32(33)
-	h = uint64_t(h * uint64FromUint64(0xff51afd7ed558ccd))
-	h ^= h >> int32(33)
-	h = uint64_t(h * uint64FromUint64(0xc4ceb9fe1a85ec53))
-	h ^= h >> int32(33)
+	h = h ^ h>>int32(33)
+	h = uint64(h * uint64FromUint64(0xff51afd7ed558ccd))
+	h = h ^ h>>int32(33)
+	h = uint64(h * uint64FromUint64(0xc4ceb9fe1a85ec53))
+	h = h ^ h>>int32(33)
 	return uint32(h)
 }
 
@@ -15818,7 +15818,7 @@ func b2GrowTable(tls *_Stack, set uintptr) {
 		goto _1
 	_1:
 		;
-		i++
+		i = i + 1
 	}
 	if !((*b2HashSet)(unsafe.Pointer(set)).Count == oldCount) && b2InternalAssertFcn(tls, __ccgo_ts+15065, __ccgo_ts+15042, int32FromInt32(132)) != 0 {
 		__builtin_trap(tls)
@@ -15861,13 +15861,13 @@ func b2AddKey(tls *_Stack, set uintptr, key uint64) (r uint8) {
 		if !((*(*b2SetItem)(unsafe.Pointer((*b2HashSet)(unsafe.Pointer(set)).Items + uintptr(index)*16))).Hash == hash && (*(*b2SetItem)(unsafe.Pointer((*b2HashSet)(unsafe.Pointer(set)).Items + uintptr(index)*16))).Key == key) && b2InternalAssertFcn(tls, __ccgo_ts+15107, __ccgo_ts+15042, int32FromInt32(163)) != 0 {
 			__builtin_trap(tls)
 		}
-		return uint8(true1)
+		return boolUint8(true1 != 0)
 	}
 	if uint32(2)*(*b2HashSet)(unsafe.Pointer(set)).Count >= (*b2HashSet)(unsafe.Pointer(set)).Capacity {
 		b2GrowTable(tls, set)
 	}
 	b2AddKeyHaveCapacity(tls, set, key, hash)
-	return uint8(false1)
+	return boolUint8(false1 != 0)
 }
 
 // C documentation
@@ -15883,7 +15883,7 @@ func b2RemoveKey(tls *_Stack, set uintptr, key uint64) (r uint8) {
 	items = (*b2HashSet)(unsafe.Pointer(set)).Items
 	if (*(*b2SetItem)(unsafe.Pointer(items + uintptr(i)*16))).Hash == uint32(0) {
 		// Not in set
-		return uint8(false1)
+		return boolUint8(false1 != 0)
 	}
 	// Mark item i as unoccupied
 	(*(*b2SetItem)(unsafe.Pointer(items + uintptr(i)*16))).Key = uint64(0)
@@ -15923,7 +15923,7 @@ func b2RemoveKey(tls *_Stack, set uintptr, key uint64) (r uint8) {
 		goto _1
 	_1:
 	}
-	return uint8(true1)
+	return boolUint8(true1 != 0)
 }
 
 const _CLOCKS_PER_SEC = 1000000
@@ -16073,7 +16073,7 @@ func b2Hash(tls *_Stack, hash uint32, data uintptr, count int32) (r uint32) {
 		goto _1
 	_1:
 		;
-		i++
+		i = i + 1
 	}
 	return result
 }
@@ -16160,20 +16160,20 @@ func b2EmptyDrawString(tls *_Stack, p Vec2, s uintptr, color HexColor, context u
 	_ = uint64FromInt64(4)
 }
 
-func b2DefaultDebugDraw(tls *_Stack) (r DebugDraw) {
-	var draw DebugDraw
+func b2DefaultDebugDraw(tls *_Stack) (r b2DebugDraw) {
+	var draw b2DebugDraw
 	_ = draw
-	draw = DebugDraw{}
+	draw = b2DebugDraw{}
 	// These allow the user to skip some implementations and not hit null exceptions.
-	draw.ｆDrawPolygonFcn = __ccgo_fp(b2EmptyDrawPolygon)
-	draw.ｆDrawSolidPolygonFcn = __ccgo_fp(b2EmptyDrawSolidPolygon)
-	draw.ｆDrawCircleFcn = __ccgo_fp(b2EmptyDrawCircle)
-	draw.ｆDrawSolidCircleFcn = __ccgo_fp(b2EmptyDrawSolidCircle)
-	draw.ｆDrawSolidCapsuleFcn = __ccgo_fp(b2EmptyDrawSolidCapsule)
-	draw.ｆDrawSegmentFcn = __ccgo_fp(b2EmptyDrawSegment)
-	draw.ｆDrawTransformFcn = __ccgo_fp(b2EmptyDrawTransform)
-	draw.ｆDrawPointFcn = __ccgo_fp(b2EmptyDrawPoint)
-	draw.ｆDrawStringFcn = __ccgo_fp(b2EmptyDrawString)
+	draw.DrawPolygonFcn = __ccgo_fp(b2EmptyDrawPolygon)
+	draw.DrawSolidPolygonFcn = __ccgo_fp(b2EmptyDrawSolidPolygon)
+	draw.DrawCircleFcn = __ccgo_fp(b2EmptyDrawCircle)
+	draw.DrawSolidCircleFcn = __ccgo_fp(b2EmptyDrawSolidCircle)
+	draw.DrawSolidCapsuleFcn = __ccgo_fp(b2EmptyDrawSolidCapsule)
+	draw.DrawSegmentFcn = __ccgo_fp(b2EmptyDrawSegment)
+	draw.DrawTransformFcn = __ccgo_fp(b2EmptyDrawTransform)
+	draw.DrawPointFcn = __ccgo_fp(b2EmptyDrawPoint)
+	draw.DrawStringFcn = __ccgo_fp(b2EmptyDrawString)
 	return draw
 }
 
@@ -16482,7 +16482,7 @@ _4:
 		__builtin_trap(tls)
 	}
 	*(*uint64_t)(unsafe.Pointer((*b2BitSet)(unsafe.Pointer(v5)).Bits + uintptr(blockIndex)*8)) |= uint64FromInt32(1) << (v6 % uint32FromInt32(64))
-	if (*DebugDraw)(unsafe.Pointer(draw)).DrawShapes != 0 {
+	if (*b2DebugDraw)(unsafe.Pointer(draw)).DrawShapes != 0 {
 		v7 = world + 1024
 		v8 = (*b2Shape)(unsafe.Pointer(shape)).BodyId
 		if !(0 <= v8 && v8 < (*b2BodyArray)(unsafe.Pointer(v7)).Count) && b2InternalAssertFcn(tls, __ccgo_ts+349, __ccgo_ts+380, int32FromInt32(192)) != 0 {
@@ -16537,7 +16537,7 @@ _4:
 		}
 		b2DrawShape(tls, draw, shape, (*b2BodySim)(unsafe.Pointer(bodySim)).Transform, color)
 	}
-	if (*DebugDraw)(unsafe.Pointer(draw)).DrawBounds != 0 {
+	if (*b2DebugDraw)(unsafe.Pointer(draw)).DrawBounds != 0 {
 		aabb = (*b2Shape)(unsafe.Pointer(shape)).FatAABB
 		*(*[4]Vec2)(unsafe.Pointer(bp)) = [4]Vec2{
 			0: {
@@ -16557,9 +16557,9 @@ _4:
 				Y: aabb.UpperBound.Y,
 			},
 		}
-		(*(*func(*_Stack, uintptr, int32, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawPolygonFcn})))(tls, bp, int32(4), int32(b2_colorGold), (*DebugDraw)(unsafe.Pointer(draw)).Context)
+		(*(*func(*_Stack, uintptr, int32, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawPolygonFcn})))(tls, bp, int32(4), int32(b2_colorGold), (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 	}
-	return uint8(true1)
+	return boolUint8(true1 != 0)
 }
 
 // C documentation
@@ -16583,7 +16583,7 @@ func b2DrawWithBounds(tls *_Stack, world uintptr, draw uintptr) {
 	var _ /* buffer at bp+48 */ [32]uint8
 	var _ /* drawContext at bp+0 */ DrawContext
 	_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ = addColor, bits, blockIndex, blockIndex1, body, bodyCapacity, bodyId, bodySim, bodySim1, contact, contactCapacity, contactId, contactKey, contactSim, ctz, edgeIndex, edgeIndex1, frictionColor, gc, graphColors, i, impulseColor, j, joint, jointCapacity, jointId, jointKey, k, k_axisScale, k_impulseScale, linearSlop, normal, normalColor, offset, offset1, p1, p11, p12, p13, p2, p21, p22, p23, persistColor, point, pointCount, pointSize, speculativeColor, tangent, transform, transform1, word, wordCount, x, y, v1, v11, v12, v13, v15, v16, v17, v19, v20, v21, v23, v24, v25, v27, v28, v29, v3, v31, v32, v33, v34, v35, v37, v38, v39, v41, v42, v43, v46, v47, v48, v49, v5, v50, v52, v53, v54, v55, v57, v58, v60, v61, v62, v63, v65, v66, v9
-	if !(b2IsValidAABB(tls, (*DebugDraw)(unsafe.Pointer(draw)).DrawingBounds) != 0) && b2InternalAssertFcn(tls, __ccgo_ts+16055, __ccgo_ts+15342, int32FromInt32(963)) != 0 {
+	if !(b2IsValidAABB(tls, (*b2DebugDraw)(unsafe.Pointer(draw)).DrawingBounds) != 0) && b2InternalAssertFcn(tls, __ccgo_ts+16055, __ccgo_ts+15342, int32FromInt32(963)) != 0 {
 		__builtin_trap(tls)
 	}
 	k_impulseScale = float32FromFloat32(1)
@@ -16631,11 +16631,11 @@ _6:
 		if !(i < int32(b2_bodyTypeCount)) {
 			break
 		}
-		b2DynamicTree_Query(tls, world+40+uintptr(i)*72, (*DebugDraw)(unsafe.Pointer(draw)).DrawingBounds, uint64FromUint64(0xffffffffffffffff), __ccgo_fp(DrawQueryCallback), bp)
+		b2DynamicTree_Query(tls, world+40+uintptr(i)*72, (*b2DebugDraw)(unsafe.Pointer(draw)).DrawingBounds, uint64FromUint64(0xffffffffffffffff), __ccgo_fp(DrawQueryCallback), bp)
 		goto _7
 	_7:
 		;
-		i++
+		i = i + 1
 	}
 	wordCount = (*b2World)(unsafe.Pointer(world)).DebugBodySet.BlockCount
 	bits = (*b2World)(unsafe.Pointer(world)).DebugBodySet.Bits
@@ -16660,7 +16660,7 @@ _6:
 			goto _14
 		_14:
 			body = v13
-			if (*DebugDraw)(unsafe.Pointer(draw)).DrawBodyNames != 0 && int32FromUint8(*(*uint8)(unsafe.Pointer(body))) != 0 {
+			if (*b2DebugDraw)(unsafe.Pointer(draw)).DrawBodyNames != 0 && int32FromUint8(*(*uint8)(unsafe.Pointer(body))) != 0 {
 				offset = Vec2{
 					X: float32FromFloat32(0.1),
 					Y: float32FromFloat32(0.1),
@@ -16681,9 +16681,9 @@ _6:
 				goto _18
 			_18:
 				p1 = v17
-				(*(*func(*_Stack, Vec2, uintptr, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawStringFcn})))(tls, p1, body, int32(b2_colorBlueViolet), (*DebugDraw)(unsafe.Pointer(draw)).Context)
+				(*(*func(*_Stack, Vec2, uintptr, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawStringFcn})))(tls, p1, body, int32(b2_colorBlueViolet), (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 			}
-			if (*DebugDraw)(unsafe.Pointer(draw)).DrawMass != 0 && (*b2Body)(unsafe.Pointer(body)).Type1 == int32(b2_dynamicBody) {
+			if (*b2DebugDraw)(unsafe.Pointer(draw)).DrawMass != 0 && (*b2Body)(unsafe.Pointer(body)).Type1 == int32(b2_dynamicBody) {
 				offset1 = Vec2{
 					X: float32FromFloat32(0.1),
 					Y: float32FromFloat32(0.1),
@@ -16693,7 +16693,7 @@ _6:
 					P: (*b2BodySim)(unsafe.Pointer(bodySim1)).Center,
 					Q: (*b2BodySim)(unsafe.Pointer(bodySim1)).Transform.Q,
 				}
-				(*(*func(*_Stack, Transform, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawTransformFcn})))(tls, transform1, (*DebugDraw)(unsafe.Pointer(draw)).Context)
+				(*(*func(*_Stack, Transform, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawTransformFcn})))(tls, transform1, (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 				v19 = transform1
 				v20 = offset1
 				x = float32(v19.Q.C*v20.X) - float32(v19.Q.S*v20.Y) + v19.P.X
@@ -16706,9 +16706,9 @@ _6:
 			_22:
 				p2 = v21
 				__builtin_snprintf(tls, bp+16, uint64(32), __ccgo_ts+16092, vaList(bp+88, float64((*b2Body)(unsafe.Pointer(body)).Mass)))
-				(*(*func(*_Stack, Vec2, uintptr, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawStringFcn})))(tls, p2, bp+16, int32(b2_colorWhite), (*DebugDraw)(unsafe.Pointer(draw)).Context)
+				(*(*func(*_Stack, Vec2, uintptr, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawStringFcn})))(tls, p2, bp+16, int32(b2_colorWhite), (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 			}
-			if (*DebugDraw)(unsafe.Pointer(draw)).DrawJoints != 0 {
+			if (*b2DebugDraw)(unsafe.Pointer(draw)).DrawJoints != 0 {
 				jointKey = (*b2Body)(unsafe.Pointer(body)).HeadJointKey
 				for jointKey != -int32(1) {
 					jointId = jointKey >> int32(1)
@@ -16727,7 +16727,7 @@ _6:
 					v28 = uint32FromInt32(jointId)
 					blockIndex1 = v28 / uint32(64)
 					if blockIndex1 >= (*b2BitSet)(unsafe.Pointer(v27)).BlockCount {
-						v29 = uint8(false1)
+						v29 = boolUint8(false1 != 0)
 						goto _30
 					}
 					v29 = boolUint8(*(*uint64_t)(unsafe.Pointer((*b2BitSet)(unsafe.Pointer(v27)).Bits + uintptr(blockIndex1)*8))&(uint64FromInt32(1)<<(v28%uint32FromInt32(64))) != uint64(0))
@@ -16744,13 +16744,13 @@ _6:
 						*(*uint64_t)(unsafe.Pointer((*b2BitSet)(unsafe.Pointer(v31)).Bits + uintptr(blockIndex)*8)) |= uint64FromInt32(1) << (v32 % uint32FromInt32(64))
 					} else {
 						// todo testing
-						edgeIndex += 0
+						edgeIndex = edgeIndex + 0
 					}
 					jointKey = (*(*b2JointEdge)(unsafe.Pointer(joint + 20 + uintptr(edgeIndex)*12))).NextKey
 				}
 			}
 			linearSlop = float32(float32FromFloat32(0.005) * b2_lengthUnitsPerMeter)
-			if (*DebugDraw)(unsafe.Pointer(draw)).DrawContacts != 0 && (*b2Body)(unsafe.Pointer(body)).Type1 == int32(b2_dynamicBody) && (*b2Body)(unsafe.Pointer(body)).SetIndex == int32(b2_awakeSet) {
+			if (*b2DebugDraw)(unsafe.Pointer(draw)).DrawContacts != 0 && (*b2Body)(unsafe.Pointer(body)).Type1 == int32(b2_dynamicBody) && (*b2Body)(unsafe.Pointer(body)).SetIndex == int32(b2_awakeSet) {
 				contactKey = (*b2Body)(unsafe.Pointer(body)).HeadContactKey
 				for contactKey != -int32(1) {
 					contactId = contactKey >> int32(1)
@@ -16773,7 +16773,7 @@ _6:
 					v38 = uint32FromInt32(contactId)
 					blockIndex1 = v38 / uint32(64)
 					if blockIndex1 >= (*b2BitSet)(unsafe.Pointer(v37)).BlockCount {
-						v39 = uint8(false1)
+						v39 = boolUint8(false1 != 0)
 						goto _40
 					}
 					v39 = boolUint8(*(*uint64_t)(unsafe.Pointer((*b2BitSet)(unsafe.Pointer(v37)).Bits + uintptr(blockIndex1)*8))&(uint64FromInt32(1)<<(v38%uint32FromInt32(64))) != uint64(0))
@@ -16801,7 +16801,7 @@ _6:
 								break
 							}
 							point = contactSim + 36 + 12 + uintptr(j)*48
-							if (*DebugDraw)(unsafe.Pointer(draw)).DrawGraphColors != 0 {
+							if (*b2DebugDraw)(unsafe.Pointer(draw)).DrawGraphColors != 0 {
 								if (*b2Contact)(unsafe.Pointer(contact)).ColorIndex == int32FromInt32(_B2_GRAPH_COLOR_COUNT)-int32FromInt32(1) {
 									v46 = float32FromFloat32(7.5)
 								} else {
@@ -16809,25 +16809,25 @@ _6:
 								}
 								// graph color
 								pointSize = v46
-								(*(*func(*_Stack, Vec2, float32, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawPointFcn})))(tls, (*ManifoldPoint)(unsafe.Pointer(point)).Point, pointSize, graphColors[(*b2Contact)(unsafe.Pointer(contact)).ColorIndex], (*DebugDraw)(unsafe.Pointer(draw)).Context)
+								(*(*func(*_Stack, Vec2, float32, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawPointFcn})))(tls, (*ManifoldPoint)(unsafe.Pointer(point)).Point, pointSize, graphColors[(*b2Contact)(unsafe.Pointer(contact)).ColorIndex], (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 								// m_context->draw.DrawString(point->position, "%d", point->color);
 							} else {
 								if (*ManifoldPoint)(unsafe.Pointer(point)).Separation > linearSlop {
 									// Speculative
-									(*(*func(*_Stack, Vec2, float32, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawPointFcn})))(tls, (*ManifoldPoint)(unsafe.Pointer(point)).Point, float32FromFloat32(5), speculativeColor, (*DebugDraw)(unsafe.Pointer(draw)).Context)
+									(*(*func(*_Stack, Vec2, float32, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawPointFcn})))(tls, (*ManifoldPoint)(unsafe.Pointer(point)).Point, float32FromFloat32(5), speculativeColor, (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 								} else {
 									if int32FromUint8((*ManifoldPoint)(unsafe.Pointer(point)).Persisted) == false1 {
 										// Add
-										(*(*func(*_Stack, Vec2, float32, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawPointFcn})))(tls, (*ManifoldPoint)(unsafe.Pointer(point)).Point, float32FromFloat32(10), addColor, (*DebugDraw)(unsafe.Pointer(draw)).Context)
+										(*(*func(*_Stack, Vec2, float32, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawPointFcn})))(tls, (*ManifoldPoint)(unsafe.Pointer(point)).Point, float32FromFloat32(10), addColor, (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 									} else {
 										if int32FromUint8((*ManifoldPoint)(unsafe.Pointer(point)).Persisted) == int32(true1) {
 											// Persist
-											(*(*func(*_Stack, Vec2, float32, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawPointFcn})))(tls, (*ManifoldPoint)(unsafe.Pointer(point)).Point, float32FromFloat32(5), persistColor, (*DebugDraw)(unsafe.Pointer(draw)).Context)
+											(*(*func(*_Stack, Vec2, float32, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawPointFcn})))(tls, (*ManifoldPoint)(unsafe.Pointer(point)).Point, float32FromFloat32(5), persistColor, (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 										}
 									}
 								}
 							}
-							if (*DebugDraw)(unsafe.Pointer(draw)).DrawContactNormals != 0 {
+							if (*b2DebugDraw)(unsafe.Pointer(draw)).DrawContactNormals != 0 {
 								p11 = (*ManifoldPoint)(unsafe.Pointer(point)).Point
 								v47 = p11
 								v48 = k_axisScale
@@ -16839,9 +16839,9 @@ _6:
 								goto _51
 							_51:
 								p21 = v50
-								(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawSegmentFcn})))(tls, p11, p21, normalColor, (*DebugDraw)(unsafe.Pointer(draw)).Context)
+								(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawSegmentFcn})))(tls, p11, p21, normalColor, (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 							} else {
-								if (*DebugDraw)(unsafe.Pointer(draw)).DrawContactImpulses != 0 {
+								if (*b2DebugDraw)(unsafe.Pointer(draw)).DrawContactImpulses != 0 {
 									p12 = (*ManifoldPoint)(unsafe.Pointer(point)).Point
 									v52 = p12
 									v53 = float32(k_impulseScale * (*ManifoldPoint)(unsafe.Pointer(point)).NormalImpulse)
@@ -16853,16 +16853,16 @@ _6:
 									goto _56
 								_56:
 									p22 = v55
-									(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawSegmentFcn})))(tls, p12, p22, impulseColor, (*DebugDraw)(unsafe.Pointer(draw)).Context)
+									(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawSegmentFcn})))(tls, p12, p22, impulseColor, (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 									__builtin_snprintf(tls, bp+48, uint64FromInt32(int32FromUint64(uint64FromInt64(32)/uint64FromInt64(1))), __ccgo_ts+16099, vaList(bp+88, float64(float32FromFloat32(1000)*(*ManifoldPoint)(unsafe.Pointer(point)).NormalImpulse)))
-									(*(*func(*_Stack, Vec2, uintptr, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawStringFcn})))(tls, p12, bp+48, int32(b2_colorWhite), (*DebugDraw)(unsafe.Pointer(draw)).Context)
+									(*(*func(*_Stack, Vec2, uintptr, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawStringFcn})))(tls, p12, bp+48, int32(b2_colorWhite), (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 								}
 							}
-							if (*DebugDraw)(unsafe.Pointer(draw)).DrawContactFeatures != 0 {
+							if (*b2DebugDraw)(unsafe.Pointer(draw)).DrawContactFeatures != 0 {
 								__builtin_snprintf(tls, bp+48, uint64FromInt32(int32FromUint64(uint64FromInt64(32)/uint64FromInt64(1))), __ccgo_ts+16104, vaList(bp+88, int32FromUint16((*ManifoldPoint)(unsafe.Pointer(point)).Id)))
-								(*(*func(*_Stack, Vec2, uintptr, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawStringFcn})))(tls, (*ManifoldPoint)(unsafe.Pointer(point)).Point, bp+48, int32(b2_colorOrange), (*DebugDraw)(unsafe.Pointer(draw)).Context)
+								(*(*func(*_Stack, Vec2, uintptr, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawStringFcn})))(tls, (*ManifoldPoint)(unsafe.Pointer(point)).Point, bp+48, int32(b2_colorOrange), (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 							}
-							if (*DebugDraw)(unsafe.Pointer(draw)).DrawFrictionImpulses != 0 {
+							if (*b2DebugDraw)(unsafe.Pointer(draw)).DrawFrictionImpulses != 0 {
 								v57 = normal
 								v58 = Vec2{
 									X: v57.Y,
@@ -16882,14 +16882,14 @@ _6:
 								goto _64
 							_64:
 								p23 = v63
-								(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawSegmentFcn})))(tls, p13, p23, frictionColor, (*DebugDraw)(unsafe.Pointer(draw)).Context)
+								(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawSegmentFcn})))(tls, p13, p23, frictionColor, (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 								__builtin_snprintf(tls, bp+48, uint64FromInt32(int32FromUint64(uint64FromInt64(32)/uint64FromInt64(1))), __ccgo_ts+16099, vaList(bp+88, float64(float32FromFloat32(1000)*(*ManifoldPoint)(unsafe.Pointer(point)).TangentImpulse)))
-								(*(*func(*_Stack, Vec2, uintptr, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawStringFcn})))(tls, p13, bp+48, int32(b2_colorWhite), (*DebugDraw)(unsafe.Pointer(draw)).Context)
+								(*(*func(*_Stack, Vec2, uintptr, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawStringFcn})))(tls, p13, bp+48, int32(b2_colorWhite), (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 							}
 							goto _45
 						_45:
 							;
-							j++
+							j = j + 1
 						}
 						v65 = world + 1496
 						v66 = uint32FromInt32(contactId)
@@ -16900,7 +16900,7 @@ _6:
 						*(*uint64_t)(unsafe.Pointer((*b2BitSet)(unsafe.Pointer(v65)).Bits + uintptr(blockIndex)*8)) |= uint64FromInt32(1) << (v66 % uint32FromInt32(64))
 					} else {
 						// todo testing
-						edgeIndex1 += 0
+						edgeIndex1 = edgeIndex1 + 0
 					}
 					contactKey = (*(*b2ContactEdge)(unsafe.Pointer(contact + 12 + uintptr(edgeIndex1)*12))).NextKey
 				}
@@ -16911,7 +16911,7 @@ _6:
 		goto _8
 	_8:
 		;
-		k++
+		k = k + 1
 	}
 }
 
@@ -16920,21 +16920,21 @@ func b2Chain_IsValid(tls *_Stack, id ChainId) (r uint8) {
 	var chainId int32
 	_, _, _ = chain, chainId, world
 	if int32(_B2_MAX_WORLDS) <= int32FromUint16(id.World0) {
-		return uint8(false1)
+		return boolUint8(false1 != 0)
 	}
 	world = uintptr(unsafe.Pointer(&b2_worlds)) + uintptr(id.World0)*1792
 	if int32FromUint16((*b2World)(unsafe.Pointer(world)).WorldId) != int32FromUint16(id.World0) {
 		// world is free
-		return uint8(false1)
+		return boolUint8(false1 != 0)
 	}
 	chainId = id.Index1 - int32(1)
 	if chainId < 0 || (*b2World)(unsafe.Pointer(world)).ChainShapes.Count <= chainId {
-		return uint8(false1)
+		return boolUint8(false1 != 0)
 	}
 	chain = (*b2World)(unsafe.Pointer(world)).ChainShapes.Data + uintptr(chainId)*48
 	if (*b2ChainShape)(unsafe.Pointer(chain)).Id == -int32(1) {
 		// chain is free
-		return uint8(false1)
+		return boolUint8(false1 != 0)
 	}
 	if !((*b2ChainShape)(unsafe.Pointer(chain)).Id == chainId) && b2InternalAssertFcn(tls, __ccgo_ts+16146, __ccgo_ts+15342, int32FromInt32(1673)) != 0 {
 		__builtin_trap(tls)
@@ -16980,7 +16980,7 @@ _4:
 	goto _8
 _8:
 	if int32FromUint8(v7) == false1 {
-		return uint8(true1)
+		return boolUint8(true1 != 0)
 	}
 	id = ShapeId{
 		Index1:     shapeId + int32(1),
@@ -17039,7 +17039,7 @@ _4:
 	goto _8
 _8:
 	if int32FromUint8(v7) == false1 {
-		return uint8(true1)
+		return boolUint8(true1 != 0)
 	}
 	v9 = world + 1024
 	v10 = (*b2Shape)(unsafe.Pointer(shape)).BodyId
@@ -17055,12 +17055,12 @@ _12:
 	(*(*DistanceInput)(unsafe.Pointer(bp))).ProxyB = b2MakeShapeDistanceProxy(tls, shape)
 	(*(*DistanceInput)(unsafe.Pointer(bp))).TransformA = b2Transform_identity
 	(*(*DistanceInput)(unsafe.Pointer(bp))).TransformB = transform
-	(*(*DistanceInput)(unsafe.Pointer(bp))).UseRadii = uint8(true1)
+	(*(*DistanceInput)(unsafe.Pointer(bp))).UseRadii = boolUint8(true1 != 0)
 	*(*SimplexCache)(unsafe.Pointer(bp + 184)) = SimplexCache{}
 	output = b2ShapeDistance(tls, bp, bp+184, uintptrFromInt32(0), 0)
 	tolerance = float32(float32FromFloat32(0.1) * float32(float32FromFloat32(0.005)*b2_lengthUnitsPerMeter))
 	if output.Distance > tolerance {
-		return uint8(true1)
+		return boolUint8(true1 != 0)
 	}
 	id = ShapeId{
 		Index1:     (*b2Shape)(unsafe.Pointer(shape)).Id + int32(1),
@@ -17171,7 +17171,7 @@ func b2RayCastClosestFcn(tls *_Stack, shapeId ShapeId, point Vec2, normal Vec2, 
 	(*RayResult)(unsafe.Pointer(rayResult)).Point = point
 	(*RayResult)(unsafe.Pointer(rayResult)).Normal = normal
 	(*RayResult)(unsafe.Pointer(rayResult)).Fraction = fraction
-	(*RayResult)(unsafe.Pointer(rayResult)).Hit = uint8(true1)
+	(*RayResult)(unsafe.Pointer(rayResult)).Hit = boolUint8(true1 != 0)
 	return fraction
 }
 
@@ -17353,7 +17353,7 @@ _4:
 	goto _8
 _8:
 	if int32FromUint8(v7) == false1 {
-		return uint8(true1)
+		return boolUint8(true1 != 0)
 	}
 	v9 = world + 1024
 	v10 = (*b2Shape)(unsafe.Pointer(shape)).BodyId
@@ -17396,7 +17396,7 @@ _12:
 		}
 		return (*(*func(*_Stack, ShapeId, uintptr, uintptr) uint8)(unsafe.Pointer(&struct{ uintptr }{(*WorldMoverContext)(unsafe.Pointer(worldContext)).Fcn})))(tls, id, bp, (*WorldMoverContext)(unsafe.Pointer(worldContext)).UserContext)
 	}
-	return uint8(true1)
+	return boolUint8(true1 != 0)
 }
 
 type __ccgo_fp__Xb2World_CollideMover_3 = func(*_Stack, struct {
@@ -17476,17 +17476,17 @@ _8:
 	(*(*DistanceInput)(unsafe.Pointer(bp))).ProxyB = b2MakeProxy(tls, explosionContext+8, int32(1), float32FromFloat32(0))
 	(*(*DistanceInput)(unsafe.Pointer(bp))).TransformA = transform
 	(*(*DistanceInput)(unsafe.Pointer(bp))).TransformB = b2Transform_identity
-	(*(*DistanceInput)(unsafe.Pointer(bp))).UseRadii = uint8(true1)
+	(*(*DistanceInput)(unsafe.Pointer(bp))).UseRadii = boolUint8(true1 != 0)
 	*(*SimplexCache)(unsafe.Pointer(bp + 184)) = SimplexCache{}
 	output = b2ShapeDistance(tls, bp, bp+184, uintptrFromInt32(0), 0)
 	radius = (*ExplosionContext)(unsafe.Pointer(explosionContext)).Radius
 	falloff = (*ExplosionContext)(unsafe.Pointer(explosionContext)).Falloff
 	if output.Distance > radius+falloff {
-		return uint8(true1)
+		return boolUint8(true1 != 0)
 	}
 	b2WakeBody(tls, world, body)
 	if (*b2Body)(unsafe.Pointer(body)).SetIndex != int32(b2_awakeSet) {
-		return uint8(true1)
+		return boolUint8(true1 != 0)
 	}
 	closestPoint = output.PointA
 	if output.Distance == float32FromFloat32(0) {
@@ -17636,7 +17636,7 @@ _61:
 	goto _65
 _65:
 	*(*float32)(unsafe.Pointer(state + 8)) += float32((*b2BodySim)(unsafe.Pointer(bodySim)).InvInertia * v64)
-	return uint8(true1)
+	return boolUint8(true1 != 0)
 }
 
 func b2ValidateConnectivity(tls *_Stack, world uintptr) {

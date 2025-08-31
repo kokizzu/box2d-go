@@ -1,8 +1,8 @@
 package b2
 
 import (
-	"unsafe"
 	"reflect"
+	"unsafe"
 )
 
 var _ unsafe.Pointer
@@ -21,8 +21,8 @@ func b2DefaultWorldDef(tls *_Stack) (r WorldDef) {
 	def.ContactDampingRatio = float32FromFloat32(10)
 	// 400 meters per second, faster than the speed of sound
 	def.MaximumLinearSpeed = float32(float32FromFloat32(400) * b2_lengthUnitsPerMeter)
-	def.EnableSleep = uint8(true1)
-	def.EnableContinuous = uint8(true1)
+	def.EnableSleep = boolUint8(true1 != 0)
+	def.EnableContinuous = boolUint8(true1 != 0)
 	def.InternalValue = int32(_B2_SECRET_COOKIE)
 	return def
 }
@@ -97,7 +97,7 @@ func b2CreateWorld(tls *_Stack, def uintptr) (r WorldId) {
 		goto _1
 	_1:
 		;
-		i++
+		i = i + 1
 	}
 	if worldId == -int32(1) {
 		return WorldId{}
@@ -108,7 +108,7 @@ func b2CreateWorld(tls *_Stack, def uintptr) (r WorldId) {
 	*(*b2World)(unsafe.Pointer(world)) = b2World{}
 	(*b2World)(unsafe.Pointer(world)).WorldId = uint16FromInt32(worldId)
 	(*b2World)(unsafe.Pointer(world)).Generation = generation
-	(*b2World)(unsafe.Pointer(world)).InUse = uint8(true1)
+	(*b2World)(unsafe.Pointer(world)).InUse = boolUint8(true1 != 0)
 	(*b2World)(unsafe.Pointer(world)).Arena = b2CreateArenaAllocator(tls, int32(2048))
 	b2CreateBroadPhase(tls, world+40)
 	b2CreateGraph(tls, world+328, int32(16))
@@ -212,10 +212,10 @@ func b2CreateWorld(tls *_Stack, def uintptr) (r WorldId) {
 		(*b2World)(unsafe.Pointer(world)).RestitutionCallback = (*WorldDef)(unsafe.Pointer(def)).RestitutionCallback
 	}
 	(*b2World)(unsafe.Pointer(world)).EnableSleep = (*WorldDef)(unsafe.Pointer(def)).EnableSleep
-	(*b2World)(unsafe.Pointer(world)).Locked = uint8(false1)
-	(*b2World)(unsafe.Pointer(world)).EnableWarmStarting = uint8(true1)
+	(*b2World)(unsafe.Pointer(world)).Locked = boolUint8(false1 != 0)
+	(*b2World)(unsafe.Pointer(world)).EnableWarmStarting = boolUint8(true1 != 0)
 	(*b2World)(unsafe.Pointer(world)).EnableContinuous = (*WorldDef)(unsafe.Pointer(def)).EnableContinuous
-	(*b2World)(unsafe.Pointer(world)).EnableSpeculative = uint8(true1)
+	(*b2World)(unsafe.Pointer(world)).EnableSpeculative = boolUint8(true1 != 0)
 	(*b2World)(unsafe.Pointer(world)).UserTreeTask = uintptrFromInt32(0)
 	(*b2World)(unsafe.Pointer(world)).UserData = (*WorldDef)(unsafe.Pointer(def)).UserData
 	if (*WorldDef)(unsafe.Pointer(def)).WorkerCount > 0 && (*WorldDef)(unsafe.Pointer(def)).EnqueueTask != uintptrFromInt32(0) && (*WorldDef)(unsafe.Pointer(def)).FinishTask != uintptrFromInt32(0) {
@@ -261,7 +261,7 @@ func b2CreateWorld(tls *_Stack, def uintptr) (r WorldId) {
 		goto _17
 	_17:
 		;
-		i1++
+		i1 = i1 + 1
 	}
 	(*b2World)(unsafe.Pointer(world)).DebugBodySet = b2CreateBitSet(tls, uint32(256))
 	(*b2World)(unsafe.Pointer(world)).DebugJointSet = b2CreateBitSet(tls, uint32(256))
@@ -296,7 +296,7 @@ func b2DestroyWorld(tls *_Stack, worldId WorldId) {
 		goto _1
 	_1:
 		;
-		i++
+		i = i + 1
 	}
 	b2TaskContextArray_Destroy(tls, world+1296)
 	b2SensorTaskContextArray_Destroy(tls, world+1312)
@@ -328,7 +328,7 @@ func b2DestroyWorld(tls *_Stack, worldId WorldId) {
 		goto _2
 	_2:
 		;
-		i1++
+		i1 = i1 + 1
 	}
 	sensorCount = (*b2World)(unsafe.Pointer(world)).Sensors.Count
 	i2 = 0
@@ -341,7 +341,7 @@ func b2DestroyWorld(tls *_Stack, worldId WorldId) {
 		goto _3
 	_3:
 		;
-		i2++
+		i2 = i2 + 1
 	}
 	b2SensorArray_Destroy(tls, world+1280)
 	b2BodyArray_Destroy(tls, world+1024)
@@ -364,7 +364,7 @@ func b2DestroyWorld(tls *_Stack, worldId WorldId) {
 		goto _4
 	_4:
 		;
-		i3++
+		i3 = i3 + 1
 	}
 	b2SolverSetArray_Destroy(tls, world+1064)
 	b2DestroyGraph(tls, world+328)
@@ -422,7 +422,7 @@ func b2World_Step(tls *_Stack, worldId WorldId, timeStep float32, subStepCount i
 		// todo_erin would be useful to still process collision while paused
 		return
 	}
-	(*b2World)(unsafe.Pointer(world)).Locked = uint8(true1)
+	(*b2World)(unsafe.Pointer(world)).Locked = boolUint8(true1 != 0)
 	(*b2World)(unsafe.Pointer(world)).ActiveTaskCount = 0
 	(*b2World)(unsafe.Pointer(world)).TaskCount = 0
 	stepTicks = b2GetTicks(tls)
@@ -534,7 +534,7 @@ _18:
 	(*b2World)(unsafe.Pointer(world)).EndEventArrayIndex = int32(1) - (*b2World)(unsafe.Pointer(world)).EndEventArrayIndex
 	(*b2SensorEndTouchEventArray)(unsafe.Pointer(world + 1376 + uintptr((*b2World)(unsafe.Pointer(world)).EndEventArrayIndex)*16)).Count = 0
 	(*b2ContactEndTouchEventArray)(unsafe.Pointer(world + 1408 + uintptr((*b2World)(unsafe.Pointer(world)).EndEventArrayIndex)*16)).Count = 0
-	(*b2World)(unsafe.Pointer(world)).Locked = uint8(false1)
+	(*b2World)(unsafe.Pointer(world)).Locked = boolUint8(false1 != 0)
 }
 
 func b2World_Draw(tls *_Stack, worldId WorldId, draw uintptr) {
@@ -562,11 +562,11 @@ func b2World_Draw(tls *_Stack, worldId WorldId, draw uintptr) {
 		return
 	}
 	// todo it seems bounds drawing is fast enough for regular usage
-	if (*DebugDraw)(unsafe.Pointer(draw)).UseDrawingBounds != 0 {
+	if (*b2DebugDraw)(unsafe.Pointer(draw)).UseDrawingBounds != 0 {
 		b2DrawWithBounds(tls, world, draw)
 		return
 	}
-	if (*DebugDraw)(unsafe.Pointer(draw)).DrawShapes != 0 {
+	if (*b2DebugDraw)(unsafe.Pointer(draw)).DrawShapes != 0 {
 		setCount = (*b2World)(unsafe.Pointer(world)).SolverSets.Count
 		setIndex = 0
 		for {
@@ -653,15 +653,15 @@ func b2World_Draw(tls *_Stack, worldId WorldId, draw uintptr) {
 				goto _6
 			_6:
 				;
-				bodyIndex++
+				bodyIndex = bodyIndex + 1
 			}
 			goto _1
 		_1:
 			;
-			setIndex++
+			setIndex = setIndex + 1
 		}
 	}
-	if (*DebugDraw)(unsafe.Pointer(draw)).DrawJoints != 0 {
+	if (*b2DebugDraw)(unsafe.Pointer(draw)).DrawJoints != 0 {
 		count = (*b2World)(unsafe.Pointer(world)).Joints.Count
 		i = 0
 		for {
@@ -676,10 +676,10 @@ func b2World_Draw(tls *_Stack, worldId WorldId, draw uintptr) {
 			goto _11
 		_11:
 			;
-			i++
+			i = i + 1
 		}
 	}
-	if (*DebugDraw)(unsafe.Pointer(draw)).DrawBounds != 0 {
+	if (*b2DebugDraw)(unsafe.Pointer(draw)).DrawBounds != 0 {
 		color1 = int32(b2_colorGold)
 		setCount1 = (*b2World)(unsafe.Pointer(world)).SolverSets.Count
 		setIndex1 = 0
@@ -704,7 +704,7 @@ func b2World_Draw(tls *_Stack, worldId WorldId, draw uintptr) {
 				}
 				bodySim1 = (*b2SolverSet)(unsafe.Pointer(set1)).BodySims.Data + uintptr(bodyIndex1)*100
 				__builtin_snprintf(tls, bp, uint64(32), __ccgo_ts+16104, vaList(bp+168, (*b2BodySim)(unsafe.Pointer(bodySim1)).BodyId))
-				(*(*func(*_Stack, Vec2, uintptr, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawStringFcn})))(tls, (*b2BodySim)(unsafe.Pointer(bodySim1)).Center, bp, int32(b2_colorWhite), (*DebugDraw)(unsafe.Pointer(draw)).Context)
+				(*(*func(*_Stack, Vec2, uintptr, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawStringFcn})))(tls, (*b2BodySim)(unsafe.Pointer(bodySim1)).Center, bp, int32(b2_colorWhite), (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 				v18 = world + 1024
 				v19 = (*b2BodySim)(unsafe.Pointer(bodySim1)).BodyId
 				if !(0 <= v19 && v19 < (*b2BodyArray)(unsafe.Pointer(v18)).Count) && b2InternalAssertFcn(tls, __ccgo_ts+349, __ccgo_ts+380, int32FromInt32(192)) != 0 {
@@ -739,21 +739,21 @@ func b2World_Draw(tls *_Stack, worldId WorldId, draw uintptr) {
 							Y: aabb.UpperBound.Y,
 						},
 					}
-					(*(*func(*_Stack, uintptr, int32, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawPolygonFcn})))(tls, bp+32, int32(4), color1, (*DebugDraw)(unsafe.Pointer(draw)).Context)
+					(*(*func(*_Stack, uintptr, int32, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawPolygonFcn})))(tls, bp+32, int32(4), color1, (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 					shapeId1 = (*b2Shape)(unsafe.Pointer(shape1)).NextShapeId
 				}
 				goto _17
 			_17:
 				;
-				bodyIndex1++
+				bodyIndex1 = bodyIndex1 + 1
 			}
 			goto _12
 		_12:
 			;
-			setIndex1++
+			setIndex1 = setIndex1 + 1
 		}
 	}
-	if (*DebugDraw)(unsafe.Pointer(draw)).DrawBodyNames != 0 {
+	if (*b2DebugDraw)(unsafe.Pointer(draw)).DrawBodyNames != 0 {
 		offset = Vec2{
 			X: float32FromFloat32(0.05),
 			Y: float32FromFloat32(0.05),
@@ -787,14 +787,14 @@ func b2World_Draw(tls *_Stack, worldId WorldId, draw uintptr) {
 			goto _26
 		_26:
 			p1 = v25
-			(*(*func(*_Stack, Vec2, uintptr, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawStringFcn})))(tls, p1, body2, int32(b2_colorBlueViolet), (*DebugDraw)(unsafe.Pointer(draw)).Context)
+			(*(*func(*_Stack, Vec2, uintptr, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawStringFcn})))(tls, p1, body2, int32(b2_colorBlueViolet), (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 			goto _22
 		_22:
 			;
-			i1++
+			i1 = i1 + 1
 		}
 	}
-	if (*DebugDraw)(unsafe.Pointer(draw)).DrawMass != 0 {
+	if (*b2DebugDraw)(unsafe.Pointer(draw)).DrawMass != 0 {
 		offset1 = Vec2{
 			X: float32FromFloat32(0.1),
 			Y: float32FromFloat32(0.1),
@@ -825,7 +825,7 @@ func b2World_Draw(tls *_Stack, worldId WorldId, draw uintptr) {
 					P: (*b2BodySim)(unsafe.Pointer(bodySim3)).Center,
 					Q: (*b2BodySim)(unsafe.Pointer(bodySim3)).Transform.Q,
 				}
-				(*(*func(*_Stack, Transform, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawTransformFcn})))(tls, transform1, (*DebugDraw)(unsafe.Pointer(draw)).Context)
+				(*(*func(*_Stack, Transform, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawTransformFcn})))(tls, transform1, (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 				v33 = transform1
 				v34 = offset1
 				x = float32(v33.Q.C*v34.X) - float32(v33.Q.S*v34.Y) + v33.P.X
@@ -844,19 +844,19 @@ func b2World_Draw(tls *_Stack, worldId WorldId, draw uintptr) {
 				}
 				mass = v37
 				__builtin_snprintf(tls, bp+64, uint64(32), __ccgo_ts+16092, vaList(bp+168, float64(mass)))
-				(*(*func(*_Stack, Vec2, uintptr, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawStringFcn})))(tls, p2, bp+64, int32(b2_colorWhite), (*DebugDraw)(unsafe.Pointer(draw)).Context)
+				(*(*func(*_Stack, Vec2, uintptr, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawStringFcn})))(tls, p2, bp+64, int32(b2_colorWhite), (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 				goto _32
 			_32:
 				;
-				bodyIndex2++
+				bodyIndex2 = bodyIndex2 + 1
 			}
 			goto _27
 		_27:
 			;
-			setIndex2++
+			setIndex2 = setIndex2 + 1
 		}
 	}
-	if (*DebugDraw)(unsafe.Pointer(draw)).DrawContacts != 0 {
+	if (*b2DebugDraw)(unsafe.Pointer(draw)).DrawContacts != 0 {
 		k_impulseScale = float32FromFloat32(1)
 		k_axisScale = float32FromFloat32(0.3)
 		linearSlop = float32(float32FromFloat32(0.005) * b2_lengthUnitsPerMeter)
@@ -900,7 +900,7 @@ func b2World_Draw(tls *_Stack, worldId WorldId, draw uintptr) {
 						break
 					}
 					point = contact + 36 + 12 + uintptr(j)*48
-					if (*DebugDraw)(unsafe.Pointer(draw)).DrawGraphColors != 0 && 0 <= colorIndex && colorIndex <= int32(_B2_GRAPH_COLOR_COUNT) {
+					if (*b2DebugDraw)(unsafe.Pointer(draw)).DrawGraphColors != 0 && 0 <= colorIndex && colorIndex <= int32(_B2_GRAPH_COLOR_COUNT) {
 						if colorIndex == int32FromInt32(_B2_GRAPH_COLOR_COUNT)-int32FromInt32(1) {
 							v41 = float32FromFloat32(7.5)
 						} else {
@@ -908,25 +908,25 @@ func b2World_Draw(tls *_Stack, worldId WorldId, draw uintptr) {
 						}
 						// graph color
 						pointSize = v41
-						(*(*func(*_Stack, Vec2, float32, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawPointFcn})))(tls, (*ManifoldPoint)(unsafe.Pointer(point)).Point, pointSize, colors[colorIndex], (*DebugDraw)(unsafe.Pointer(draw)).Context)
+						(*(*func(*_Stack, Vec2, float32, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawPointFcn})))(tls, (*ManifoldPoint)(unsafe.Pointer(point)).Point, pointSize, colors[colorIndex], (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 						// m_context->draw.DrawString(point->position, "%d", point->color);
 					} else {
 						if (*ManifoldPoint)(unsafe.Pointer(point)).Separation > linearSlop {
 							// Speculative
-							(*(*func(*_Stack, Vec2, float32, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawPointFcn})))(tls, (*ManifoldPoint)(unsafe.Pointer(point)).Point, float32FromFloat32(5), speculativeColor, (*DebugDraw)(unsafe.Pointer(draw)).Context)
+							(*(*func(*_Stack, Vec2, float32, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawPointFcn})))(tls, (*ManifoldPoint)(unsafe.Pointer(point)).Point, float32FromFloat32(5), speculativeColor, (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 						} else {
 							if int32FromUint8((*ManifoldPoint)(unsafe.Pointer(point)).Persisted) == false1 {
 								// Add
-								(*(*func(*_Stack, Vec2, float32, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawPointFcn})))(tls, (*ManifoldPoint)(unsafe.Pointer(point)).Point, float32FromFloat32(10), addColor, (*DebugDraw)(unsafe.Pointer(draw)).Context)
+								(*(*func(*_Stack, Vec2, float32, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawPointFcn})))(tls, (*ManifoldPoint)(unsafe.Pointer(point)).Point, float32FromFloat32(10), addColor, (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 							} else {
 								if int32FromUint8((*ManifoldPoint)(unsafe.Pointer(point)).Persisted) == int32(true1) {
 									// Persist
-									(*(*func(*_Stack, Vec2, float32, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawPointFcn})))(tls, (*ManifoldPoint)(unsafe.Pointer(point)).Point, float32FromFloat32(5), persistColor, (*DebugDraw)(unsafe.Pointer(draw)).Context)
+									(*(*func(*_Stack, Vec2, float32, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawPointFcn})))(tls, (*ManifoldPoint)(unsafe.Pointer(point)).Point, float32FromFloat32(5), persistColor, (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 								}
 							}
 						}
 					}
-					if (*DebugDraw)(unsafe.Pointer(draw)).DrawContactNormals != 0 {
+					if (*b2DebugDraw)(unsafe.Pointer(draw)).DrawContactNormals != 0 {
 						p11 = (*ManifoldPoint)(unsafe.Pointer(point)).Point
 						v42 = p11
 						v43 = k_axisScale
@@ -938,9 +938,9 @@ func b2World_Draw(tls *_Stack, worldId WorldId, draw uintptr) {
 						goto _46
 					_46:
 						p21 = v45
-						(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawSegmentFcn})))(tls, p11, p21, normalColor, (*DebugDraw)(unsafe.Pointer(draw)).Context)
+						(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawSegmentFcn})))(tls, p11, p21, normalColor, (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 					} else {
-						if (*DebugDraw)(unsafe.Pointer(draw)).DrawContactImpulses != 0 {
+						if (*b2DebugDraw)(unsafe.Pointer(draw)).DrawContactImpulses != 0 {
 							p12 = (*ManifoldPoint)(unsafe.Pointer(point)).Point
 							v47 = p12
 							v48 = float32(k_impulseScale * (*ManifoldPoint)(unsafe.Pointer(point)).TotalNormalImpulse)
@@ -952,16 +952,16 @@ func b2World_Draw(tls *_Stack, worldId WorldId, draw uintptr) {
 							goto _51
 						_51:
 							p22 = v50
-							(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawSegmentFcn})))(tls, p12, p22, impulseColor, (*DebugDraw)(unsafe.Pointer(draw)).Context)
+							(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawSegmentFcn})))(tls, p12, p22, impulseColor, (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 							__builtin_snprintf(tls, bp+96, uint64FromInt32(int32FromUint64(uint64FromInt64(32)/uint64FromInt64(1))), __ccgo_ts+16107, vaList(bp+168, float64(float32FromFloat32(1000)*(*ManifoldPoint)(unsafe.Pointer(point)).TotalNormalImpulse)))
-							(*(*func(*_Stack, Vec2, uintptr, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawStringFcn})))(tls, p12, bp+96, int32(b2_colorWhite), (*DebugDraw)(unsafe.Pointer(draw)).Context)
+							(*(*func(*_Stack, Vec2, uintptr, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawStringFcn})))(tls, p12, bp+96, int32(b2_colorWhite), (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 						}
 					}
-					if (*DebugDraw)(unsafe.Pointer(draw)).DrawContactFeatures != 0 {
+					if (*b2DebugDraw)(unsafe.Pointer(draw)).DrawContactFeatures != 0 {
 						__builtin_snprintf(tls, bp+96, uint64FromInt32(int32FromUint64(uint64FromInt64(32)/uint64FromInt64(1))), __ccgo_ts+16104, vaList(bp+168, int32FromUint16((*ManifoldPoint)(unsafe.Pointer(point)).Id)))
-						(*(*func(*_Stack, Vec2, uintptr, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawStringFcn})))(tls, (*ManifoldPoint)(unsafe.Pointer(point)).Point, bp+96, int32(b2_colorOrange), (*DebugDraw)(unsafe.Pointer(draw)).Context)
+						(*(*func(*_Stack, Vec2, uintptr, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawStringFcn})))(tls, (*ManifoldPoint)(unsafe.Pointer(point)).Point, bp+96, int32(b2_colorOrange), (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 					}
-					if (*DebugDraw)(unsafe.Pointer(draw)).DrawFrictionImpulses != 0 {
+					if (*b2DebugDraw)(unsafe.Pointer(draw)).DrawFrictionImpulses != 0 {
 						v52 = normal
 						v53 = Vec2{
 							X: v52.Y,
@@ -981,27 +981,27 @@ func b2World_Draw(tls *_Stack, worldId WorldId, draw uintptr) {
 						goto _59
 					_59:
 						p23 = v58
-						(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawSegmentFcn})))(tls, p13, p23, frictionColor, (*DebugDraw)(unsafe.Pointer(draw)).Context)
+						(*(*func(*_Stack, Vec2, Vec2, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawSegmentFcn})))(tls, p13, p23, frictionColor, (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 						__builtin_snprintf(tls, bp+96, uint64FromInt32(int32FromUint64(uint64FromInt64(32)/uint64FromInt64(1))), __ccgo_ts+16107, vaList(bp+168, float64((*ManifoldPoint)(unsafe.Pointer(point)).TangentImpulse)))
-						(*(*func(*_Stack, Vec2, uintptr, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawStringFcn})))(tls, p13, bp+96, int32(b2_colorWhite), (*DebugDraw)(unsafe.Pointer(draw)).Context)
+						(*(*func(*_Stack, Vec2, uintptr, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawStringFcn})))(tls, p13, bp+96, int32(b2_colorWhite), (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 					}
 					goto _40
 				_40:
 					;
-					j++
+					j = j + 1
 				}
 				goto _39
 			_39:
 				;
-				contactIndex++
+				contactIndex = contactIndex + 1
 			}
 			goto _38
 		_38:
 			;
-			colorIndex++
+			colorIndex = colorIndex + 1
 		}
 	}
-	if (*DebugDraw)(unsafe.Pointer(draw)).DrawIslands != 0 {
+	if (*b2DebugDraw)(unsafe.Pointer(draw)).DrawIslands != 0 {
 		count2 = (*b2World)(unsafe.Pointer(world)).Islands.Count
 		i2 = 0
 		for {
@@ -1095,7 +1095,7 @@ func b2World_Draw(tls *_Stack, worldId WorldId, draw uintptr) {
 					goto _92
 				_92:
 					aabb1 = v91
-					shapeCount += int32(1)
+					shapeCount = shapeCount + int32(1)
 					shapeId2 = (*b2Shape)(unsafe.Pointer(shape2)).NextShapeId
 				}
 				bodyId = (*b2Body)(unsafe.Pointer(body3)).IslandNext
@@ -1119,12 +1119,12 @@ func b2World_Draw(tls *_Stack, worldId WorldId, draw uintptr) {
 						Y: aabb1.UpperBound.Y,
 					},
 				}
-				(*(*func(*_Stack, uintptr, int32, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*DebugDraw)(unsafe.Pointer(draw)).ｆDrawPolygonFcn})))(tls, bp+128, int32(4), int32(b2_colorOrangeRed), (*DebugDraw)(unsafe.Pointer(draw)).Context)
+				(*(*func(*_Stack, uintptr, int32, HexColor, uintptr))(unsafe.Pointer(&struct{ uintptr }{(*b2DebugDraw)(unsafe.Pointer(draw)).DrawPolygonFcn})))(tls, bp+128, int32(4), int32(b2_colorOrangeRed), (*b2DebugDraw)(unsafe.Pointer(draw)).Context)
 			}
 			goto _60
 		_60:
 			;
-			i2++
+			i2 = i2 + 1
 		}
 	}
 }
@@ -1206,12 +1206,12 @@ func b2World_IsValid(tls *_Stack, id WorldId) (r uint8) {
 	var world uintptr
 	_ = world
 	if int32FromUint16(id.Index1) < int32(1) || int32(_B2_MAX_WORLDS) < int32FromUint16(id.Index1) {
-		return uint8(false1)
+		return boolUint8(false1 != 0)
 	}
 	world = uintptr(unsafe.Pointer(&b2_worlds)) + uintptr(int32FromUint16(id.Index1)-int32FromInt32(1))*1792
 	if int32FromUint16((*b2World)(unsafe.Pointer(world)).WorldId) != int32FromUint16(id.Index1)-int32(1) {
 		// world is not allocated
-		return uint8(false1)
+		return boolUint8(false1 != 0)
 	}
 	return boolUint8(int32FromUint16(id.Generation) == int32FromUint16((*b2World)(unsafe.Pointer(world)).Generation))
 }
@@ -1253,7 +1253,7 @@ func b2World_EnableSleeping(tls *_Stack, worldId WorldId, flag uint8) {
 			goto _1
 		_1:
 			;
-			i++
+			i = i + 1
 		}
 	}
 }
@@ -1551,7 +1551,7 @@ _19:
 		goto _21
 	_21:
 		;
-		i++
+		i = i + 1
 	}
 	return *(*Counters)(unsafe.Pointer(bp))
 }
@@ -1722,15 +1722,15 @@ _44:
 		if (*b2SolverSet)(unsafe.Pointer(set)).SetIndex == -int32(1) {
 			goto _45
 		}
-		bodySimCapacity += (*b2SolverSet)(unsafe.Pointer(set)).BodySims.Capacity
-		bodyStateCapacity += (*b2SolverSet)(unsafe.Pointer(set)).BodyStates.Capacity
-		jointSimCapacity += (*b2SolverSet)(unsafe.Pointer(set)).JointSims.Capacity
-		contactSimCapacity += (*b2SolverSet)(unsafe.Pointer(set)).ContactSims.Capacity
-		islandSimCapacity += (*b2SolverSet)(unsafe.Pointer(set)).IslandSims.Capacity
+		bodySimCapacity = bodySimCapacity + (*b2SolverSet)(unsafe.Pointer(set)).BodySims.Capacity
+		bodyStateCapacity = bodyStateCapacity + (*b2SolverSet)(unsafe.Pointer(set)).BodyStates.Capacity
+		jointSimCapacity = jointSimCapacity + (*b2SolverSet)(unsafe.Pointer(set)).JointSims.Capacity
+		contactSimCapacity = contactSimCapacity + (*b2SolverSet)(unsafe.Pointer(set)).ContactSims.Capacity
+		islandSimCapacity = islandSimCapacity + (*b2SolverSet)(unsafe.Pointer(set)).IslandSims.Capacity
 		goto _45
 	_45:
 		;
-		i++
+		i = i + 1
 	}
 	fprintf(tls, file, __ccgo_ts+16609, 0)
 	fprintf(tls, file, __ccgo_ts+16622, vaList(bp+8, bodySimCapacity*int32FromInt64(100)))
@@ -1752,13 +1752,13 @@ _44:
 		v47 = int32FromUint64(uint64((*b2BitSet)(unsafe.Pointer(c)).BlockCapacity) * uint64(8))
 		goto _48
 	_48:
-		bodyBitSetBytes += v47
-		contactSimCapacity += (*b2GraphColor)(unsafe.Pointer(c)).ContactSims.Capacity
-		jointSimCapacity += (*b2GraphColor)(unsafe.Pointer(c)).JointSims.Capacity
+		bodyBitSetBytes = bodyBitSetBytes + v47
+		contactSimCapacity = contactSimCapacity + (*b2GraphColor)(unsafe.Pointer(c)).ContactSims.Capacity
+		jointSimCapacity = jointSimCapacity + (*b2GraphColor)(unsafe.Pointer(c)).JointSims.Capacity
 		goto _46
 	_46:
 		;
-		i1++
+		i1 = i1 + 1
 	}
 	fprintf(tls, file, __ccgo_ts+16700, 0)
 	fprintf(tls, file, __ccgo_ts+16718, vaList(bp+8, bodyBitSetBytes))
@@ -1808,7 +1808,7 @@ func b2World_OverlapAABB(tls *_Stack, worldId WorldId, aabb AABB, filter QueryFi
 		goto _1
 	_1:
 		;
-		i++
+		i = i + 1
 	}
 	return treeStats
 }
@@ -1906,7 +1906,7 @@ func b2World_OverlapShape(tls *_Stack, worldId WorldId, proxy uintptr, filter Qu
 		goto _4
 	_4:
 		;
-		i++
+		i = i + 1
 	}
 	r = Vec2{
 		X: v3,
@@ -1952,7 +1952,7 @@ _42:
 		goto _43
 	_43:
 		;
-		i1++
+		i1 = i1 + 1
 	}
 	return treeStats
 }
@@ -2007,7 +2007,7 @@ func b2World_CastRay(tls *_Stack, worldId WorldId, origin Vec2, translation Vec2
 		goto _1
 	_1:
 		;
-		i++
+		i = i + 1
 	}
 	return treeStats
 }
@@ -2063,7 +2063,7 @@ func b2World_CastRayClosest(tls *_Stack, worldId WorldId, origin Vec2, translati
 		goto _1
 	_1:
 		;
-		i++
+		i = i + 1
 	}
 	return *(*RayResult)(unsafe.Pointer(bp))
 }
@@ -2114,7 +2114,7 @@ func b2World_CastShape(tls *_Stack, worldId WorldId, proxy uintptr, translation 
 		goto _1
 	_1:
 		;
-		i++
+		i = i + 1
 	}
 	return treeStats
 }
@@ -2147,7 +2147,7 @@ func b2World_CastMover(tls *_Stack, worldId WorldId, mover uintptr, translation 
 	(*(*ShapeCastInput)(unsafe.Pointer(bp))).Proxy.Radius = (*Capsule)(unsafe.Pointer(mover)).Radius
 	(*(*ShapeCastInput)(unsafe.Pointer(bp))).Translation = translation
 	(*(*ShapeCastInput)(unsafe.Pointer(bp))).MaxFraction = float32FromFloat32(1)
-	(*(*ShapeCastInput)(unsafe.Pointer(bp))).CanEncroach = uint8(true1)
+	(*(*ShapeCastInput)(unsafe.Pointer(bp))).CanEncroach = boolUint8(true1 != 0)
 	*(*WorldMoverCastContext)(unsafe.Pointer(bp + 88)) = WorldMoverCastContext{
 		World:    world,
 		Filter:   filter,
@@ -2166,7 +2166,7 @@ func b2World_CastMover(tls *_Stack, worldId WorldId, mover uintptr, translation 
 		goto _1
 	_1:
 		;
-		i++
+		i = i + 1
 	}
 	return (*(*WorldMoverCastContext)(unsafe.Pointer(bp + 88))).Fraction
 }
@@ -2284,7 +2284,7 @@ _36:
 		goto _37
 	_37:
 		;
-		i++
+		i = i + 1
 	}
 }
 
@@ -2377,7 +2377,7 @@ func b2World_RebuildStaticTree(tls *_Stack, worldId WorldId) {
 		return
 	}
 	staticTree = world + 40 + uintptr(b2_staticBody)*72
-	b2DynamicTree_Rebuild(tls, staticTree, uint8(true1))
+	b2DynamicTree_Rebuild(tls, staticTree, boolUint8(true1 != 0))
 }
 
 func b2World_EnableSpeculative(tls *_Stack, worldId WorldId, flag uint8) {
