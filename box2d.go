@@ -220,26 +220,58 @@ func b2DefaultAssertFcnGo(tls *_Stack, condition uintptr, fileName uintptr, line
 }
 
 func (b Joint) AsPrismaticJoint() PrismaticJoint {
+	if b.GetType() != JointTypePrismatic {
+		panic("joint has wrong type")
+	}
+
 	return PrismaticJoint{b}
 }
 func (b Joint) AsMotorJoint() MotorJoint {
+	if b.GetType() != JointTypeMotor {
+		panic("joint has wrong type")
+	}
+
 	return MotorJoint{b}
 }
 func (b Joint) AsRevoluteJoint() RevoluteJoint {
+	if b.GetType() != JointTypeRevolute {
+		panic("joint has wrong type")
+	}
+
 	return RevoluteJoint{b}
 }
 func (b Joint) AsDistanceJoint() DistanceJoint {
+	if b.GetType() != JointTypeDistance {
+		panic("joint has wrong type")
+	}
+
 	return DistanceJoint{b}
 }
 func (b Joint) AsWheelJoint() WheelJoint {
+	if b.GetType() != JointTypeWheel {
+		panic("joint has wrong type")
+	}
+
 	return WheelJoint{b}
 }
 func (b Joint) AsMouseJoint() MouseJoint {
+	if b.GetType() != JointTypeMouse {
+		panic("joint has wrong type")
+	}
+
 	return MouseJoint{b}
 }
 func (b Joint) AsWeldJoint() WeldJoint {
+	if b.GetType() != JointTypeWeld {
+		panic("joint has wrong type")
+	}
+
 	return WeldJoint{b}
 }
 func (b Joint) AsFilterJoint() FilterJoint {
+	if b.GetType() != JointTypeFilter {
+		panic("joint has wrong type")
+	}
+
 	return FilterJoint{b}
 }
