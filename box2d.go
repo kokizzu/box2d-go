@@ -327,5 +327,13 @@ func (b Joint) AsFilterJoint() FilterJoint {
 }
 
 func (r Rot) Angle() float32 {
-	return Atan2(r.C, r.S)
+	return b2Atan2(theStack, r.S, r.C)
+}
+
+func (r Rot) XAxis() Vec2 {
+	return Vec2{X: r.C, Y: r.S}
+}
+
+func (r Rot) YAxis() Vec2 {
+	return Vec2{X: -r.S, Y: r.C}
 }

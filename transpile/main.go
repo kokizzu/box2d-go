@@ -940,7 +940,8 @@ func readAPI() API {
 		}
 	}
 
-	api.ExposedTypes["b2InternalAssertFcn"] = false
+	api.Exposed["b2InternalAssertFcn"] = false
+
 	api.Exposed["b2SetAssertFcn"] = false
 	api.Exposed["b2SetAllocator"] = false
 
@@ -956,8 +957,10 @@ func readAPI() API {
 	api.Exposed["b2World_SetRestitutionCallback"] = false
 	api.Exposed["b2World_SetFrictionCallback"] = false
 	api.Exposed["b2World_OverlapAABB"] = false
+	api.Exposed["b2World_OverlapShape"] = false
 	api.Exposed["b2World_SetCustomFilterCallback"] = false
 	api.Exposed["b2World_SetPreSolveCallback"] = false
+	api.Exposed["b2World_DumpMemoryStats"] = false
 
 	api.ExposedTypes["b2DebugDraw"] = false
 	api.Exposed["b2World_Draw"] = false
@@ -970,6 +973,12 @@ func readAPI() API {
 
 	api.ExposedTypes["b2ContactEvents"] = false
 	api.Exposed["b2World_GetContactEvents"] = false
+
+	api.Exposed["b2Joint_GetConstraintTuning"] = false
+
+	// we do not really need those, do we?
+	api.Exposed["b2GetMillisecondsAndReset"] = false
+	api.Exposed["b2Hash"] = false
 
 	for key := range api.Exposed {
 		if strings.Contains(key, "DynamicTree") {
