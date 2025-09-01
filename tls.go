@@ -82,7 +82,13 @@ func (s *_Stack) RegisterObject(obj any) uintptr {
 	}
 
 	addr := rObj.Elem().UnsafeAddr()
+
+	for s.objects[addr] != nil {
+		addr += 8
+	}
+
 	s.objects[addr] = obj
+
 	return addr
 }
 
@@ -163,4 +169,9 @@ func copyToStack[T any](tls *_Stack, value T) alloc {
 	runtime.KeepAlive(value)
 
 	return alloc{Addr: stack, tls: tls, size: int(n)}
+}
+
+func derefToValue[T any](ptr uintptr) T {
+	src := toSlice[T](ptr, 1)
+	return src[0]
 }

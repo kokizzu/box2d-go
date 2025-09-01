@@ -3,6 +3,8 @@ package main
 import (
 	"math"
 
+	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/vector"
 	"github.com/oliverbestmann/box2d-go"
 )
@@ -26,9 +28,141 @@ func (ph Box2D) Step(dt float64, subSteps int) {
 	ph.World.Step(float32(dt), int32(subSteps))
 }
 
-func (ph Box2D) CreateSquare(halfSize, centerX, centerY, density float64) Body {
-	p := pathSquare(halfSize)
+func (ph Box2D) Draw(screen *ebiten.Image, toScreen ebiten.GeoM) {
+	var draw b2.DebugDraw
 
+	draw.DrawJoints = true
+	draw.DrawShapes = true
+	draw.DrawJointExtras = false
+	draw.DrawBounds = false
+	draw.DrawMass = false
+	draw.DrawBodyNames = false
+	draw.DrawGraphColors = false
+	draw.DrawContacts = false
+	draw.DrawContactNormals = true
+	draw.DrawContactImpulses = true
+	draw.DrawContactFeatures = false
+	draw.DrawFrictionImpulses = false
+	draw.DrawIslands = false
+
+	draw.DrawSegment = func(p1 b2.Vec2, p2 b2.Vec2, color b2.HexColor) {
+		x1, y1 := toScreen.Apply(float64(p1.X), float64(p1.Y))
+		x2, y2 := toScreen.Apply(float64(p2.X), float64(p2.Y))
+
+		var p vector.Path
+		p.MoveTo(float32(x1), float32(y1))
+		p.LineTo(float32(x2), float32(y2))
+
+		dop := vector.DrawPathOptions{ColorScale: toColorScale(color)}
+		vector.StrokePath(screen, &p, &vector.StrokeOptions{Width: 1}, &dop)
+	}
+
+	draw.DrawPolygon = func(vertices []b2.Vec2, color b2.HexColor) {
+		var p vector.Path
+
+		for _, v := range vertices {
+			x, y := toScreen.Apply(float64(v.X), float64(v.Y))
+			p.LineTo(float32(x), float32(y))
+		}
+		p.Close()
+
+		dop := vector.DrawPathOptions{ColorScale: toColorScale(color)}
+		vector.StrokePath(screen, &p, &vector.StrokeOptions{Width: 1}, &dop)
+	}
+
+	draw.DrawSolidPolygon = func(tr b2.Transform, vertices []b2.Vec2, radius float32, color b2.HexColor) {
+		var g ebiten.GeoM
+		g.Rotate(float64(tr.Q.Angle()))
+		g.Translate(float64(tr.P.X), float64(tr.P.Y))
+		g.Concat(toScreen)
+
+		var p vector.Path
+
+		for _, v := range vertices {
+			x, y := g.Apply(float64(v.X), float64(v.Y))
+			p.LineTo(float32(x), float32(y))
+		}
+
+		p.Close()
+
+		dop := vector.DrawPathOptions{ColorScale: toColorScale(color)}
+		vector.FillPath(screen, &p, nil, &dop)
+	}
+
+	draw.DrawCircle = func(center b2.Vec2, radius float32, color b2.HexColor) {
+		x, y := toScreen.Apply(float64(center.X), float64(center.Y))
+		r, _ := toScreen.Apply(float64(radius), 0)
+
+		var p vector.Path
+		p.Arc(float32(x), float32(y), float32(r), 0, 2*math.Pi, vector.Clockwise)
+
+		dop := vector.DrawPathOptions{ColorScale: toColorScale(color)}
+		vector.StrokePath(screen, &p, &vector.StrokeOptions{Width: 1}, &dop)
+	}
+
+	draw.DrawSolidCircle = func(tr b2.Transform, radius float32, color b2.HexColor) {
+		var g ebiten.GeoM
+		g.Rotate(float64(tr.Q.Angle()))
+		g.Translate(float64(tr.P.X), float64(tr.P.Y))
+		g.Concat(toScreen)
+
+		x, y := toScreen.Apply(0, 0)
+		r, _ := toScreen.Apply(float64(radius), 0)
+
+		var p vector.Path
+		p.Arc(float32(x), float32(y), float32(r), 0, 2*math.Pi, vector.Clockwise)
+
+		dop := vector.DrawPathOptions{ColorScale: toColorScale(color)}
+		vector.FillPath(screen, &p, nil, &dop)
+	}
+
+	draw.DrawSolidCapsule = func(p1 b2.Vec2, p2 b2.Vec2, radius float32, color b2.HexColor) {
+		// TODO
+	}
+
+	draw.DrawTransform = func(transform b2.Transform) {
+		x, y := toScreen.Apply(float64(transform.P.X), float64(transform.P.Y))
+
+		var p vector.Path
+		p.MoveTo(float32(x), float32(y))
+		p.LineTo(float32(x)+transform.Q.C*16, float32(x)+transform.Q.S*16)
+
+		p.MoveTo(float32(x), float32(y))
+		p.LineTo(float32(x)+-transform.Q.S*16, float32(x)+transform.Q.C*16)
+
+		dop := vector.DrawPathOptions{ColorScale: toColorScale(0x00ff00)}
+		vector.FillPath(screen, &p, nil, &dop)
+	}
+
+	draw.DrawPoint = func(c b2.Vec2, size float32, color b2.HexColor) {
+		x, y := toScreen.Apply(float64(c.X), float64(c.Y))
+
+		var p vector.Path
+		p.Arc(float32(x), float32(y), size, 0, 2*math.Pi, vector.Clockwise)
+
+		dop := vector.DrawPathOptions{ColorScale: toColorScale(color)}
+		vector.FillPath(screen, &p, nil, &dop)
+	}
+
+	draw.DrawString = func(p b2.Vec2, s string, color b2.HexColor) {
+		x, y := toScreen.Apply(float64(p.X), float64(p.Y))
+		ebitenutil.DebugPrintAt(screen, s, int(x), int(y))
+	}
+
+	ph.World.Draw(draw)
+}
+
+func toColorScale(h b2.HexColor) ebiten.ColorScale {
+	r := float32((h>>16)&0xff) / 255.0
+	g := float32((h>>8)&0xff) / 255.0
+	b := float32((h>>0)&0xff) / 255.0
+
+	var c ebiten.ColorScale
+	c.Scale(r, g, b, 1)
+	return c
+}
+
+func (ph Box2D) CreateSquare(halfSize, centerX, centerY float64, d BodyDef) Body {
 	var tr b2.Transform
 	tr.P.X = float32(centerX)
 	tr.P.Y = float32(centerY)
@@ -40,22 +174,23 @@ func (ph Box2D) CreateSquare(halfSize, centerX, centerY, density float64) Body {
 	body.SetTransform(tr.P, tr.Q)
 
 	shape := b2.DefaultShapeDef()
-	shape.Density = float32(density)
-	shape.Material.Restitution = 0
-	shape.Material.Friction = 1
+	shape.Density = float32(d.Density)
+	shape.Material.Restitution = float32(d.Elasticity)
+	shape.Material.Friction = float32(d.Friction)
 	body.CreatePolygonShape(shape, b2.MakeSquare(float32(halfSize)))
 
-	return &b2Body{shape: p, body: body}
+	return &b2Body{body: body}
 }
 
-func (ph Box2D) CreateStaticLine(x0, y0, x1, y1 float64) Body {
+func (ph Box2D) CreateStaticLine(x0, y0, x1, y1 float64, d BodyDef) Body {
+
 	def := b2.DefaultBodyDef()
 	def.Type1 = b2.StaticBody
 
 	shape := b2.DefaultShapeDef()
-	shape.Density = 1
-	shape.Material.Restitution = 0
-	shape.Material.Friction = 1
+	shape.Density = float32(d.Density)
+	shape.Material.Restitution = float32(d.Elasticity)
+	shape.Material.Friction = float32(d.Friction)
 
 	body := ph.World.CreateBody(def)
 	body.CreateSegmentShape(shape, b2.Segment{
@@ -64,18 +199,12 @@ func (ph Box2D) CreateStaticLine(x0, y0, x1, y1 float64) Body {
 	})
 
 	return &b2Body{
-		shape: pathLine(x0, y0, x1, y1),
-		body:  body,
+		body: body,
 	}
 }
 
 type b2Body struct {
-	shape vector.Path
-	body  b2.Body
-}
-
-func (b *b2Body) Shape() vector.Path {
-	return b.shape
+	body b2.Body
 }
 
 func (b *b2Body) Position() (float64, float64) {

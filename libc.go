@@ -36,6 +36,8 @@ func vaList(p uintptr, args ...interface{}) (r uintptr) {
 			*(*uint64)(unsafe.Pointer(p)) = uint64(x)
 		case uint64:
 			*(*uint64)(unsafe.Pointer(p)) = x
+		case float32:
+			*(*float64)(unsafe.Pointer(p)) = float64(x)
 		case float64:
 			*(*float64)(unsafe.Pointer(p)) = x
 		case uintptr:

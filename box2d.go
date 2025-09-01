@@ -146,24 +146,63 @@ func (b World) SetFrictionCallback(callback FrictionCallback) {
 	b2World_SetFrictionCallback(theStack, b.Id, __ccgo_fp(callback))
 }
 
-type OverlapResultFcn = func(shapeId ShapeId, context uintptr) bool
+type OverlapResult func(shapeId Shape) bool
 
 // OverlapAABB sets the worlds OverlapResultFcn
-// CAUTION: fcn must not be a closure
-func (b World) OverlapAABB(aabb AABB, filter QueryFilter, fcn OverlapResultFcn, context uintptr) TreeStats {
-	return b2World_OverlapAABB(theStack, b.Id, aabb, filter, __ccgo_fp(fcn), context)
+func (b World) OverlapAABB(aabb AABB, filter QueryFilter, fcn OverlapResult) TreeStats {
+	fn := theStack.RegisterObject(fcn)
+	defer theStack.ForgetObject(fn)
+
+	return b2World_OverlapAABB(theStack, b.Id, aabb, filter, __ccgo_fp(worldOverlapCallback), fn)
 }
 
-type CustomFilterFcn = func(shapeIdA, shapeIdB ShapeId, context uintptr) bool
+func (b World) OverlapShape(proxy ShapeProxy, filter QueryFilter, fcn OverlapResult) (r TreeStats) {
+	fn := theStack.RegisterObject(fcn)
+	defer theStack.ForgetObject(fn)
 
-func (b World) SetCustomFilterCallback(fcn CustomFilterFcn, context uintptr) {
-	b2World_SetCustomFilterCallback(theStack, b.Id, __ccgo_fp(fcn), context)
+	proxyStack := copyToStack(theStack, proxy)
+	defer proxyStack.Free()
+
+	r = b2World_OverlapShape(theStack, b.Id, proxyStack.Addr, filter, __ccgo_fp(worldOverlapCallback), fn)
+
+	return
 }
 
-type PreSolveFcn = func(shapeIdA, shapeIdB ShapeId, manifold uintptr, context uintptr)
+func worldOverlapCallback(tls *_Stack, shapeId ShapeId, context uintptr) bool {
+	fn := tls.GetObject(context).(OverlapResult)
+	return fn(Shape{Id: shapeId})
+}
 
-func (b World) SetPreSolveCallback(fcn PreSolveFcn, context uintptr) {
-	b2World_SetPreSolveCallback(theStack, b.Id, __ccgo_fp(fcn), context)
+type CustomFilter func(shapeIdA, shapeIdB Shape) bool
+
+func (b World) SetCustomFilterCallback(fcn CustomFilter) {
+	fn := theStack.RegisterObject(fcn)
+	defer theStack.ForgetObject(fn)
+
+	b2World_SetCustomFilterCallback(theStack, b.Id, __ccgo_fp(worldCustomFilterCallback), fn)
+}
+
+func worldCustomFilterCallback(tls *_Stack, shapeIdA, shapeIdB ShapeId, context uintptr) bool {
+	fn := tls.GetObject(context).(CustomFilter)
+	return fn(Shape{Id: shapeIdA}, Shape{Id: shapeIdB})
+}
+
+type PreSolve = func(shapeIdA, shapeIdB Shape, manifold Manifold)
+
+func (b World) SetPreSolveCallback(fcn PreSolve) {
+	fn := theStack.RegisterObject(fcn)
+	defer theStack.ForgetObject(fn)
+
+	b2World_SetPreSolveCallback(theStack, b.Id, __ccgo_fp(worldPreSolveCallback), fn)
+}
+
+func worldPreSolveCallback(tls *_Stack, shapeIdA, shapeIdB ShapeId, manifold uintptr, context uintptr) {
+	shapeA := Shape{Id: shapeIdA}
+	shapeB := Shape{Id: shapeIdB}
+	manifoldValue := derefToValue[Manifold](manifold)
+
+	fn := tls.GetObject(context).(PreSolve)
+	fn(shapeA, shapeB, manifoldValue)
 }
 
 type BodyEvents struct {
@@ -217,6 +256,17 @@ func copySlice[T any](data uintptr, n int32) []T {
 func b2DefaultAssertFcnGo(tls *_Stack, condition uintptr, fileName uintptr, lineNumber int32) (r int32) {
 	err := fmt.Errorf("%s:%d: %s", toString(fileName), lineNumber, toString(condition))
 	panic(err)
+}
+
+func (b Joint) GetConstraintTuning() (hertz, dampingRatio float32) {
+	buf := theStack.Alloc(8)
+	defer theStack.Free(8)
+
+	b2Joint_GetConstraintTuning(theStack, b.Id, buf, buf+4)
+
+	hertz = *(*float32)(unsafe.Pointer(buf))
+	dampingRatio = *(*float32)(unsafe.Pointer(buf + 4))
+	return
 }
 
 func (b Joint) AsPrismaticJoint() PrismaticJoint {
@@ -274,4 +324,8 @@ func (b Joint) AsFilterJoint() FilterJoint {
 	}
 
 	return FilterJoint{b}
+}
+
+func (r Rot) Angle() float32 {
+	return Atan2(r.C, r.S)
 }

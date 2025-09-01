@@ -29,8 +29,8 @@ type DebugDraw struct {
 	DrawingBounds    AABB
 	UseDrawingBounds bool
 
-	DrawShapes           bool
 	DrawJoints           bool
+	DrawShapes           bool
 	DrawJointExtras      bool
 	DrawBounds           bool
 	DrawMass             bool
@@ -45,12 +45,38 @@ type DebugDraw struct {
 }
 
 func (b World) Draw(draw DebugDraw) {
+	// move the DebugDraw object temporarily onto the heap
 	context := theStack.RegisterObject(&draw)
 	defer theStack.ForgetObject(context)
 
 	var dd b2DebugDraw
+	dd.DrawPolygonFcn = __ccgo_fp(cbDrawPolygon)
+	dd.DrawSolidPolygonFcn = __ccgo_fp(cbDrawSolidPolygon)
+	dd.DrawCircleFcn = __ccgo_fp(cbDrawCircle)
+	dd.DrawSolidCircleFcn = __ccgo_fp(cbDrawSolidCircle)
+	dd.DrawSolidCapsuleFcn = __ccgo_fp(cbDrawSolidCapsule)
 	dd.DrawSegmentFcn = __ccgo_fp(cbDrawSegment)
+	dd.DrawTransformFcn = __ccgo_fp(cbDrawTransform)
+	dd.DrawPointFcn = __ccgo_fp(cbDrawPoint)
+	dd.DrawStringFcn = __ccgo_fp(cbDrawString)
+
+	dd.DrawingBounds = draw.DrawingBounds
+	dd.UseDrawingBounds = boolUint8(draw.UseDrawingBounds)
+
 	dd.DrawShapes = boolUint8(draw.DrawShapes)
+	dd.DrawJoints = boolUint8(draw.DrawJoints)
+	dd.DrawJointExtras = boolUint8(draw.DrawJointExtras)
+	dd.DrawBounds = boolUint8(draw.DrawBounds)
+	dd.DrawMass = boolUint8(draw.DrawMass)
+	dd.DrawBodyNames = boolUint8(draw.DrawBodyNames)
+	dd.DrawContacts = boolUint8(draw.DrawContacts)
+	dd.DrawGraphColors = boolUint8(draw.DrawGraphColors)
+	dd.DrawContactNormals = boolUint8(draw.DrawContactNormals)
+	dd.DrawContactImpulses = boolUint8(draw.DrawContactImpulses)
+	dd.DrawContactFeatures = boolUint8(draw.DrawContactFeatures)
+	dd.DrawFrictionImpulses = boolUint8(draw.DrawFrictionImpulses)
+	dd.DrawIslands = boolUint8(draw.DrawIslands)
+
 	dd.Context = context
 
 	ddStack := copyToStack(theStack, dd)

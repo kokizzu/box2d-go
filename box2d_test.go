@@ -66,17 +66,33 @@ func TestBounce(t *testing.T) {
 func TestWorld_Draw(t *testing.T) {
 	w := CreateWorld(DefaultWorldDef())
 
-	b := w.CreateBody(DefaultBodyDef())
-	b.CreateSegmentShape(DefaultShapeDef(), Segment{
+	seg := Segment{
 		Point1: Vec2{1, 1},
 		Point2: Vec2{2, 5},
-	})
+	}
+
+	b := w.CreateBody(DefaultBodyDef())
+	b.SetName("Foobar")
+	b.CreateSegmentShape(DefaultShapeDef(), seg)
+
+	var gotP1, gotP2 Vec2
 
 	w.Draw(DebugDraw{
 		DrawSegment: func(p1 Vec2, p2 Vec2, color HexColor) {
-			fmt.Println("draw segment", p1, p2)
+			gotP1 = p1
+			gotP2 = p2
 		},
 
-		DrawShapes: true,
+		DrawBodyNames: true,
+		DrawMass:      true,
+		DrawShapes:    true,
 	})
+
+	if gotP1 != seg.Point1 {
+		t.FailNow()
+	}
+
+	if gotP2 != seg.Point2 {
+		t.FailNow()
+	}
 }

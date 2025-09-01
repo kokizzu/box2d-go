@@ -1218,8 +1218,8 @@ type b2HexColor1 = int32
 type HexColor = int32
 
 const b2_colorAliceBlue = 15792383
-const b2_colorAntiqueWhite = 16444375
 const b2_colorAqua = 65535
+const b2_colorAntiqueWhite = 16444375
 const b2_colorAquamarine = 8388564
 const b2_colorAzure = 15794175
 const b2_colorBeige = 16119260

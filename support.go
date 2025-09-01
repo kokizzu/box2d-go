@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math"
 	"math/bits"
+	"regexp"
 	"sort"
 	"strings"
 	"sync/atomic"
@@ -173,12 +174,39 @@ func __builtin_Gosched(tls *_Stack) {
 	pause()
 }
 
-func printf(tls *_Stack, fmt uintptr, va uintptr) (r int32) {
-	panic("printf: not implemented")
+func printf(tls *_Stack, format uintptr, va uintptr) (r int32) {
+	panic("not required, only used in default assert function")
 }
 
+var reFormatStr = regexp.MustCompile("%[^a-zA-Z]*([df])")
+
 func __builtin_snprintf(t *_Stack, str uintptr, size size_t, format, args uintptr) int32 {
-	panic("snprintf: not implemented")
+	formatStr := toString(format)
+
+	var values []any
+	for _, match := range reFormatStr.FindAllStringSubmatch(formatStr, -1) {
+		switch match[1] {
+		case "d":
+			values = append(values, *(*int64)(unsafe.Pointer(args)))
+			args += 8
+		case "f":
+			values = append(values, *(*float64)(unsafe.Pointer(args)))
+			args += 8
+		default:
+			err := fmt.Errorf("unsupported format string pattern: %q", match[0])
+			panic(err)
+		}
+	}
+
+	result := fmt.Sprintf(formatStr, values...)
+
+	if size > 0 {
+		target := sliceOf(str, size)
+		clear(target)
+		copy(target[:size-1], result)
+	}
+
+	return int32(len(result))
 }
 
 func fprintf(tls *_Stack, f uintptr, fmt uintptr, va uintptr) (r int32) {

@@ -177,12 +177,8 @@ func (b Body) GetShapeCount() (r int32)          { r = b2Body_GetShapeCount(theS
 func (b Body) GetJointCount() (r int32)          { r = b2Body_GetJointCount(theStack, b.Id); return }
 func SetLengthUnitsPerMeter(lengthUnits float32) { b2SetLengthUnitsPerMeter(theStack, lengthUnits) }
 func GetLengthUnitsPerMeter() (r float32)        { r = b2GetLengthUnitsPerMeter(theStack); return }
-func InternalAssertFcn(condition uintptr, fileName uintptr, lineNumber int32) (r int32) {
-	r = b2InternalAssertFcn(theStack, condition, fileName, lineNumber)
-	return
-}
-func GetVersion() (r Version) { r = b2GetVersion(theStack); return }
-func GetByteCount() (r int32) { r = b2GetByteCount(theStack); return }
+func GetVersion() (r Version)                    { r = b2GetVersion(theStack); return }
+func GetByteCount() (r int32)                    { r = b2GetByteCount(theStack); return }
 func GetSweepTransform(sweep Sweep, time float32) (r Transform) {
 	sweepStack := copyToStack(theStack, sweep)
 	defer sweepStack.Free()
@@ -586,9 +582,6 @@ func (b Joint) GetLinearSeparation() (r float32) {
 func (b Joint) GetAngularSeparation() (r float32) {
 	r = b2Joint_GetAngularSeparation(theStack, b.Id)
 	return
-}
-func (b Joint) GetConstraintTuning(hertz uintptr, dampingRatio uintptr) {
-	b2Joint_GetConstraintTuning(theStack, b.Id, hertz, dampingRatio)
 }
 func (b Joint) SetConstraintTuning(hertz float32, dampingRatio float32) {
 	b2Joint_SetConstraintTuning(theStack, b.Id, hertz, dampingRatio)
@@ -1070,17 +1063,9 @@ func (b Shape) GetClosestPoint(_target Vec2) (r Vec2) {
 	r = b2Shape_GetClosestPoint(theStack, b.Id, _target)
 	return
 }
-func GetTicks() (r uint64)                     { r = b2GetTicks(theStack); return }
-func GetMilliseconds(ticks uint64) (r float32) { r = b2GetMilliseconds(theStack, ticks); return }
-func GetMillisecondsAndReset(ticks uintptr) (r float32) {
-	r = b2GetMillisecondsAndReset(theStack, ticks)
-	return
-}
-func Yield() { b2Yield(theStack) }
-func Hash(hash uint32, data uintptr, count int32) (r uint32) {
-	r = b2Hash(theStack, hash, data, count)
-	return
-}
+func GetTicks() (r uint64)                        { r = b2GetTicks(theStack); return }
+func GetMilliseconds(ticks uint64) (r float32)    { r = b2GetMilliseconds(theStack, ticks); return }
+func Yield()                                      { b2Yield(theStack) }
 func DefaultWorldDef() (r WorldDef)               { r = b2DefaultWorldDef(theStack); return }
 func DefaultBodyDef() (r BodyDef)                 { r = b2DefaultBodyDef(theStack); return }
 func DefaultFilter() (r Filter)                   { r = b2DefaultFilter(theStack); return }
@@ -1237,13 +1222,6 @@ func (b World) GetProfile() (r Profile)      { r = b2World_GetProfile(theStack, 
 func (b World) GetCounters() (r Counters)    { r = b2World_GetCounters(theStack, b.Id); return }
 func (b World) SetUserData(userData uintptr) { b2World_SetUserData(theStack, b.Id, userData) }
 func (b World) GetUserData() (r uintptr)     { r = b2World_GetUserData(theStack, b.Id); return }
-func (b World) DumpMemoryStats()             { b2World_DumpMemoryStats(theStack, b.Id) }
-func (b World) OverlapShape(proxy ShapeProxy, filter QueryFilter, __ccgo_fp_fcn uintptr, context uintptr) (r1 TreeStats) {
-	proxyStack := copyToStack(theStack, proxy)
-	defer proxyStack.Free()
-	r1 = b2World_OverlapShape(theStack, b.Id, proxyStack.Addr, filter, __ccgo_fp_fcn, context)
-	return
-}
 func (b World) CastRay(origin Vec2, translation Vec2, filter QueryFilter, __ccgo_fp_fcn uintptr, context uintptr) (r TreeStats) {
 	r = b2World_CastRay(theStack, b.Id, origin, translation, filter, __ccgo_fp_fcn, context)
 	return
