@@ -7,7 +7,7 @@ toolchain go1.24.5
 require (
 	github.com/hajimehoshi/ebiten/v2 v2.9.0-alpha.15.0.20250827040521-46fd8a1a52f1
 	github.com/jakecoffman/cp/v2 v2.3.0
-	github.com/oliverbestmann/box2d-go v0.0.0-20250827193208-07eb38139e1e
+	github.com/oliverbestmann/box2d-go v0.0.0-20250901122759-c327fad50242
 )
 
 require (
@@ -18,5 +18,3 @@ require (
 	golang.org/x/sync v0.16.0 // indirect
 	golang.org/x/sys v0.35.0 // indirect
 )
-
-replace github.com/oliverbestmann/box2d-go => ../

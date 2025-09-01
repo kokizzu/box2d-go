@@ -10,6 +10,8 @@ github.com/jakecoffman/cp/v2 v2.3.0 h1:o27SCFFCsbX0aS5FLMYVdf4YuDoK3eNnCpkBizZDu
 github.com/jakecoffman/cp/v2 v2.3.0/go.mod h1:6lPSBgxx6+//RIlSaMH3XaXtcCwPY1ZCJox1ThK5bZw=
 github.com/jezek/xgb v1.1.1 h1:bE/r8ZZtSv7l9gk6nU0mYx51aXrvnyb44892TwSaqS4=
 github.com/jezek/xgb v1.1.1/go.mod h1:nrhwO0FX/enq75I7Y7G8iN1ubpSGZEiA3v9e9GyRFlk=
+github.com/oliverbestmann/box2d-go v0.0.0-20250901122759-c327fad50242 h1:CkFNg52POZSVbpyOMIFKq5ev+o5p+1sIht12LNZXCt4=
+github.com/oliverbestmann/box2d-go v0.0.0-20250901122759-c327fad50242/go.mod h1:1fuzkQOCSnu18iHuruiJriNmrKsMEk9fEH3SJ7MHoic=
 golang.org/x/image v0.30.0 h1:jD5RhkmVAnjqaCUXfbGBrn3lpxbknfN9w2UhHHU+5B4=
 golang.org/x/image v0.30.0/go.mod h1:SAEUTxCCMWSrJcCy/4HwavEsfZZJlYxeHLc6tTiAe/c=
 golang.org/x/sync v0.16.0 h1:ycBJEhp9p4vXvUZNszeOq0kGTPghopOL8q0fq3vstxw=
