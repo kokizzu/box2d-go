@@ -1,3 +1,5 @@
+[![Go Reference](https://pkg.go.dev/badge/github.com/oliverbestmann/box2d-go?utm_source=godoc.svg)](https://pkg.go.dev/github.com/oliverbestmann/box2d-go?utm_source=godoc)
+
 # box2d go
 
 This is a mainly automated Golang port of Box2D v3. The original C code is transpiled into Go using modernc.org/ccgo/v4.
