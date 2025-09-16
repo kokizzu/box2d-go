@@ -1218,8 +1218,8 @@ type b2HexColor1 = int32
 type HexColor = int32
 
 const b2_colorAliceBlue = 15792383
-const b2_colorAqua = 65535
 const b2_colorAntiqueWhite = 16444375
+const b2_colorAqua = 65535
 const b2_colorAquamarine = 8388564
 const b2_colorAzure = 15794175
 const b2_colorBeige = 16119260
@@ -6104,11 +6104,7 @@ func b2GetLengthUnitsPerMeter(tls *_Stack) (r float32) {
 }
 
 func b2DefaultAssertFcn(tls *_Stack, condition uintptr, fileName uintptr, lineNumber int32) (r int32) {
-	bp := tls.Alloc(32)
-	defer tls.Free(32)
-	printf(tls, __ccgo_ts+3966, vaList(bp+8, condition, fileName, lineNumber))
-	// return non-zero to break to debugger
-	return int32(1)
+	return b2DefaultAssertFcnGo(tls, condition, fileName, lineNumber)
 }
 
 type __ccgo_fp__Xb2SetAssertFcn_0 = func(*_Stack, uintptr, uintptr, int32) int32

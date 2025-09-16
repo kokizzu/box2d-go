@@ -108,6 +108,7 @@ func main() {
 	root = dstutil.Apply(root, nil, hideSupportFuncs())
 	root = dstutil.Apply(root, nil, fixQSortInvocation())
 	root = dstutil.Apply(root, nil, useApiTypes(api.ExposedTypes))
+	root = dstutil.Apply(root, nil, forwardDefaultAssertFcnToGo())
 	dst.Inspect(root, renameApiTypes(api.ExposedTypes))
 	dst.Inspect(root, removeTypeAliases())
 	hideConsts(root)
@@ -1003,6 +1004,35 @@ func renameSimpleType(name string) (string, bool) {
 	}
 
 	return name, false
+}
+
+func forwardDefaultAssertFcnToGo() dstutil.ApplyFunc {
+	return func(cursor *dstutil.Cursor) bool {
+		fn, ok := cursor.Node().(*dst.FuncDecl)
+		if !ok {
+			return true
+		}
+
+		if fn.Name.Name == "b2DefaultAssertFcn" {
+			fn.Body.List = []dst.Stmt{
+				&dst.ReturnStmt{
+					Results: []dst.Expr{
+						&dst.CallExpr{
+							Fun: dst.NewIdent("b2DefaultAssertFcnGo"),
+							Args: []dst.Expr{
+								dst.NewIdent("tls"),
+								dst.NewIdent("condition"),
+								dst.NewIdent("fileName"),
+								dst.NewIdent("lineNumber"),
+							},
+						},
+					},
+				},
+			}
+		}
+
+		return true
+	}
 }
 
 func cleanApiName(api map[string]bool, name string) string {
